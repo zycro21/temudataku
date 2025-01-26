@@ -28,6 +28,3 @@ Thumbs.db
 # build output (jika ada folder build)
 build/
 dist/
-
-# npm package-lock
-package-lock.json
