@@ -1,0 +1,33 @@
+# dependencies
+/node_modules
+
+# dotenv files (env variables)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# coverage folder (jika menggunakan testing dan coverage tools)
+/coverage
+
+# IDE/editor specific
+.vscode/
+.idea/
+
+# build output (jika ada folder build)
+build/
+dist/
+
+# npm package-lock
+package-lock.json
