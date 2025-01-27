@@ -10,8 +10,8 @@ const userRoutes = require("./routes/userRoutes");
 
 // Konfigurasi CORS
 const corsOptions = {
-  origin: ["http://localhost:8000"],
-  credentials: true,
+  origin: "http://localhost:3000", // Ganti dengan frontend yang berjalan di localhost:3000
+  credentials: true, // Memungkinkan pengiriman cookie
 };
 
 app.use(cors(corsOptions));

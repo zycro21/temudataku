@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #1e294c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.admin-register-page {
+  display: flex;
+  flex-direction: column; /* Stack title, form, and footer */
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  width: 100%;
+}
+
+.admin-title-form p {
+  font-size: 17px;
+  font-weight: 800;
+  color: #1e294c;
+  margin-bottom: 10px;
+}
+
+.admin-register-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #e6f7f4;
+  padding: 20px 25px; /* Lebih banyak padding untuk membuat form lebih lebar */
+  border: 1px solid #4caf92; /* Reduced border thickness */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Enhanced box shadow */
+  width: 100%;
+  max-width: 800px;
+  margin: 0 30px;
+}
+
+.admin-main-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Full width for the form */
+}
+
+.admin-main-form input {
+  margin-top: 5px;
+  margin-bottom: 15px;
+  padding: 12px; /* Increased padding for better user experience */
+  border: 1px solid #ccc; /* Reduced border thickness */
+  border-radius: 4px;
+  width: 100%; /* Full width for inputs */
+  box-sizing: border-box;
+}
+
+.admin-main-form input:focus {
+  outline: none;
+  border-color: #1e294c;
+  box-shadow: 0 0 8px rgba(30, 41, 76, 0.5); /* Enhanced focus shadow */
+}
+
+.admin-register-button {
+  padding: 12px; /* Increased padding */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-register-button:hover {
+  background-color: #3e8e79;
+  transform: scale(1.05);
+}
+
+.error-message {
+  color: #e63946;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.success-message {
+  color: #4caf92;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+p {
+  font-size: 12px;
+  color: #1e294c;
+  text-align: center;
+  margin-top: 20px;
+  /* background-color: red; */
+}
+
+p a {
+  color: #4caf92;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+p a:hover {
+  color: #3e8e79;
+}

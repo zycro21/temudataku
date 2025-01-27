@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #1e294c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.admin-login-page {
+  display: flex;
+  flex-direction: column; /* Stack title, form, and footer */
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  width: 100%;
+}
+
+.admin-login-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #e6f7f4;
+  padding: 20px 25px; /* Lebih banyak padding untuk membuat form lebih lebar */
+  border: 1px solid #4caf92; /* Reduced border thickness */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Enhanced box shadow */
+  width: 100%;
+  max-width: 600px;
+  margin: 0 20px;
+}
+
+.admin-login-button {
+  padding: 12px; /* Increased padding */
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-login-button:hover {
+  background-color: #3e8e79;
+  transform: scale(1.05);
+}
