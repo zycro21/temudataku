@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
 import "../assets/styles/userDashboard.css";
 import Sidebar from "../components/SidebarAdmin";
@@ -42,6 +43,9 @@ const UserDetailsModal = ({ userDetails, closeModal }) => {
     );
 };
 
+const UpdateUserModal = ({ user, closeModal, onSave }) => {
+    const [email, setEmail] = useState();
+}
 
 const UserDashboard = () => {
     const [users, setUsers] = useState([]);
@@ -106,6 +110,59 @@ const UserDashboard = () => {
             setLoading(false);
         }
     };
+
+    // Fungsi Delete User
+    const handleDeleteUser = async (user_id) => {
+        const result = await Swal.fire({
+            title: "Anda yakin?",
+            text: "Akun ini akan dihapus secara permanen dan tidak bisa dikembalikan lagi!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal",
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const token = localStorage.getItem("token");
+                const response = await axios.delete(`http://localhost:8000/api/users/deleteUser/${user_id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.status === 200) {
+                    toast.success(response.data.message, {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                }
+
+                fetchUsers();
+            } catch (err) {
+                console.error("Error delete review: ", err);
+                toast.error(
+                    err.response?.data?.message ||
+                    "Error Ketika Proses Menghapus Review.",
+                    {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    }
+                );
+            }
+        }
+    }
 
     // Fungsi handle filter based on role
     const handleRoleFilter = () => {
@@ -184,7 +241,7 @@ const UserDashboard = () => {
                                         </button>
                                         <button
                                             className="action-button btn-delete"
-                                            onClick={() => toast.warn("Fitur hapus belum diimplementasikan")}
+                                            onClick={() => handleDeleteUser(user.user_id)}
                                         >
                                             <FontAwesomeIcon icon={faTrashAlt} />
                                         </button>

@@ -24,6 +24,12 @@ router.get(
   checkTokenBlacklist,
   userController.getUserById
 );
+router.get(
+  "/getMentorProfile/:mentor_id",
+  verifyLogin,
+  checkTokenBlacklist,
+  userController.getMentorProfile
+);
 router.put(
   "/updateUser/:user_id",
   verifyLogin,

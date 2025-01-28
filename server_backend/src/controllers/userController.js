@@ -32,7 +32,7 @@ exports.registerUser = [
   // Validasi Username
   body("username").notEmpty().withMessage("Username Wajib Diisi"),
 
-  //   Validasi Password
+  // Validasi Password
   body("password")
     .notEmpty()
     .withMessage("Password Wajib Diisi")
@@ -91,6 +91,7 @@ exports.registerUser = [
       // Ambil waktu saat ini untuk created_at dan updated_at
       const currentTimestamp = new Date();
 
+      // Insert user ke tabel users
       const sql =
         "INSERT INTO users (user_id, email, username, password, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
       await db.query(sql, [
@@ -102,6 +103,28 @@ exports.registerUser = [
         currentTimestamp,
         currentTimestamp,
       ]);
+
+      // Jika role adalah mentor, otomatis buatkan entry di tabel mentors
+      if (role === "mentor") {
+        // Cari mentor_id terakhir
+        const mentorSql =
+          "SELECT mentor_id FROM mentors ORDER BY mentor_id DESC LIMIT 1";
+        const [mentorResults] = await db.query(mentorSql);
+
+        let newMentorId = "mentor-101"; // Default mentor-101 jika belum ada data mentor
+
+        if (mentorResults.length > 0) {
+          // Ambil angka terakhir dari mentor_id
+          const lastMentorId = mentorResults[0].mentor_id;
+          const lastNumber = parseInt(lastMentorId.split("-")[1], 10);
+          newMentorId = `mentor-${lastNumber + 1}`;
+        }
+
+        // Insert mentor ke tabel mentors hanya dengan user_id dan mentor_id
+        const mentorInsertSql =
+          "INSERT INTO mentors (mentor_id, user_id) VALUES (?, ?)";
+        await db.query(mentorInsertSql, [newMentorId, userId]);
+      }
 
       return res.status(201).json({
         message: "User Berhasil Terdaftar",
@@ -243,12 +266,69 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+// Controller untuk mendapatkan profil mentor
+exports.getMentorProfile = async (req, res) => {
+  const { mentor_id } = req.params;
+
+  try {
+    // Cari mentor berdasarkan mentor_id
+    const sqlMentor = "SELECT * FROM mentors WHERE mentor_id = ?";
+    const [mentorResults] = await db.query(sqlMentor, [mentor_id]);
+
+    if (mentorResults.length === 0) {
+      return res.status(404).json({
+        message: "Mentor tidak ditemukan",
+      });
+    }
+
+    const mentor = mentorResults[0];
+
+    // Cari data user berdasarkan user_id yang terhubung dengan mentor_id
+    const sqlUser = "SELECT * FROM users WHERE user_id = ?";
+    const [userResults] = await db.query(sqlUser, [mentor.user_id]);
+
+    if (userResults.length === 0) {
+      return res.status(404).json({
+        message: "Data user mentor tidak ditemukan",
+      });
+    }
+
+    const user = userResults[0];
+
+    // Kembalikan data profil mentor
+    return res.status(200).json({
+      mentor_id: mentor.mentor_id,
+      user_id: mentor.user_id,
+      username: user.username,
+      email: user.email,
+      profile_picture: user.image,
+      name: mentor.name,
+      expertise: mentor.expertise,
+      bio: mentor.bio,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Terjadi kesalahan saat mengambil data profil mentor",
+    });
+  }
+};
+
 exports.updateUserProfile = async (req, res) => {
-  const { email, username, password, newPassword, oldPassword } = req.body;
+  const {
+    email,
+    username,
+    password,
+    newPassword,
+    oldPassword,
+    expertise,
+    bio,
+    name,
+  } = req.body;
   const { user_id } = req.user;
   const { user_id: userIdFromParam } = req.params;
 
-  if (user_id !== userIdFromParam && req.user.role !== "admin") {
+  if (req.user.role !== "admin" && user_id !== userIdFromParam) {
     return res.status(403).json({
       message: "Anda hanya bisa mengupdate profil anda sendiri",
     });
@@ -261,10 +341,10 @@ exports.updateUserProfile = async (req, res) => {
     });
   }
 
-  // Ambil data user dari database untuk memverifikasi password lama
   try {
+    // Ambil data user dari database untuk memverifikasi password lama
     const [user] = await db.query("SELECT * FROM users WHERE user_id = ?", [
-      user_id,
+      userIdFromParam, // Menggunakan ID dari parameter URL
     ]);
 
     if (user.length === 0) {
@@ -330,14 +410,8 @@ exports.updateUserProfile = async (req, res) => {
 
   // Validasi Password Lama dan Proses Perubahan Password Baru
   if (newPassword) {
-    if (!oldPassword) {
-      return res.status(400).json({
-        message: "Password lama wajib disertakan untuk mengganti password",
-      });
-    }
-
     const passwordRegex =
-      /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{8,}$/;
+      /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>-])[A-Za-z0-9!@#$%^&*(),.?":{}|<>-]{8,}$/;
 
     if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
@@ -351,30 +425,16 @@ exports.updateUserProfile = async (req, res) => {
         user_id,
       ]);
 
-      if (user.length === 0) {
-        return res.status(404).json({
-          message: "User tidak ditemukan",
-        });
-      }
-
-      // Verifikasi Password Lama
-      const passwordMatch = await bcrypt.compare(oldPassword, user[0].password);
-      if (!passwordMatch) {
-        return res.status(401).json({
-          message: "Password Lama Tidak Cocok",
-        });
-      }
-
       // Hash Password Baru dan Simpan ke Database
       const hashedNewPassword = await bcrypt.hash(newPassword, 10);
       await db.query("UPDATE users SET password = ? WHERE user_id = ?", [
         hashedNewPassword,
         user_id,
       ]);
-      passwordUpdated = true; // Tandai bahwa password telah diperbarui
+      passwordUpdated = true;
     } catch (error) {
       return res.status(500).json({
-        message: "Terjadi kesalahan saat memverifikasi password",
+        message: "Terjadi kesalahan saat memperbarui password",
       });
     }
   }
@@ -408,7 +468,7 @@ exports.updateUserProfile = async (req, res) => {
       const setClauses = fields.map((field) => `${field} = ?`);
       sql += setClauses.join(", ");
       sql += " WHERE user_id = ?";
-      params.push(user_id);
+      params.push(userIdFromParam);
 
       // Update data pengguna
       await db.query(sql, params);
@@ -426,6 +486,63 @@ exports.updateUserProfile = async (req, res) => {
     } catch (error) {
       return res.status(500).json({
         message: "Terjadi kesalahan saat memperbarui profil pengguna",
+      });
+    }
+  }
+
+  // Jika pengguna adalah mentor, update data di tabel mentors
+  if (req.user.role === "mentor") {
+    try {
+      const mentorUpdateFields = {};
+      const mentorParams = [];
+
+      // Update data mentor jika ada perubahan
+      if (name && name !== "") {
+        mentorUpdateFields.name = name;
+        mentorParams.push(name);
+      }
+
+      if (expertise && expertise !== "") {
+        mentorUpdateFields.expertise = expertise;
+        mentorParams.push(expertise);
+      }
+
+      if (bio && bio !== "") {
+        mentorUpdateFields.bio = bio;
+        mentorParams.push(bio);
+      }
+
+      // Debugging: Cek apakah ada perubahan data
+      console.log("Fields yang akan diupdate di mentors:", mentorUpdateFields);
+
+      // Pastikan data yang akan diupdate valid dan ada perubahan
+      if (Object.keys(mentorUpdateFields).length > 0) {
+        let sql = "UPDATE mentors SET ";
+        const fields = Object.keys(mentorUpdateFields);
+        const setClauses = fields.map((field) => `${field} = ?`);
+        sql += setClauses.join(", ");
+        sql += " WHERE user_id = ?"; // Pastikan userIdFromParam digunakan di sini
+        mentorParams.push(userIdFromParam); // Gunakan userId dari parameter untuk query
+
+        await db.query(sql, mentorParams);
+
+        return res.status(200).json({
+          message: passwordUpdated
+            ? "Profil Mentor dan password telah diperbarui"
+            : "Profil Mentor telah diperbarui",
+          data: {
+            ...mentorUpdateFields,
+            ...(passwordUpdated && { password: "updated" }),
+          },
+        });
+      } else {
+        return res.status(400).json({
+          message: "Tidak ada data yang diupdate di tabel mentors",
+        });
+      }
+    } catch (error) {
+      return res.status(500).json({
+        message: "Terjadi kesalahan saat memperbarui data mentor",
       });
     }
   }
@@ -623,6 +740,18 @@ exports.deleteUserById = async (req, res) => {
 
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    // Jika role adalah mentor, hapus data di tabel mentors terlebih dahulu
+    if (user[0].role === "mentor") {
+      try {
+        await db.query("DELETE FROM mentors WHERE user_id = ?", [user_id]);
+      } catch (error) {
+        console.error("Terjadi kesalahan saat menghapus data mentor", error);
+        return res.status(500).json({
+          message: "Terjadi kesalahan saat menghapus data mentor",
+        });
       }
     }
 
