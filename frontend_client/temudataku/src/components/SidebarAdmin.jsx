@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -22,6 +22,15 @@ const Sidebar = () => {
     const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(true);
+    const [adminName, setAdminName] = useState("");
+
+    // Ambil Nama Admin dari Local Storage Saat Komponen Dimuat
+    useEffect(() => {
+        const username = localStorage.getItem("username");
+        if (username) {
+            setAdminName(username);
+        }
+    }, []);
 
     const toogleSidebar = () => {
         setIsOpen(!isOpen);
@@ -74,32 +83,32 @@ const Sidebar = () => {
 
             {/* Navigation Menu */}
             <ul className="sidebar-item">
-                <li>
+                <li className={location.pathname === "/dashboard" ? "active" : ""}>
                     <Link to="/dashboard">
                         <FontAwesomeIcon icon={faHouse} />
                         {isOpen && <span>Dashboard</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/userData">
+                <li className={location.pathname === "/userdashboard" ? "active" : ""}>
+                    <Link to="/userdashboard">
                         <FontAwesomeIcon icon={faUser} />
                         {isOpen && <span>User</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/mentorsData">
+                <li className={location.pathname === "/mentorsdashboard" ? "active" : ""}>
+                    <Link to="/mentorsdashboard">
                         <FontAwesomeIcon icon={faChalkboardTeacher} />
                         {isOpen && <span>Mentors</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/ordersData">
+                <li className={location.pathname === "/ordersdashboard" ? "active" : ""}>
+                    <Link to="/ordersdashboard">
                         <FontAwesomeIcon icon={faShoppingCart} />
                         {isOpen && <span>Orders</span>}
                     </Link>
                 </li>
-                <li>
-                    <Link to="/reviewsData">
+                <li className={location.pathname === "/reviewsdashboard" ? "active" : ""}>
+                    <Link to="/reviewsdashboard">
                         <FontAwesomeIcon icon={faStar} />
                         {isOpen && <span>Reviews</span>}
                     </Link>
@@ -113,7 +122,7 @@ const Sidebar = () => {
                     alt="Admin Avatar"
                     className={`avatar-img ${isOpen ? "large" : "small"}`}
                 />
-                {isOpen && <p className="profile-name">Admin Name</p>}
+                {isOpen && <p className="profile-name">{adminName || "Admin"}</p>}
             </div>
 
             {/* Logout Button */}

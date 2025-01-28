@@ -167,7 +167,7 @@ exports.loginUser = [
         token,
         user: {
           user_id: userData.user_id,
-          username: userData.username.Date,
+          username: userData.username,
           role: userData.role,
         },
       });
@@ -585,6 +585,58 @@ const blacklistToken = async (token) => {
 
   if (tokenCount > 200) {
     await db.query("DELETE FROM blacklisted_tokens");
+  }
+};
+
+// Delete User By user_id
+exports.deleteUserById = async (req, res) => {
+  const { user_id } = req.params;
+  const { role } = req.user;
+
+  // Hanya "admin" yang bisa menghapus user
+  if (role !== "admin") {
+    return res.status(400).json({
+      message: "Anda tidak memiliki izin untuk menghapus user",
+    });
+  }
+
+  try {
+    const [user] = await db.query("SELECT * FROM users WHERE user_id = ?", [
+      user_id,
+    ]);
+
+    if (user.length === 0) {
+      return res.status(400).json({
+        message: "User tidak dapat ditemukan",
+      });
+    }
+
+    const oldImage = user[0].image;
+
+    // Hapus file image user jika ada
+    if (oldImage) {
+      const oldImagePath = path.join(
+        __dirname,
+        "../..",
+        oldImage.replace("/image_user", "image_user")
+      );
+
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    // Hapus user dari DB
+    await db.query("DELETE from users WHERE user_id = ?", [user_id]);
+
+    res.status(200).json({
+      message: "User berhasil dihapus",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Terjadi kesalahan saat menghapus user",
+    });
   }
 };
 

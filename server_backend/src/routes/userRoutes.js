@@ -34,5 +34,12 @@ router.put(
 router.post("/request-reset-password", userController.requestResetPassword);
 router.post("/reset-password", userController.resetPassword);
 router.post("/logout", verifyLogin, userController.logout);
+router.delete(
+  "/deleteUser/:user_id",
+  verifyLogin,
+  checkTokenBlacklist,
+  verifyRole(["admin"]),
+  userController.deleteUserById
+);
 
 module.exports = router;

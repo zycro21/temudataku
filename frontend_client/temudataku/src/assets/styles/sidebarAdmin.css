@@ -1,23 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  height: 100%;
-  width: 100%;
+body,
+html {
   font-family: "Poppins", sans-serif;
 }
 
 /* Sidebar Umum */
 .admin-sidebar {
-  width: 250px;
+  width: 200px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,11 +20,15 @@ body {
   left: 0;
   z-index: 1000;
   padding: 20px;
-  transition: width 0.3s ease;
+  transition: width 0.5s ease, box-shadow 0.3s ease, opacity 0.3s ease; /* Menambahkan transisi pada lebar, box-shadow, dan opacity */
+  border-right: 2px solid #ccc;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  opacity: 1; /* Menjaga visibilitas sidebar */
 }
 
 .admin-sidebar.closed {
-  width: 80px;
+  width: 35px;
+  opacity: 0.8;
 }
 
 /* Header (Logo & Toggle) */
@@ -42,7 +37,7 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
-  margin-top: -20px;
+  margin-top: -30px;
 }
 
 .logo-img {
@@ -51,7 +46,8 @@ body {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.admin-sidebar.closed .logo-img {
+.admin-sidebar.closed .logo-img,
+.admin-sidebar.closed .profile-name {
   opacity: 0;
   transform: scale(0);
 }
@@ -67,8 +63,8 @@ body {
 }
 
 .admin-sidebar.closed .toggle-button {
-  margin-top: 20px; /* Menambahkan margin hanya saat sidebar tertutup */
-  margin-right: 7px;
+  margin-top: 40px; /* Menambahkan margin hanya saat sidebar tertutup */
+  margin-right: 47px;
 }
 
 /* Navigation Menu */
@@ -76,11 +72,28 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-top: 10px; /* Navigasi lebih dekat ke header */
+  margin-top: -70px;
+  margin-bottom: 70px;
 }
 
 .sidebar-item li {
   margin-bottom: 7px;
+}
+
+.sidebar-item li.active {
+  background-color: #1e294c; /* Warna latar belakang untuk item aktif */
+  color: #ffffff; /* Warna teks untuk item aktif */
+  border-radius: 5px; /* Memberikan sudut membulat */
+}
+
+.sidebar-item li.active a {
+  color: #ffffff; /* Warna ikon dan teks */
+}
+
+.sidebar-item li:hover {
+  background-color: #d6dbe9; /* Warna saat hover */
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
 .sidebar-item a {
@@ -88,7 +101,7 @@ body {
   align-items: center;
   text-decoration: none;
   color: gray;
-  font-size: 14px;
+  font-size: 12px;
   gap: 10px;
   padding: 10px;
   transition: color 0.3s ease, padding 0.3s ease;
@@ -99,6 +112,10 @@ body {
   color: white;
 }
 
+.admin-sidebar.closed .sidebar-item {
+  margin-top: 40px;
+}
+
 .admin-sidebar.closed .sidebar-item a span {
   display: none;
 }
@@ -106,8 +123,8 @@ body {
 /* Profile Section */
 .sidebar-profile {
   text-align: center;
-  margin-top: 50px;
-  margin-right: 6rem;
+  margin-top: 0px;
+  margin-right: 8rem;
   transition: margin-bottom 0.3s ease;
 }
 
@@ -123,6 +140,8 @@ body {
 .admin-sidebar.closed .avatar-img {
   width: 50px;
   height: 50px;
+  margin-left: -10px;
+  border: 2px solid #1e294c;
 }
 
 .admin-sidebar.closed .sidebar-profile {
@@ -141,7 +160,9 @@ body {
 /* Logout Section */
 .sidebar-logout {
   text-align: center;
-  margin-top: auto;
+  margin-top: 20px; /* Atur jarak dari elemen sebelumnya */
+  padding-bottom: 30px;
+  padding-left: 5px;
 }
 
 .logout-button {

@@ -35,6 +35,7 @@ const LoginAdmin = () => {
             if (response.status === 200) {
                 // Simpan token ke localstorage
                 localStorage.setItem("token", response.data.token);
+                localStorage.setItem("username", response.data.user.username);
 
                 // Tampilkan pesan sukses
                 toast.success("Login Berhasil");

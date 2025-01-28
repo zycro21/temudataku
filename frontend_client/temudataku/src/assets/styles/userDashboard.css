@@ -1,0 +1,313 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.user-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  font-family: "Poppins", sans-serif;
+  margin-top: 0px;
+  margin-right: -8px;
+  overflow: auto;
+  min-height: 100vh;
+  height: auto;
+}
+
+/* Header */
+.user-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 27px;
+  color: #1e294c;
+  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); */
+  border-radius: 8px;
+  padding-top: 30px;
+  margin-bottom: 20px;
+  margin-left: 240px;
+}
+
+.user-dashboard-header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.user-dashboard-header .user-search-input {
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.user-dashboard-header .user-search-input:focus {
+  outline: none;
+  box-shadow: 0 0 5px #1e294c;
+  transform: scale(1.03);
+}
+
+/* Main Content */
+.user-dashboard-main {
+  margin-left: 240px;
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Tabel */
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.user-table th,
+.user-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.user-table td.role {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.user-table td.role.admin {
+  color: #e63946; /* Merah untuk Admin */
+}
+
+.user-table td.role.mentor {
+  color: #2196f3; /* Biru untuk Mentor */
+}
+
+.user-table td.role.user {
+  color: #4caf50; /* Hijau untuk User */
+}
+
+.user-table th {
+  background-color: #4caf50;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.user-table tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
+}
+
+.user-table .filterable {
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.user-table .filterable:hover {
+  color: #ff5722;
+}
+
+.user-table .no-data {
+  text-align: center;
+  font-size: 1rem;
+  color: #999;
+}
+
+/* Tombol Aksi */
+.action-button {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.action-button:hover {
+  transform: scale(1.05);
+}
+
+.btn-detail {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.btn-detail:hover {
+  background-color: #45a049;
+}
+
+.btn-edit {
+  background-color: #2196f3;
+  color: #ffffff;
+}
+
+.btn-edit:hover {
+  background-color: #1976d2;
+}
+
+.btn-delete {
+  background-color: #e63946;
+  color: #ffffff;
+}
+
+.btn-delete:hover {
+  background-color: #c62828;
+}
+
+/* Scrollbar Styling */
+.user-dashboard-main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.user-dashboard-main::-webkit-scrollbar-thumb {
+  background-color: #4caf50;
+  border-radius: 10px;
+}
+
+.user-dashboard-main::-webkit-scrollbar-thumb:hover {
+  background-color: #45a049;
+}
+
+.user-dashboard-main::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Modal Background */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Setengah transparan */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Pastikan modal di atas semua elemen */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 80%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transform: scale(0.8);
+  opacity: 0;
+}
+
+.modal.open .modal-content {
+  transform: scale(1); /* Membesarkan konten */
+  opacity: 1; /* Menampilkan konten dengan fade-in */
+}
+
+/* Efek Rotasi 3D pada konten modal */
+.modal-content {
+  transform-origin: center;
+  perspective: 1000px; /* Memberikan efek 3D */
+}
+
+.modal.open .modal-content {
+  transform: rotateY(0deg);
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Modal Close */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Heading */
+.modal-content h2 {
+  font-size: 1.6rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Image */
+.user-avatar-modal {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 20px auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+/* Efek hover pada gambar */
+.user-avatar-modal:hover {
+  transform: scale(1.1); /* Efek 3D pada gambar */
+}
+
+/* User Info */
+.modal-content p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Image Field */
+.modal-content p strong {
+  font-weight: bold;
+}
+
+/* Error Message */
+.error-message {
+  color: red;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-dashboard-header,
+.user-dashboard-main {
+  animation: fadeIn 0.6s ease-in-out;
+}
