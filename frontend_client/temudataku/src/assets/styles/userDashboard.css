@@ -3,7 +3,7 @@
 html,
 body {
   height: 100%;
-  overflow: hidden;
+  /* overflow: auto; */
 }
 
 .user-dashboard-container {
@@ -12,7 +12,7 @@ body {
   font-family: "Poppins", sans-serif;
   margin-top: 0px;
   margin-right: -8px;
-  overflow: auto;
+  overflow-y: auto;
   min-height: 100vh;
   height: auto;
 }
@@ -29,6 +29,9 @@ body {
   padding-top: 30px;
   margin-bottom: 20px;
   margin-left: 240px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: margin-left 0.3s ease-in-out;
 }
 
 .user-dashboard-header h1 {
@@ -60,7 +63,21 @@ body {
   background-color: #ffffff;
   border-radius: 10px;
   padding: 20px;
+  margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  opacity: 1;
+  transform: translateX(0);
+  transition: margin-left 0.3s ease-in-out;
+}
+
+
+/* Jika Sidebar Tertutup */
+.sidebar-closed .user-dashboard-header,
+.sidebar-closed .user-dashboard-main {
+  margin-left: 70px;
+  opacity: 0.9; /* Sedikit efek fade */
+  transform: translateX(-10px); /* Geser sedikit */
+  transition: margin-left 0.3s ease-in-out, opacity 0.3s ease, transform 0.3s ease;
 }
 
 /* Tabel */
@@ -293,6 +310,124 @@ body {
   font-size: 1.2rem;
   text-align: center;
   margin-top: 20px;
+}
+
+.user-pagination {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px; /* Jarak antar tombol diperbesar */
+  justify-content: center;
+}
+
+.user-pagination button {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 10px 15px; /* Ukuran tombol diperbesar */
+  font-size: 16px; /* Ukuran teks lebih besar */
+  cursor: pointer;
+  border-radius: 5px; /* Bikin agak rounded */
+  transition: 0.3s;
+}
+
+.user-pagination button.active {
+  background: #1e294c;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #0056b3;
+}
+
+.user-pagination button:hover:not(:disabled) {
+  background: #1976d2;
+}
+
+.user-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Untuk background modal */
+.update-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Pastikan modal di atas konten lain */
+}
+
+/* Konten modal */
+.update-modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Judul modal */
+.update-modal-content h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Styling untuk label */
+.update-modal-content label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Styling untuk input dan textarea */
+.update-modal-content input,
+.update-modal-content textarea {
+  width: 95%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Styling khusus untuk textarea */
+.update-modal-content textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+/* Tombol modal */
+.update-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.update-modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.update-modal-buttons button[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+}
+
+.update-modal-buttons button[type="button"] {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Efek hover pada tombol */
+.update-modal-buttons button:hover {
+  opacity: 0.9;
 }
 
 /* Animations */

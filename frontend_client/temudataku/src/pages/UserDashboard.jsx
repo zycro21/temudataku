@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useSidebar } from "../components/SidebarContext";
 import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,37 +44,66 @@ const UserDetailsModal = ({ userDetails, closeModal }) => {
     );
 };
 
-const UpdateUserModal = ({ user, closeModal, onSave }) => {
-    const [email, setEmail] = useState();
-}
-
 const UserDashboard = () => {
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [allUsers, setAllUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [roleFilter, setRoleFilter] = useState("default");
 
-    // Hook untuk Modal Detail User
+    // State untuk pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const itemPerPage = 10;
+
+    // State untuk Modal Detail User
     const [userDetails, setUserDetails] = useState(null);
     const [isModalDetailOpen, setIsModalDetailOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    // State untuk modal update profil
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [updateUserData, setUpdateUserData] = useState({
+        user_id: "",
+        email: "",
+        username: "",
+        oldPassword: "",
+        newPassword: "",
+        role: "",
+        name: "",
+        expertise: "",
+        bio: ""
+    });
+
+    const { isOpen } = useSidebar();
+
     // Fungsi Fetch Data API
-    const fetchUsers = async () => {
+    const fetchUsers = async (page = 1) => {
         try {
             const token = localStorage.getItem("token"); // atau dari sumber lain
             if (!token) {
                 toast.error("Token tidak ditemukan!");
                 return;
             }
-            const response = await axios.get("http://localhost:8000/api/users/getAllUsers", {
+
+            let url = `http://localhost:8000/api/users/getAllUsers?page=${page}&limit=10&search=${searchQuery}`;
+
+            // Tambahkan filter role jika roleFilter bukan "default"
+            if (roleFilter !== "default") {
+                url += `&role=${roleFilter}`;
+            }
+
+            const response = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
             });
             if (response.status === 200) {
                 setUsers(response.data.data);
+                setAllUsers(response.data.data);
                 setFilteredUsers(response.data.data);
+                setTotalPages(response.data.pagination.totalPages);
+                setCurrentPage(response.data.pagination.currentPage);
             }
         } catch (error) {
             toast.error("Gagal memuat data user: " + error.message);
@@ -81,8 +111,42 @@ const UserDashboard = () => {
     };
 
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        setCurrentPage(1); // Reset ke halaman 1
+        fetchUsers(1); // Fetch data untuk halaman 1
+    }, [searchQuery, roleFilter]);
+
+    useEffect(() => {
+        fetchUsers(currentPage);
+    }, [currentPage]);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+            fetchUsers(newPage);
+        }
+    }
+
+    // Fungsi untuk Generate Pagination
+    const generatePagination = () => {
+        const pages = [];
+        const maxVisiblePages = 4;
+
+        if (totalPages <= maxVisiblePages) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage <= 2) {
+                pages.push(1, 2, 3, 4, "...");
+            } else if (currentPage >= totalPages - 1) {
+                pages.push("...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+            } else {
+                pages.push("...", currentPage - 1, currentPage, currentPage + 1, "...");
+            }
+        }
+
+        return pages;
+    };
 
     // Fungsi untuk mengambil detail user
     const handleDetailClick = async (userId) => {
@@ -110,6 +174,104 @@ const UserDashboard = () => {
             setLoading(false);
         }
     };
+
+    const handleEditUser = async (userId) => {
+
+        let mentorData = { name: "", expertise: "", bio: "" };
+
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                toast.error("Token tidak dapat ditemukan!");
+                return;
+            }
+
+            // Periksa apakah user_id ada di dalam user
+            if (!userId) {
+                console.error("user_id tidak ditemukan");
+                return;
+            }
+
+            // Ambil data user berdasarkan user_id
+            const userResponse = await axios.get(`http://localhost:8000/api/users/getUser/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            console.log(userResponse.data);
+
+            if (userResponse.data.data.role === "mentor") {
+                const mentorResponse = await axios.get(`http://localhost:8000/api/users/getMentorProfile/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+
+                console.log(mentorResponse.data);
+
+                mentorData = {
+                    name: mentorResponse.data.name || "",
+                    expertise: mentorResponse.data.expertise || "",
+                    bio: mentorResponse.data.bio || ""
+                };
+            }
+
+            setUpdateUserData({
+                user_id: userId,
+                email: userResponse.data.data.email || "",
+                username: userResponse.data.data.username || "",
+                oldPassword: "",
+                newPassword: "",
+                role: userResponse.data.data.role || "",
+                name: mentorData.name || "",
+                expertise: mentorData.expertise || "",
+                bio: mentorData.bio || ""
+            });
+
+            setIsModalUpdateOpen(true);
+        } catch (error) {
+            console.error("Gagal mengambil data:", error);
+            toast.error("Terjadi kesalahan saat mengambil data.");
+        }
+    };
+
+    // Fungsi untuk mengupdate user
+    const handleUpdateUser = async (e) => {
+        e.preventDefault();
+
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                toast.error("Token tidak dapat ditemukan!");
+                return;
+            }
+
+            const response = await axios.put(`http://localhost:8000/api/users/updateUser/${updateUserData.user_id}`, updateUserData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            toast.success("Profil berhasil diperbarui!"); // Menggunakan toast untuk sukses
+
+            // Perbarui UI dengan data terbaru
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.user_id === updateUserData.user_id ? { ...user, ...updateUserData } : user
+                )
+            );
+
+            fetchUsers(currentPage);
+
+            // Tutup modal setelah update berhasil
+            setIsModalUpdateOpen(false);
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            toast.error(error.response?.data?.message || "Terjadi kesalahan, coba lagi nanti."); // Menggunakan toast untuk error
+        }
+    };
+
 
     // Fungsi Delete User
     const handleDeleteUser = async (user_id) => {
@@ -167,36 +329,29 @@ const UserDashboard = () => {
     // Fungsi handle filter based on role
     const handleRoleFilter = () => {
         let newFilter;
+
         switch (roleFilter) {
             case "default":
                 newFilter = "admin";
-                setFilteredUsers(users.filter((user) => user.role === "admin"));
                 break;
             case "admin":
                 newFilter = "mentor";
-                setFilteredUsers(users.filter((user) => user.role === "mentor"));
                 break;
-            case "mentor": // Perbaikan ada di sini
+            case "mentor":
                 newFilter = "user";
-                setFilteredUsers(users.filter((user) => user.role === "user"));
                 break;
-            default: // Ketika roleFilter adalah "user", kembali ke default
+            default:
                 newFilter = "default";
-                setFilteredUsers(users);
                 break;
         }
+
         setRoleFilter(newFilter);
+        setCurrentPage(1); // Reset halaman ke 1 untuk memulai filter dari awal
+        fetchUsers(1); // Panggil fetchUsers dengan roleFilter yang baru
     };
 
-    // Fungsi handle filter data based on search
-    const displayedUsers = filteredUsers.filter(
-        (user) =>
-            user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     return (
-        <div className="user-dashboard-container">
+        <div className={`user-dashboard-container ${!isOpen ? "sidebar-closed" : ""}`}>
             <ToastContainer />
             <Sidebar />
             <div className="user-dashboard-header">
@@ -218,10 +373,10 @@ const UserDashboard = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {displayedUsers.length > 0 ? (
-                            displayedUsers.map((user, index) => (
+                        {users.length > 0 ? (
+                            users.map((user, index) => (
                                 <tr key={user.user_id}>
-                                    <td>{index + 1}</td>
+                                    <td>{(currentPage - 1) * itemPerPage + (index + 1)}</td>
                                     <td>{user.user_id}</td>
                                     <td>{user.email}</td>
                                     <td>{user.username}</td>
@@ -235,7 +390,7 @@ const UserDashboard = () => {
                                         </button>
                                         <button
                                             className="action-button btn-edit"
-                                            onClick={() => toast.warn("Fitur Edit belum diimplementasikan")}
+                                            onClick={() => handleEditUser(user.user_id)}
                                         >
                                             <FontAwesomeIcon icon={faEdit} />
                                         </button>
@@ -257,10 +412,100 @@ const UserDashboard = () => {
                         )}
                     </tbody>
                 </table>
+
+                {/* Pagination page controls */}
+                <div className="user-pagination">
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                        &laquo;
+                    </button>
+
+                    {generatePagination().map((page, index) => (
+                        <button
+                            key={index}
+                            onClick={() => typeof page === "number" && handlePageChange(page)}
+                            className={page === currentPage ? "active" : ""}
+                            disabled={page === "..."}>
+                            {page}
+                        </button>
+                    ))}
+
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                        &raquo;
+                    </button>
+                </div>
             </div>
 
             {/* Modal untuk detail user */}
             {isModalDetailOpen && <UserDetailsModal userDetails={userDetails} closeModal={() => setIsModalDetailOpen(false)} />}
+
+            {isModalUpdateOpen && (
+                <div className="update-modal">
+                    <div className="update-modal-content">
+                        <h3>Edit Profil</h3>
+                        <form onSubmit={handleUpdateUser}>
+                            <label>Email</label>
+                            <input
+                                type="email"
+                                value={updateUserData.email}
+                                onChange={(e) => setUpdateUserData({ ...updateUserData, email: e.target.value })}
+                            />
+
+                            <label>Username</label>
+                            <input
+                                type="text"
+                                value={updateUserData.username}
+                                onChange={(e) => setUpdateUserData({ ...updateUserData, username: e.target.value })}
+                            />
+
+                            <label>Password Lama</label>
+                            <input
+                                type="password"
+                                value={updateUserData.oldPassword}
+                                onChange={(e) => setUpdateUserData({ ...updateUserData, oldPassword: e.target.value })}
+                                required
+                            />
+
+                            <label>Password Baru (Opsional)</label>
+                            <input
+                                type="password"
+                                value={updateUserData.newPassword}
+                                onChange={(e) => setUpdateUserData({ ...updateUserData, newPassword: e.target.value })}
+                                placeholder="Hanya Masukkan Jika Ingin Mengupdate Password"
+                            />
+
+                            {/* Jika role adalah mentor, tampilkan tambahan input */}
+                            {updateUserData.role === "mentor" && (
+                                <>
+                                    <label>Nama</label>
+                                    <input
+                                        type="text"
+                                        value={updateUserData.name}
+                                        onChange={(e) => setUpdateUserData({ ...updateUserData, name: e.target.value })}
+                                    />
+
+                                    <label>Keahlian</label>
+                                    <input
+                                        type="text"
+                                        value={updateUserData.expertise}
+                                        onChange={(e) => setUpdateUserData({ ...updateUserData, expertise: e.target.value })}
+                                    />
+
+                                    <label>Bio</label>
+                                    <textarea
+                                        value={updateUserData.bio}
+                                        onChange={(e) => setUpdateUserData({ ...updateUserData, bio: e.target.value })}
+                                    />
+                                </>
+                            )}
+
+                            <div className="update-modal-buttons">
+                                <button type="submit">Simpan</button>
+                                <button type="button" onClick={() => setIsModalUpdateOpen(false)}>Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

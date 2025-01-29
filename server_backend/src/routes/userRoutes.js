@@ -25,7 +25,7 @@ router.get(
   userController.getUserById
 );
 router.get(
-  "/getMentorProfile/:mentor_id",
+  "/getMentorProfile/:user_id",
   verifyLogin,
   checkTokenBlacklist,
   userController.getMentorProfile

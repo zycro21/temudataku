@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
-const { body, validationResult } = require("express-validator");
+const { body, validationResult, param } = require("express-validator");
 const db = require("../config/database");
 const fs = require("fs");
 const path = require("path");
@@ -204,25 +204,53 @@ exports.loginUser = [
 ];
 
 exports.getAllProfiles = async (req, res) => {
-  const { role } = req.query;
+  const { role, page, limit, search } = req.query;
   console.log("Role filter:", role); // Debug log untuk melihat role
+  console.log("Search query:", search); // Debug log untuk melihat search query
 
   try {
     let sql = "SELECT * FROM users";
+    let countSql = "SELECT COUNT(*) as total FROM users";
     const params = [];
 
     // Jika ada filter role tambahkan kondisi where
-    if (role) {
+    if (role && role !== "default") {
       sql += " WHERE role = ?";
       params.push(role);
     }
 
+    if (search) {
+      const searchQuery = `%${search}%`;
+      sql += role ? " AND (email LIKE ? OR username LIKE ?)" : " WHERE (email LIKE ? OR username LIKE ?)";
+      params.push(searchQuery, searchQuery);
+    }
+
+    // Pagination
+    const currentPage = parseInt(page) || 1;
+    const itemPerPage = parseInt(limit) || 10;
+    const offset = (currentPage - 1) * itemPerPage;
+
+    sql += " LIMIT ? OFFSET ?";
+    params.push(itemPerPage, offset);
+
     console.log("SQL Query:", sql); // Debug log untuk melihat query yang dijalankan
+
+    // Ambil total data untuk pagination
+    const [countResult] = await db.query(countSql, params.slice(0, params.length - 2));
+    const totalUsers = countResult[0].total;
+    const totalPages = Math.ceil(totalUsers / itemPerPage);
+
     const [users] = await db.query(sql, params);
 
     res.status(200).json({
       message: "Berhasil mendapatkan data pengguna",
       data: users,
+      pagination: {
+        currentPage,
+        totalPages,
+        totalUsers,
+        itemPerPage,
+      },
     });
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -268,12 +296,12 @@ exports.getUserById = async (req, res) => {
 
 // Controller untuk mendapatkan profil mentor
 exports.getMentorProfile = async (req, res) => {
-  const { mentor_id } = req.params;
+  const { user_id } = req.params;
 
   try {
-    // Cari mentor berdasarkan mentor_id
-    const sqlMentor = "SELECT * FROM mentors WHERE mentor_id = ?";
-    const [mentorResults] = await db.query(sqlMentor, [mentor_id]);
+    // Cari mentor berdasarkan user_id
+    const sqlMentor = "SELECT * FROM mentors WHERE user_id = ?";
+    const [mentorResults] = await db.query(sqlMentor, [user_id]);
 
     if (mentorResults.length === 0) {
       return res.status(404).json({

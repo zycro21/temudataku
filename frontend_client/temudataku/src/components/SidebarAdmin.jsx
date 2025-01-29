@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useSidebar } from './SidebarContext'; // Import context
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../assets/styles/sidebarAdmin.css";
@@ -21,7 +22,8 @@ const Sidebar = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [isOpen, setIsOpen] = useState(true);
+    // const [isOpen, setIsOpen] = useState(true);
+    const { isOpen, toggleSidebar } = useSidebar();
     const [adminName, setAdminName] = useState("");
 
     // Ambil Nama Admin dari Local Storage Saat Komponen Dimuat
@@ -31,10 +33,6 @@ const Sidebar = () => {
             setAdminName(username);
         }
     }, []);
-
-    const toogleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
 
     // Fungsi untuk melakukan logout
     const handleLogout = async () => {
@@ -76,7 +74,7 @@ const Sidebar = () => {
                 {isOpen && (
                     <img src={LogoTemuDataku} alt="Logo TemuDataku" className="logo-img" />
                 )}
-                <button className="toggle-button" onClick={toogleSidebar}>
+                <button className="toggle-button" onClick={toggleSidebar}>
                     <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
                 </button>
             </div>

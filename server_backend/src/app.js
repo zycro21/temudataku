@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 const userRoutes = require("./routes/userRoutes");
+const sessionRoutes = require("./routes/sessionRoutes");
 
 // Konfigurasi CORS
 const corsOptions = {
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 
 // Route Utama
 app.use("/api/users", userRoutes);
+app.use("/api/sessions", sessionRoutes);
 
 // Route untuk akses image user
 app.use("/image_user", express.static(path.join(__dirname, "../image_user")));
