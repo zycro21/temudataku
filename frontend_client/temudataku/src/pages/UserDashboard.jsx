@@ -13,6 +13,7 @@ import {
     faEye, faEdit, faTrashAlt,
     faL
 } from '@fortawesome/free-solid-svg-icons';
+import axiosInstance from "../components/axiosInstance";
 
 // Modal untuk menampilkan detail user
 const UserDetailsModal = ({ userDetails, closeModal }) => {
@@ -93,7 +94,7 @@ const UserDashboard = () => {
                 url += `&role=${roleFilter}`;
             }
 
-            const response = await axios.get(url, {
+            const response = await axiosInstance.get(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -158,7 +159,7 @@ const UserDashboard = () => {
                 return;
             }
 
-            const response = await axios.get(`http://localhost:8000/api/users/getUser/${userId}`, {
+            const response = await axiosInstance.get(`http://localhost:8000/api/users/getUser/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -193,7 +194,7 @@ const UserDashboard = () => {
             }
 
             // Ambil data user berdasarkan user_id
-            const userResponse = await axios.get(`http://localhost:8000/api/users/getUser/${userId}`, {
+            const userResponse = await axiosInstance.get(`http://localhost:8000/api/users/getUser/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
@@ -202,7 +203,7 @@ const UserDashboard = () => {
             console.log(userResponse.data);
 
             if (userResponse.data.data.role === "mentor") {
-                const mentorResponse = await axios.get(`http://localhost:8000/api/users/getMentorProfile/${userId}`, {
+                const mentorResponse = await axiosInstance.get(`http://localhost:8000/api/users/getMentorProfile/${userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
@@ -247,7 +248,7 @@ const UserDashboard = () => {
                 return;
             }
 
-            const response = await axios.put(`http://localhost:8000/api/users/updateUser/${updateUserData.user_id}`, updateUserData, {
+            const response = await axiosInstance.put(`http://localhost:8000/api/users/updateUser/${updateUserData.user_id}`, updateUserData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -289,7 +290,7 @@ const UserDashboard = () => {
         if (result.isConfirmed) {
             try {
                 const token = localStorage.getItem("token");
-                const response = await axios.delete(`http://localhost:8000/api/users/deleteUser/${user_id}`, {
+                const response = await axiosInstance.delete(`http://localhost:8000/api/users/deleteUser/${user_id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

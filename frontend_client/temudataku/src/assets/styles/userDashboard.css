@@ -74,7 +74,7 @@ body {
 /* Jika Sidebar Tertutup */
 .sidebar-closed .user-dashboard-header,
 .sidebar-closed .user-dashboard-main {
-  margin-left: 70px;
+  margin-left: 75px;
   opacity: 0.9; /* Sedikit efek fade */
   transform: translateX(-10px); /* Geser sedikit */
   transition: margin-left 0.3s ease-in-out, opacity 0.3s ease, transform 0.3s ease;

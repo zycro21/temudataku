@@ -17,6 +17,7 @@ import {
     faTimes,
     faBars,
 } from '@fortawesome/free-solid-svg-icons';
+import axiosInstance from "./axiosInstance";
 
 const Sidebar = () => {
     const location = useLocation();
@@ -43,7 +44,7 @@ const Sidebar = () => {
             }
 
             // Mengirim request logout dengan header Authorization
-            const response = await axios.post(
+            const response = await axiosInstance.post(
                 "http://localhost:8000/api/users/logout",
                 {},
                 {

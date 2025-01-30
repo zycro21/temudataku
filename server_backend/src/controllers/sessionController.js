@@ -23,6 +23,16 @@ exports.createSession = async (req, res) => {
       });
     }
 
+    // Cek apakah mentor_id ada di tabel mentors
+    const mentorCheckQuery = `SELECT * FROM mentors WHERE mentor_id = ?`;
+    const [mentorResults] = await db.query(mentorCheckQuery, [mentor_id]);
+
+    if (mentorResults.length === 0) {
+      return res.status(400).json({
+        message: "mentor_id tidak ditemukan di tabel mentors",
+      });
+    }
+
     // Tentukan prefix untuk session_id berdasarkan service_type
     let prefix = "";
     switch (service_type) {
@@ -44,40 +54,41 @@ exports.createSession = async (req, res) => {
     // Ambil jumlah sesi yang sudah ada dengan service_type yang sama
     const countQuery = `SELECT COUNT(*) AS count FROM sessions WHERE service_type = ?`;
 
-    db.query(countQuery, [service_type], (err, result) => {
-      if (err)
-        return res.status(500).json({
-          message: err.message,
-        });
+    // Menggunakan promise dari mysql2
+    const [result] = await db.query(countQuery, [service_type]);
 
-      const count = result[0].count + 1;
-      const session_id = `${prefix}-${String(count).padStart(4, "0")}`;
+    // Log hasil query count
+    console.log("countQuery result:", result);
 
-      // Insert Session Ke Database
-      const sql = `INSERT INTO sessions (session_id, mentor_id, title, description, price, duration, service_type) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      const values = [
-        session_id,
-        mentor_id,
-        title,
-        description,
-        price,
-        duration,
-        service_type,
-      ];
+    const count = result[0].count + 1;
+    const session_id = `${prefix}-${String(count).padStart(4, "0")}`;
 
-      db.query(sql, values, (err, result) => {
-        if (err)
-          return res.status(500).json({
-            message: err.message,
-          });
+    // Insert Session Ke Database
+    const insertQuery = `INSERT INTO sessions (session_id, mentor_id, title, description, price, duration, service_type) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const insertValues = [
+      session_id,
+      mentor_id,
+      title,
+      description,
+      price,
+      duration,
+      service_type,
+    ];
 
-        res.status(201).json({
-          message: "Session berhasil dibuat",
-          session_id,
-        });
-      });
+    // Menjalankan insert query menggunakan promise
+    const [insertResult] = await db.query(insertQuery, insertValues);
+
+    // Log hasil query insert
+    console.log("Session inserted, result:", insertResult);
+
+    // Kirim respons jika berhasil
+    res.status(201).json({
+      message: "Session berhasil dibuat",
+      session_id,
     });
   } catch (error) {
+    // Tangani error jika ada
+    console.error("Error:", error.message);
     res.status(500).json({
       message: error.message,
     });
@@ -85,27 +96,284 @@ exports.createSession = async (req, res) => {
 };
 
 exports.getAllSession = async (req, res) => {
-    try {
-        const { service_type, sort_price, sort_duration, page = 1} = req.query;
+  try {
+    const {
+      service_type,
+      sort_price,
+      sort_duration,
+      page = 1,
+      search,
+    } = req.query;
 
-        // Tentukan kondisi filter
-        let whereClause =  "";
-        let queryParams = [];
-        if (service_type) {
-            whereClause += "WHERE service_type = ?";
-            queryParams.push(service_type);
-        }
+    // Tentukan kondisi filter
+    let whereClause = "";
+    let queryParams = [];
 
-        // Tentukan Pengurutan
-        let orderClause = "";
-        if (sort_price) {
-            orderClause = `ORDER BY price ${sort_price.toUpperCase() === "DESC" ? "DESC" : "ASC"}`;
-        } else if (sort_duration) {
-            orderClause = `ORDER BY duration ${sort_duration.toUpperCase() === "DESC" ? "DESC" : "ASC"}`;
-        }
-
-        // Tentukan Pagination
-    } catch (error) {
-        
+    if (search) {
+      whereClause +=
+        "WHERE (s.title LIKE ? OR s.description LIKE ? OR m.name LIKE ?)";
+      queryParams.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
-}
+
+    if (service_type) {
+      // Jika sudah ada WHERE sebelumnya, gunakan AND untuk filter service_type
+      if (whereClause) {
+        whereClause += " AND service_type = ?";
+      } else {
+        whereClause += "WHERE service_type = ?";
+      }
+      queryParams.push(service_type);
+    }
+
+    // Tentukan Pengurutan
+    let orderClause = "";
+    let orderParams = [];
+    if (sort_price) {
+      orderParams.push(
+        `price ${sort_price.toUpperCase() === "DESC" ? "DESC" : "ASC"}`
+      );
+    }
+    if (sort_duration) {
+      orderParams.push(
+        `duration ${sort_duration.toUpperCase() === "DESC" ? "DESC" : "ASC"}`
+      );
+    }
+    if (orderParams.length > 0) {
+      orderClause = `ORDER BY ${orderParams.join(", ")}`;
+    }
+
+    // Tentukan Pagination
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    // Query untuk menghitung total jumlah session
+    const countQuery = `
+              SELECT COUNT(*) AS total 
+              FROM sessions s
+              LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
+              ${whereClause}
+          `;
+
+    const [countResult] = await db.query(countQuery, queryParams);
+
+    const totalSessions = countResult[0].total;
+    const totalPages = Math.ceil(totalSessions / limit);
+
+    // Query untuk mengambil data session dengan filter, pengurutan, dan pagination
+    const sql = `
+              SELECT s.*, m.name AS mentor_name 
+              FROM sessions s
+              LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
+              ${whereClause}
+              ${orderClause}
+              LIMIT ? OFFSET ?
+         `;
+
+    const [results] = await db.query(sql, [...queryParams, limit, offset]);
+
+    res.json({
+      totalSessions,
+      totalPages,
+      currentPage: page,
+      sessions: results,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getSessionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role, user_id, mentor_id } = req.user; // Ambil info dari token (middleware)
+
+    console.log("Session ID:", id);
+
+    // Pastikan session_id valid
+    if (!id) {
+      return res.status(400).json({ message: "Session ID tidak valid" });
+    }
+
+    let sql = `
+        SELECT 
+          s.session_id, 
+          s.title, 
+          s.description, 
+          s.price, 
+          s.duration, 
+          s.service_type, 
+          m.name AS mentor_name,
+          CASE 
+            WHEN s.service_type IN ('group', 'bootcamp') THEN AVG(r.rating)
+            ELSE MAX(r.rating) -- Untuk one_on_one, ambil rating langsung
+          END AS rating
+        FROM sessions s
+        LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
+        LEFT JOIN reviews r ON s.session_id = r.session_id
+      `;
+    let queryParams = [id];
+
+    // Role-based filtering
+    if (role === "mentor") {
+      sql += ` WHERE s.session_id = ? AND s.mentor_id = ?`;
+      queryParams.push(mentor_id);
+    } else if (role === "user") {
+      sql += `
+          INNER JOIN orders o ON s.session_id = o.session_id
+          WHERE s.session_id = ? AND o.user_id = ?
+        `;
+      queryParams.push(user_id);
+    } else {
+      sql += ` WHERE s.session_id = ?`; // Admin bisa lihat semua session
+    }
+
+    // Group by untuk semua kolom yang dipilih
+    sql +=
+      " GROUP BY s.session_id, s.title, s.description, s.price, s.duration, s.service_type, m.name";
+
+    // Eksekusi query
+    const [results] = await db.query(sql, queryParams);
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        message:
+          "Session tidak dapat ditemukan atau anda tidak memiliki izin akses",
+      });
+    }
+
+    res.json(results[0]);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+exports.updateSessionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let { title, description, price, duration, service_type, mentor_id } =
+      req.body;
+    const { role, mentor_id: loggedMentorId } = req.user;
+
+    // Cek apakah session ada
+    const checkSessionSql = `SELECT * FROM sessions WHERE session_id = ? LIMIT 1`;
+    const [sessionResults] = await db.query(checkSessionSql, [id]);
+
+    if (sessionResults.length === 0) {
+      return res.status(404).json({ message: "Session tidak ditemukan!" });
+    }
+
+    const session = sessionResults[0];
+
+    // Role "user" tidak diizinkan
+    if (role === "user") {
+      return res.status(403).json({
+        message: "Anda tidak memiliki izin untuk mengupdate session!",
+      });
+    }
+
+    // Mentor hanya bisa update session miliknya sendiri
+    if (role === "mentor" && session.mentor_id !== loggedMentorId) {
+      return res.status(403).json({
+        message: "Anda hanya bisa mengupdate session milik Anda sendiri!",
+      });
+    }
+
+    // Validasi price dan duration harus berupa angka
+    if (price !== undefined && price !== "" && isNaN(price)) {
+      return res.status(400).json({ message: "Price harus berupa angka!" });
+    }
+    if (duration !== undefined && duration !== "" && isNaN(duration)) {
+      return res.status(400).json({ message: "Duration harus berupa angka!" });
+    }
+
+    // Validasi agar tidak update dengan nilai kosong
+    const updatedFields = {};
+    if (title?.trim() && title !== session.title)
+      updatedFields.title = title.trim();
+    if (description?.trim() && description !== session.description)
+      updatedFields.description = description.trim();
+    if (price !== undefined && price !== "" && Number(price) !== session.price)
+      updatedFields.price = Number(price);
+    if (
+      duration !== undefined &&
+      duration !== "" &&
+      Number(duration) !== session.duration
+    )
+      updatedFields.duration = Number(duration);
+    if (service_type?.trim() && service_type !== session.service_type)
+      updatedFields.service_type = service_type.trim();
+
+    // Admin boleh mengganti mentor_id, tetapi harus valid
+    if (role === "admin" && mentor_id && mentor_id !== session.mentor_id) {
+      const checkMentorSql = `SELECT * FROM mentors WHERE mentor_id = ? LIMIT 1`;
+      const [mentorResults] = await db.query(checkMentorSql, [mentor_id]);
+
+      if (mentorResults.length === 0) {
+        return res.status(400).json({ message: "Mentor ID tidak valid!" });
+      }
+      updatedFields.mentor_id = mentor_id;
+    }
+
+    // Jika tidak ada perubahan, kirim respons tanpa update
+    if (Object.keys(updatedFields).length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Tidak ada perubahan yang dilakukan!" });
+    }
+
+    // Buat query update secara dinamis
+    let sql = `UPDATE sessions SET `;
+    let values = [];
+    Object.keys(updatedFields).forEach((key, index) => {
+      sql += `${key} = ?${
+        index < Object.keys(updatedFields).length - 1 ? "," : ""
+      } `;
+      values.push(updatedFields[key]);
+    });
+    sql += `WHERE session_id = ?`;
+    values.push(id);
+
+    // Eksekusi query update
+    await db.query(sql, values);
+
+    res.json({
+      message: "Session berhasil diperbarui!",
+      updated_fields: updatedFields,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error: " + error.message });
+  }
+};
+
+// Delete Session By ID
+exports.deleteSessionById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.user;
+
+    // Hanya admin yang bisa menghapus session
+    if (role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Anda tidak memiliki izin untuk menghapus session!" });
+    }
+
+    // Cek apakah session ada
+    const checkSessionSql = `SELECT * FROM sessions WHERE session_id = ? LIMIT 1`;
+    const [sessionResults] = await db.query(checkSessionSql, [id]);
+
+    if (sessionResults.length === 0) {
+      return res.status(404).json({ message: "Session tidak ditemukan!" });
+    }
+
+    // Hapus session
+    const deleteSessionSql = `DELETE FROM sessions WHERE session_id = ?`;
+    await db.query(deleteSessionSql, [id]);
+
+    res.json({ message: "Session berhasil dihapus!" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error: " + error.message });
+  }
+};

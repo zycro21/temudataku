@@ -11,7 +11,7 @@ const sessionRoutes = require("./routes/sessionRoutes");
 
 // Konfigurasi CORS
 const corsOptions = {
-  origin: "http://localhost:3000", // Ganti dengan frontend yang berjalan di localhost:3000
+  origin: "http://localhost:3000", // Ganti dengan frontend yang berjalan
   credentials: true, // Memungkinkan pengiriman cookie
 };
 
