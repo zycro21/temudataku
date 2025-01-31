@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -12,6 +12,28 @@ const LoginAdmin = () => {
     });
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Simpan nilai default body sebelum diubah
+        const originalStyles = {
+            margin: document.body.style.margin,
+            padding: document.body.style.padding,
+            boxSizing: document.body.style.boxSizing
+        };
+
+        // Terapkan style khusus hanya di halaman login
+        document.body.style.margin = "0";
+        document.body.style.padding = "0";
+        document.body.style.boxSizing = "border-box";
+
+        return () => {
+            // Kembalikan style body ke nilai semula saat keluar dari halaman login
+            document.body.style.margin = originalStyles.margin;
+            document.body.style.padding = originalStyles.padding;
+            document.body.style.boxSizing = originalStyles.boxSizing;
+        };
+    }, []);
+
 
     const handleInputChange = async (e) => {
         const { name, value } = e.target;

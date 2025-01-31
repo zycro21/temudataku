@@ -205,11 +205,13 @@ exports.loginUser = [
 
 exports.getAllProfiles = async (req, res) => {
   const { role, page, limit, search } = req.query;
-  console.log("Role filter:", role); // Debug log untuk melihat role
-  console.log("Search query:", search); // Debug log untuk melihat search query
 
   try {
-    let sql = "SELECT * FROM users";
+    let sql = `
+    SELECT users.*, mentors.name AS mentor_name
+    FROM users
+    LEFT JOIN mentors ON users.user_id = mentors.user_id
+    `;
     let countSql = "SELECT COUNT(*) as total FROM users";
     const params = [];
 
@@ -232,8 +234,6 @@ exports.getAllProfiles = async (req, res) => {
 
     sql += " LIMIT ? OFFSET ?";
     params.push(itemPerPage, offset);
-
-    console.log("SQL Query:", sql); // Debug log untuk melihat query yang dijalankan
 
     // Ambil total data untuk pagination
     const [countResult] = await db.query(countSql, params.slice(0, params.length - 2));

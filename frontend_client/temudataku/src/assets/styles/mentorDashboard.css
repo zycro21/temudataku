@@ -6,3 +6,393 @@ body {
   /* overflow: auto; */
 }
 
+.user-dashboard-header .half-2-header-dashboard {
+  display: flex;
+  gap: 30px;
+}
+
+.user-dashboard-header .add-mentor-btn {
+  background-color: #007bff; /* Warna latar belakang biru */
+  color: white; /* Warna ikon font */
+  border: none; /* Menghilangkan border */
+  border-radius: 50%; /* Membuat tombol berbentuk lingkaran */
+  width: 40px; /* Lebar tombol */
+  height: 40px; /* Tinggi tombol */
+  display: flex;
+  justify-content: center; /* Menyelaraskan ikon di tengah */
+  align-items: center; /* Menyelaraskan ikon di tengah */
+  cursor: pointer; /* Menambahkan pointer saat hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bayangan tombol */
+  transition: all 0.3s ease; /* Transisi animasi */
+}
+
+.user-dashboard-header .add-mentor-btn:hover {
+  background-color: #0056b3; /* Mengubah warna latar belakang menjadi lebih gelap */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Menambah bayangan lebih besar saat hover */
+  transform: translateY(-5px); /* Efek tombol sedikit terangkat saat hover */
+}
+
+.user-dashboard-header .add-mentor-btn:active {
+  transform: translateY(1px); /* Efek tombol sedikit turun saat diklik */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Mengurangi bayangan saat diklik */
+}
+
+.user-dashboard-header .add-mentor-btn .fa-plus {
+  transition: transform 0.3s ease, color 0.3s ease;
+  font-size: 24px;
+}
+
+.user-dashboard-header .add-mentor-btn:hover .fa-plus {
+  transform: rotate(45deg); /* Rotasi ikon +45 derajat saat hover */
+  color: #fff; /* Menjaga warna ikon tetap putih */
+}
+
+/* Grid untuk cards */
+.user-dashboard-main .mentor-grid {
+  /* background-color: red; */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  grid-auto-rows: minmax(180px, auto);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.user-dashboard-main .mentor-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  padding: 15px;
+  position: relative;
+
+  /* Tambahkan animasi */
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.user-dashboard-main .mentor-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.user-dashboard-main .mentor-image {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+/* Efek saat gambar dihover */
+.user-dashboard-main .mentor-card:hover .mentor-image {
+  transform: scale(1.05);
+}
+
+.user-dashboard-main .mentor-card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.user-dashboard-main .mentor-card:hover h3 {
+  color: #007bff;
+}
+
+.user-dashboard-main .mentor-card p {
+  font-size: 14px;
+  color: #777;
+  text-align: center;
+  margin-top: 5px;
+  transition: color 0.3s ease;
+}
+
+.user-dashboard-main .mentor-card:hover p {
+  color: #555;
+}
+
+.user-dashboard-main .detail-btn-mentor {
+  background-color: #007bff;
+  color: #fff;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-top: 15px;
+  text-align: center;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.user-dashboard-main .detail-btn-mentor:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Modal Detail */
+/* Modal Container */
+.mentor-detail-modal {
+  display: none; /* Modal tersembunyi secara default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Latar belakang gelap */
+  justify-content: center;
+  align-items: center;
+  z-index: 1100; /* Pastikan modal muncul di atas konten lainnya */
+  /* opacity: 0; */
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Modal terbuka */
+.mentor-detail-modal.open {
+  display: flex;
+  opacity: 1; /* Modal terlihat */
+}
+
+/* Konten Modal */
+.mentor-detail-modal-content {
+  background-color: white;
+  padding: 20px;
+  padding-top: 10px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 80vh; /* Membatasi tinggi modal */
+  position: relative; /* Untuk menempatkan tombol close */
+  text-align: center; /* Menambahkan text align center untuk konten modal */
+}
+
+/* Tombol Close */
+.mentor-detail-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  color: #333;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.mentor-detail-modal-close:hover {
+  color: #ff5733; /* Warna saat hover */
+}
+
+/* Gaya untuk gambar avatar mentor */
+.mentor-detail-avatar-modal {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 3px solid #ddd; /* Tambahkan border di sekitar gambar */
+}
+
+/* Gaya untuk teks detail */
+.mentor-detail-modal h2 {
+  font-size: 22px; /* Mengurangi ukuran font judul */
+  margin-bottom: 15px;
+  color: #333; /* Warna teks judul */
+}
+
+.mentor-detail-modal p {
+  font-size: 14px; /* Mengurangi ukuran font teks */
+  margin: 5px 0;
+  color: #555; /* Warna teks detail */
+}
+
+/* Gaya untuk error message */
+.mentor-detail-error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 14px; /* Ukuran font pesan error lebih kecil */
+  margin-top: 10px;
+}
+
+/* Modal Create Mentor */
+.create-mentor-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Background gelap transparan */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Content */
+.create-mentor-modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Title */
+.create-mentor-modal-content h2 {
+  margin-top: 0px;
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #333;
+  text-align: center;
+}
+
+/* Form */
+.create-mentor-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Label */
+.create-mentor-modal-content label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  display: block; /* Biar label ada di atas input */
+  margin-bottom: 5px;
+}
+
+/* Input Fields */
+.create-mentor-modal-content input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Efek saat input fokus */
+.create-mentor-modal-content input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+/* Tombol Container */
+.create-mentor-modal-content .button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+/* Tombol */
+.create-mentor-modal-content button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+/* Submit Button */
+.create-mentor-modal-content button[type="submit"] {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.create-mentor-modal-content button[type="submit"]:hover {
+  background: #0056b3;
+}
+
+/* Close Button */
+.create-mentor-modal-content button[type="button"] {
+  background: #ccc;
+  color: #333;
+}
+
+.create-mentor-modal-content button[type="button"]:hover {
+  background: #999;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsif untuk tampilan layar kecil */
+@media screen and (max-width: 768px) {
+  .user-dashboard-main .mentor-grid {
+    grid-template-columns: 1fr; /* Satu kolom di layar kecil */
+  }
+
+  .user-dashboard-main .mentor-card {
+    padding: 10px;
+  }
+
+  .user-dashboard-main .mentor-image {
+    height: 180px;
+  }
+
+  .mentor-detail-modal-content {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .mentor-detail-modal-close {
+    font-size: 16px;
+  }
+
+  .mentor-detail-avatar-modal {
+    width: 90px;
+    height: 90px;
+  }
+
+  .mentor-detail-modal h2 {
+    font-size: 20px; /* Mengurangi ukuran font pada perangkat kecil */
+  }
+
+  .mentor-detail-modal p {
+    font-size: 14px;
+  }
+
+  .create-mentor-modal-content {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .create-mentor-modal-content h2 {
+    font-size: 20px;
+  }
+
+  .create-mentor-modal-content input {
+    font-size: 14px;
+  }
+
+  .create-mentor-modal-content button {
+    font-size: 14px;
+    padding: 8px;
+  }
+}

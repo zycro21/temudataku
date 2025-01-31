@@ -28,7 +28,7 @@ const UserDetailsModal = ({ userDetails, closeModal }) => {
                 {userDetails ? (
                     <>
                         <img
-                            src={userDetails.image || LogoSaja}
+                            src={userDetails.image ? `http://localhost:8000${userDetails.image}` : LogoSaja}
                             alt="User"
                             className="user-avatar-modal"
                         />
@@ -75,6 +75,9 @@ const UserDashboard = () => {
         expertise: "",
         bio: ""
     });
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
+
 
     const { isOpen } = useSidebar();
 
@@ -237,6 +240,14 @@ const UserDashboard = () => {
         }
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedImage(file); // Simpan file untuk dikirim ke API
+            setPreviewImage(URL.createObjectURL(file)); // Buat preview sebelum diupload
+        }
+    };
+
     // Fungsi untuk mengupdate user
     const handleUpdateUser = async (e) => {
         e.preventDefault();
@@ -248,13 +259,39 @@ const UserDashboard = () => {
                 return;
             }
 
-            const response = await axiosInstance.put(`http://localhost:8000/api/users/updateUser/${updateUserData.user_id}`, updateUserData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            // Buat objek FormData untuk mengirim data
+            const formData = new FormData();
+            formData.append("email", updateUserData.email);
+            formData.append("username", updateUserData.username);
+            formData.append("oldPassword", updateUserData.oldPassword);
+            formData.append("newPassword", updateUserData.newPassword);
+            formData.append("role", updateUserData.role);
 
-            toast.success("Profil berhasil diperbarui!"); // Menggunakan toast untuk sukses
+            // Jika user adalah mentor, tambahkan data mentor ke FormData
+            if (updateUserData.role === "mentor") {
+                formData.append("name", updateUserData.name);
+                formData.append("expertise", updateUserData.expertise);
+                formData.append("bio", updateUserData.bio);
+            }
+
+            // Tambahkan gambar jika ada gambar yang dipilih
+            if (selectedImage) {
+                formData.append("image", selectedImage);
+            }
+
+            // Kirim request update ke API
+            const response = await axiosInstance.put(
+                `http://localhost:8000/api/users/updateUser/${updateUserData.user_id}`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data", // Penting untuk upload file
+                    },
+                }
+            );
+
+            toast.success("Profil berhasil diperbarui!"); // Tampilkan notifikasi sukses
 
             // Perbarui UI dengan data terbaru
             setUsers((prevUsers) =>
@@ -265,14 +302,17 @@ const UserDashboard = () => {
 
             fetchUsers(currentPage);
 
+            // Reset state gambar setelah update berhasil
+            setSelectedImage(null);
+            setPreviewImage(null);
+
             // Tutup modal setelah update berhasil
             setIsModalUpdateOpen(false);
         } catch (error) {
             console.error("Error updating profile:", error);
-            toast.error(error.response?.data?.message || "Terjadi kesalahan, coba lagi nanti."); // Menggunakan toast untuk error
+            toast.error(error.response?.data?.message || "Terjadi kesalahan, coba lagi nanti.");
         }
     };
-
 
     // Fungsi Delete User
     const handleDeleteUser = async (user_id) => {
@@ -472,6 +512,15 @@ const UserDashboard = () => {
                                 value={updateUserData.newPassword}
                                 onChange={(e) => setUpdateUserData({ ...updateUserData, newPassword: e.target.value })}
                                 placeholder="Hanya Masukkan Jika Ingin Mengupdate Password"
+                            />
+
+                            {/* Upload Gambar */}
+                            <label>Gambar Profil</label>
+                            {previewImage && <img src={previewImage} alt="Preview" className="profile-preview" />}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
                             />
 
                             {/* Jika role adalah mentor, tampilkan tambahan input */}

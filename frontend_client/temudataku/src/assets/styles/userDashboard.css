@@ -70,14 +70,14 @@ body {
   transition: margin-left 0.3s ease-in-out;
 }
 
-
 /* Jika Sidebar Tertutup */
 .sidebar-closed .user-dashboard-header,
 .sidebar-closed .user-dashboard-main {
   margin-left: 75px;
   opacity: 0.9; /* Sedikit efek fade */
   transform: translateX(-10px); /* Geser sedikit */
-  transition: margin-left 0.3s ease-in-out, opacity 0.3s ease, transform 0.3s ease;
+  transition: margin-left 0.3s ease-in-out, opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 /* Tabel */
@@ -280,7 +280,7 @@ body {
 .user-avatar-modal {
   width: 150px;
   height: 150px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 50%;
   margin: 20px auto;
   display: block;
@@ -393,6 +393,14 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
+}
+
+.update-modal-content .profile-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-top: 10px;
 }
 
 /* Styling khusus untuk textarea */

@@ -17,12 +17,30 @@ import {
 const OrderDashboard = () => {
     return (
         <>
-            <div className="orderdashboard-container">
+            <div className="order-dashboard-container">
                 <ToastContainer />
                 <Sidebar />
 
-                <p>HALO</p>
+                {/* Header Dashboard */}
+                <div className="user-dashboard-header">
+                    <h1>Dashboard Order</h1>
+
+                    {/* Search Bar */}
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        className="user-search-input"
+                    // value={search}
+                    // onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+                <div className="user-dashboard-main">
+                    <div className="user-table">
+                        
+                    </div>
+                </div>
             </div>
+
         </>
     )
 }

@@ -8,6 +8,7 @@ const app = express();
 
 const userRoutes = require("./routes/userRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 // Konfigurasi CORS
 const corsOptions = {
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 // Route Utama
 app.use("/api/users", userRoutes);
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Route untuk akses image user
 app.use("/image_user", express.static(path.join(__dirname, "../image_user")));
