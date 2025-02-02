@@ -161,3 +161,268 @@
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+/* Modal Detail Session */
+/* Overlay modal dengan efek blur */
+.detail-session-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+/* Konten modal dengan efek zoom & slide */
+.detail-session-modal-content {
+  background: #ffffff;
+  padding: 20px;
+  padding-top: 5px;
+  width: 400px;
+  max-width: 90%;
+  max-height: 80vh; /* Batas tinggi maksimum modal */
+  overflow-y: auto; /* Scroll otomatis jika konten terlalu panjang */
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(0.8) translateY(20px);
+  animation: zoomIn 0.3s ease-in-out forwards;
+  text-align: center;
+}
+
+/* Custom Scrollbar */
+.detail-session-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.detail-session-modal-content::-webkit-scrollbar-thumb {
+  background: #ff5722;
+  border-radius: 10px;
+}
+
+.detail-session-modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Animasi Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animasi Zoom In + Slide */
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Gaya teks pada modal */
+.detail-session-modal-content h2 {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Styling untuk teks informasi */
+.detail-session-modal-content div {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #444;
+}
+
+/* Efek hover untuk teks penting */
+.detail-session-modal-content strong {
+  color: #1e88e5;
+  transition: color 0.3s ease;
+}
+
+.detail-session-modal-content strong:hover {
+  color: #ff5722;
+}
+
+/* Tombol Close dengan efek */
+.detail-session-modal-content button {
+  margin-top: 15px;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg, #ff5722, #ff9800);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover tombol Close */
+.detail-session-modal-content button:hover {
+  background: linear-gradient(135deg, #d84315, #ff7043);
+  transform: scale(1.05);
+}
+
+/* Update Modal */
+/* Overlay modal */
+.update-session-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Konten modal */
+.update-session-modal-content {
+  background: #ffffff;
+  padding: 20px;
+  padding-top: 5px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+/* Animasi slideIn dari bawah */
+@keyframes slideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Judul modal */
+.update-session-modal-content h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 20px; /* Lebih kecil */
+}
+
+.update-session-modal-content label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+  text-align: left;
+}
+
+/* Input fields */
+.update-session-modal-content input,
+.update-session-modal-content textarea {
+  width: 95%;
+  padding: 8px; /* Mengecilkan padding */
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px; /* Lebih kecil */
+  transition: 0.3s;
+}
+
+.update-session-modal-content select {
+  width: 100%;
+  padding: 8px; /* Mengecilkan padding */
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px; /* Lebih kecil */
+  transition: 0.3s;
+}
+
+/* Efek input ketika focus */
+.update-session-modal-content input:focus,
+.update-session-modal-content textarea:focus,
+.update-session-modal-content select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+  outline: none;
+}
+
+/* Textarea */
+.update-session-modal-content textarea {
+  height: 70px; /* Lebih kecil */
+  resize: none;
+}
+
+/* Tombol actions */
+.update-sessions-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+/* Tombol submit */
+.btn-submit {
+  background: #4caf50;
+  color: white;
+  padding: 8px 12px; /* Mengecilkan padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 14px; /* Lebih kecil */
+}
+
+.btn-submit:hover {
+  background: #388e3c;
+}
+
+/* Tombol cancel */
+.btn-cancel {
+  background: #f44336;
+  color: white;
+  padding: 8px 12px; /* Mengecilkan padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 14px; /* Lebih kecil */
+}
+
+.btn-cancel:hover {
+  background: #d32f2f;
+}
+
+/* Scroll jika konten terlalu panjang */
+.update-session-modal-content {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Scrollbar styling */
+.update-session-modal-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.update-session-modal-content::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.update-session-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
