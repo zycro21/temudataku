@@ -1,0 +1,387 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+/* Modal Overlay */
+.create-order-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Background transparan */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+  visibility: visible;
+}
+
+/* Konten Modal */
+.create-order-modal-content {
+  background: white;
+  padding: 20px;
+  padding-top: 0px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animasi Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Header Modal */
+.create-order-modal-content h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Form Modal */
+.create-order-modal-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label Form */
+.create-order-modal-content label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+/* Input dan Select */
+.create-order-modal-content input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  width: 90%;
+  outline: none;
+}
+
+.create-order-modal-content select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  width: 95%; /* Sama dengan input */
+  outline: none;
+}
+
+.create-order-modal-content input:focus,
+.create-order-modal-content select:focus {
+  border-color: #4caf50;
+}
+
+/* Tombol Aksi */
+.modal-order-create-button-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+/* Tombol Submit */
+.modal-order-create-button-actions .btn-submit {
+  background: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  flex: 1;
+  margin-right: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.modal-order-create-button-actions .btn-submit:hover {
+  background: #45a049;
+}
+
+/* Tombol Batal */
+.modal-order-create-button-actions .btn-cancel {
+  background: #e63946;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.modal-order-create-button-actions .btn-cancel:hover {
+  background: #c62828;
+}
+
+/* Modal Detail */
+/* Modal Overlay */
+.create-order-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Background transparan */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+  animation: fadeInOverlay 0.3s ease-in-out;
+}
+
+/* Animasi Fade In untuk Overlay */
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.detail-order-modal-content {
+  background: white;
+  padding: 25px;
+  padding-top: 10px;
+  border-radius: 10px;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 0.3s ease-in-out;
+}
+
+/* Animasi Scale In untuk Modal */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Judul Modal (Tengah) */
+.detail-order-modal-content h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+/* Grid untuk membagi modal menjadi dua kolom */
+.modal-detail-order-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+/* Kolom kiri */
+.modal-detail-order-left {
+  flex: 1;
+}
+
+/* Kolom kanan */
+.modal-detail-order-right {
+  flex: 1;
+}
+
+/* Gaya teks dalam modal */
+.modal-detail-order-left p,
+.modal-detail-order-right p {
+  margin: 12px 0; /* Tambahkan jarak antar paragraf */
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Efek Hover pada Text */
+.modal-detail-order-left p:hover,
+.modal-detail-order-right p:hover {
+  color: #4caf50;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Tombol Tutup */
+.detail-order-close-modal-btn {
+  width: 100%;
+  padding: 12px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background 0.3s ease-in-out;
+}
+
+.detail-order-close-modal-btn:hover {
+  background: #c0392b;
+  transform: scale(1.05);
+}
+
+/* Modal Edit */
+/* ====== Overlay (Background Gelap dengan Blur) ====== */
+.edit-order-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+/* Ketika modal aktif, tampilkan */
+.edit-order-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ====== Kontainer Modal ====== */
+.edit-order-modal-content {
+  background: #ffffff;
+  width: 400px;
+  max-width: 90%;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.3s ease-in-out;
+}
+
+/* ====== Animasi Scale In saat Modal Muncul ====== */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ====== Heading Modal ====== */
+.edit-order-modal-content h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* ====== Form Styling ====== */
+.edit-order-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ====== Label Styling ====== */
+.edit-order-modal-content label {
+  font-weight: 600;
+  color: #444;
+  font-size: 14px;
+}
+
+/* ====== Input & Select Styling ====== */
+
+.edit-order-modal-content input {
+  width: 95%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.edit-order-modal-content select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Fokus pada input */
+.edit-order-modal-content input:focus,
+.edit-order-modal-content select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* ====== Tombol Aksi ====== */
+.modal-order-edit-button-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+/* Style untuk tombol submit */
+.modal-order-edit-button-actions .btn-submit {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-order-edit-button-actions .btn-submit:hover {
+  background-color: #0056b3;
+}
+
+/* Style untuk tombol cancel */
+.modal-order-edit-button-actions .btn-cancel {
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-order-edit-button-actions .btn-cancel:hover {
+  background-color: #b02a37;
+}
+
+/* ====== Responsif ====== */
+@media (max-width: 500px) {
+  .edit-order-modal-content {
+    width: 90%;
+  }
+}

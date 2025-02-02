@@ -16,6 +16,7 @@ import {
     faSignOutAlt,
     faTimes,
     faBars,
+    faClock
 } from '@fortawesome/free-solid-svg-icons';
 import axiosInstance from "./axiosInstance";
 
@@ -98,6 +99,12 @@ const Sidebar = () => {
                     <Link to="/mentorsdashboard">
                         <FontAwesomeIcon icon={faChalkboardTeacher} />
                         {isOpen && <span>Mentors</span>}
+                    </Link>
+                </li>
+                <li className={location.pathname === "/sessionsdashboard" ? "active" : ""}>
+                    <Link to="/sessionsdashboard">
+                        <FontAwesomeIcon icon={faClock} />
+                        {isOpen && <span>Sessions</span>}
                     </Link>
                 </li>
                 <li className={location.pathname === "/ordersdashboard" ? "active" : ""}>

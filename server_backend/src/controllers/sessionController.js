@@ -17,6 +17,8 @@ exports.createSession = async (req, res) => {
     const { mentor_id, title, description, price, duration, service_type } =
       req.body;
 
+      console.log("Data diterima di backend:", req.body);
+
     if (!mentor_id || !title || !price || !duration || !service_type) {
       return res.status(400).json({
         message: "Semua Field Wajib Diisi",

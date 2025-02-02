@@ -149,7 +149,7 @@ const MentorDashboard = () => {
                     email,
                     username,
                     password,
-                    role: "mentor", // Set otomatis menjadi 'mentor'
+                    role: "mentor",
                 },
                 {
                     headers: {

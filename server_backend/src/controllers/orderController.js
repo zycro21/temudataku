@@ -63,14 +63,21 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ message: "Service type tidak valid" });
     }
 
-    // Cek jumlah order dengan service type yang sama untuk menentukan nomor urut
-    const [orderCount] = await db.query(
-      "SELECT COUNT(*) AS count FROM orders WHERE service_type = ?",
+    // Cari ID terbesar yang sudah ada
+    const [lastOrder] = await db.query(
+      `SELECT order_id FROM orders WHERE service_type = ? ORDER BY order_id DESC LIMIT 1`,
       [service_type]
     );
 
-    const orderNumber = orderCount[0].count + 1;
-    const order_id = `${orderPrefix}${String(orderNumber).padStart(4, "0")}`;
+    let newNumber = 1; // Default jika belum ada order
+
+    if (lastOrder.length > 0) {
+      const lastOrderId = lastOrder[0].order_id; // Misalnya "order-BC-0003"
+      const lastNumber = parseInt(lastOrderId.split("-").pop(), 10); // Ambil angka terakhir (0003)
+      newNumber = lastNumber + 1; // Tambah 1
+    }
+
+    const order_id = `${orderPrefix}${String(newNumber).padStart(4, "0")}`;
 
     // Buat timestamp order_date
     const order_date = new Date();
@@ -284,9 +291,9 @@ exports.updateOrderById = async (req, res) => {
     }
 
     const currentOrder = existingOrder[0]; // Data order saat ini di DB
+    const updates = {}; // Objek untuk menyimpan data yang berubah
 
-    // Siapkan object untuk update (hanya jika nilainya berubah dan tidak kosong)
-    const updates = {};
+    // Jika status diubah, validasi dulu
     if (status && status !== currentOrder.status) {
       const validStatuses = ["pending", "confirmed", "completed", "cancelled"];
       if (!validStatuses.includes(status)) {
@@ -294,18 +301,32 @@ exports.updateOrderById = async (req, res) => {
       }
       updates.status = status;
     }
-    if (session_id && session_id !== currentOrder.session_id)
-      updates.session_id = session_id;
+
+    // Jika total_price, order_date diubah
     if (total_price && total_price !== currentOrder.total_price)
       updates.total_price = total_price;
     if (order_date && order_date !== currentOrder.order_date)
       updates.order_date = order_date;
-    if (service_type && service_type !== currentOrder.service_type) {
-      const validServiceTypes = ["one_on_one", "group", "bootcamp"];
-      if (!validServiceTypes.includes(service_type)) {
-        return res.status(400).json({ message: "Service type tidak valid!" });
+
+    // **Jika session_id diubah, update juga service_type**
+    if (session_id && session_id !== currentOrder.session_id) {
+      // Cek apakah session_id baru ada di database
+      const [newSessionData] = await db.query(
+        "SELECT service_type FROM sessions WHERE session_id = ?",
+        [session_id]
+      );
+
+      if (newSessionData.length === 0) {
+        return res
+          .status(400)
+          .json({ message: "Session ID baru tidak ditemukan!" });
       }
-      updates.service_type = service_type;
+
+      const newServiceType = newSessionData[0].service_type;
+
+      // Update session_id dan service_type
+      updates.session_id = session_id;
+      updates.service_type = newServiceType;
     }
 
     // Jika tidak ada perubahan data, return error
@@ -329,9 +350,10 @@ exports.updateOrderById = async (req, res) => {
       return res.status(500).json({ message: "Gagal memperbarui order." });
     }
 
-    res
-      .status(200)
-      .json({ message: "Order berhasil diperbarui!", updated_fields: updates });
+    res.status(200).json({
+      message: "Order berhasil diperbarui!",
+      updated_fields: updates,
+    });
   } catch (error) {
     console.error("Error saat mengupdate order:", error);
     res.status(500).json({ message: "Terjadi kesalahan, coba lagi nanti." });
@@ -346,11 +368,9 @@ exports.deleteOrderById = async (req, res) => {
 
     // Hanya admin yang bisa menghapus order
     if (role !== "admin") {
-      return res
-        .status(403)
-        .json({
-          message: "Akses ditolak, hanya admin yang bisa menghapus order.",
-        });
+      return res.status(403).json({
+        message: "Akses ditolak, hanya admin yang bisa menghapus order.",
+      });
     }
 
     // Cek apakah order ada

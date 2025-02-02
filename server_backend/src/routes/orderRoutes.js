@@ -40,7 +40,7 @@ router.put(
 );
 
 router.delete(
-  "/deleterOrderById/:orderId",
+  "/deleteOrderById/:orderId",
   verifyLogin,
   checkTokenBlacklist,
   verifyRole(["admin"]),

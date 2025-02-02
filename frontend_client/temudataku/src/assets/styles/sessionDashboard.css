@@ -1,0 +1,163 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+/* Modal container */
+.create-session-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Menambahkan z-index yang lebih tinggi */
+}
+
+/* Modal content box */
+.create-session-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  padding-top: 0px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-family: "Open Sans", sans-serif;
+  max-height: 80vh; /* Batasi tinggi modal agar tidak terlalu tinggi */
+  overflow-y: auto; /* Menambahkan scroll jika konten melebihi tinggi */
+}
+
+/* Header style */
+.create-session-modal-content h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+/* Label style */
+.create-session-modal-content label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+  color: #333;
+}
+
+/* Input and textarea styling */
+.create-session-modal-content input,
+.create-session-modal-content textarea,
+.create-session-modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #333;
+  box-sizing: border-box;
+}
+
+/* Textarea style */
+.create-session-modal-content textarea {
+  height: 120px;
+}
+
+/* Action buttons container */
+.create-sessions-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Submit button */
+.create-sessions-modal-actions .btn-submit {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Submit button hover */
+.create-sessions-modal-actions .btn-submit:hover {
+  background-color: #45a049;
+}
+
+/* Cancel button */
+.create-sessions-modal-actions .btn-cancel {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Cancel button hover */
+.create-sessions-modal-actions .btn-cancel:hover {
+  background-color: #e53935;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 480px) {
+  .create-session-modal-content {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .create-session-modal-content h2 {
+    font-size: 28px;
+  }
+
+  .create-sessions-modal-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .create-sessions-modal-actions .btn-submit,
+  .create-sessions-modal-actions .btn-cancel {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+.user-session-pagination {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 12px; /* Jarak antar tombol diperbesar */
+  justify-content: center;
+}
+
+.user-session-pagination button {
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 10px 15px; /* Ukuran tombol diperbesar */
+  font-size: 16px; /* Ukuran teks lebih besar */
+  cursor: pointer;
+  border-radius: 5px; /* Bikin agak rounded */
+  transition: 0.3s;
+}
+
+.user-session-pagination button.active {
+  background: #1e294c;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #0056b3;
+}
+
+.user-session-pagination button:hover:not(:disabled) {
+  background: #1976d2;
+}
+
+.user-session-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
