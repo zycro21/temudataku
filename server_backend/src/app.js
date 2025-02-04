@@ -9,10 +9,11 @@ const app = express();
 const userRoutes = require("./routes/userRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 // Konfigurasi CORS
 const corsOptions = {
-  origin: "http://localhost:3000", // Ganti dengan frontend yang berjalan
+  origin: "http://localhost:3000", // frontend yang berjalan
   credentials: true, // Memungkinkan pengiriman cookie
 };
 
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 // Route untuk akses image user
 app.use("/image_user", express.static(path.join(__dirname, "../image_user")));

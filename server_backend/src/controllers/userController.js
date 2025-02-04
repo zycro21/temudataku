@@ -207,6 +207,17 @@ exports.getAllProfiles = async (req, res) => {
   const { role, page, limit, search } = req.query;
 
   try {
+    // Daftar role yang valid
+    const validRoles = ["user", "mentor", "admin"];
+
+    // Jika ada filter role, pastikan role valid
+    if (role && role !== "default" && !validRoles.includes(role)) {
+      return res.status(404).json({
+        message:
+          "Role tidak ditemukan. Gunakan role yang valid (user, mentor, admin).",
+      });
+    }
+
     let sql = `
     SELECT users.*, mentors.name AS mentor_name
     FROM users
@@ -223,7 +234,9 @@ exports.getAllProfiles = async (req, res) => {
 
     if (search) {
       const searchQuery = `%${search}%`;
-      sql += role ? " AND (email LIKE ? OR username LIKE ?)" : " WHERE (email LIKE ? OR username LIKE ?)";
+      sql += role
+        ? " AND (email LIKE ? OR username LIKE ?)"
+        : " WHERE (email LIKE ? OR username LIKE ?)";
       params.push(searchQuery, searchQuery);
     }
 
@@ -236,7 +249,10 @@ exports.getAllProfiles = async (req, res) => {
     params.push(itemPerPage, offset);
 
     // Ambil total data untuk pagination
-    const [countResult] = await db.query(countSql, params.slice(0, params.length - 2));
+    const [countResult] = await db.query(
+      countSql,
+      params.slice(0, params.length - 2)
+    );
     const totalUsers = countResult[0].total;
     const totalPages = Math.ceil(totalUsers / itemPerPage);
 
@@ -262,6 +278,12 @@ exports.getAllProfiles = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   const { user_id } = req.params;
+
+  if (!user_id) {
+    return res.status(400).json({
+      message: "User ID harus diberikan.",
+    });
+  }
 
   // Jika Role Bukan Admin, maka tidak bisa melihat profil pengguna lain
   if (req.user.role !== "admin" && req.user.user_id !== user_id) {
@@ -299,13 +321,20 @@ exports.getMentorProfile = async (req, res) => {
   const { user_id } = req.params;
 
   try {
+    // Pastikan user_id diberikan
+    if (!user_id) {
+      return res.status(400).json({
+        message: "User ID harus diberikan.",
+      });
+    }
+
     // Cari mentor berdasarkan user_id
     const sqlMentor = "SELECT * FROM mentors WHERE user_id = ?";
     const [mentorResults] = await db.query(sqlMentor, [user_id]);
 
     if (mentorResults.length === 0) {
       return res.status(404).json({
-        message: "Mentor tidak ditemukan",
+        message: "Mentor tidak ditemukan atau User tidak memiliki role mentor",
       });
     }
 
@@ -355,6 +384,8 @@ exports.updateUserProfile = async (req, res) => {
   } = req.body;
   const { user_id } = req.user;
   const { user_id: userIdFromParam } = req.params;
+
+  console.log("Role pengguna:", req.user.role);
 
   if (req.user.role !== "admin" && user_id !== userIdFromParam) {
     return res.status(403).json({
@@ -467,119 +498,99 @@ exports.updateUserProfile = async (req, res) => {
     }
   }
 
+  // Update Fields for Users
   const updateFields = {};
   const params = [];
 
-  // Update email jika ada perubahan
   if (email && email !== "") {
     updateFields.email = email;
     params.push(email);
   }
 
-  // Update Username jika ada perubahan
   if (username && username !== "") {
     updateFields.username = username;
     params.push(username);
   }
 
-  // Update Image jika ada perubahan
   if (imageLink) {
     updateFields.image = imageLink;
     params.push(imageLink);
   }
 
+  // Deklarasikan mentorUpdateFields di luar blok if
+  const mentorUpdateFields = {};
+  const mentorParams = [];
+
+  if (req.user.role === "mentor") {
+    if (name && name !== "") {
+      mentorUpdateFields.name = name;
+      mentorParams.push(name);
+    }
+
+    if (expertise && expertise !== "") {
+      mentorUpdateFields.expertise = expertise;
+      mentorParams.push(expertise);
+    }
+
+    if (bio && bio !== "") {
+      mentorUpdateFields.bio = bio;
+      mentorParams.push(bio);
+    }
+  }
+
   // Jika ada data yang diupdate
-  if (Object.keys(updateFields).length > 0) {
+  if (
+    Object.keys(updateFields).length > 0 ||
+    Object.keys(mentorUpdateFields).length > 0
+  ) {
     try {
+      // Mulai transaksi
+      await db.query("START TRANSACTION");
+
+      // Update tabel users
       let sql = "UPDATE users SET ";
       const fields = Object.keys(updateFields);
       const setClauses = fields.map((field) => `${field} = ?`);
       sql += setClauses.join(", ");
       sql += " WHERE user_id = ?";
       params.push(userIdFromParam);
-
-      // Update data pengguna
       await db.query(sql, params);
 
-      // Gabungkan hasil perubahan password dengan data lainnya
+      // Jika pengguna adalah mentor, update tabel mentors
+      if (
+        req.user.role === "mentor" &&
+        Object.keys(mentorUpdateFields).length > 0
+      ) {
+        sql = "UPDATE mentors SET ";
+        const mentorFields = Object.keys(mentorUpdateFields);
+        const mentorSetClauses = mentorFields.map((field) => `${field} = ?`);
+        sql += mentorSetClauses.join(", ");
+        sql += " WHERE user_id = ?";
+        mentorParams.push(userIdFromParam);
+        await db.query(sql, mentorParams);
+      }
+
+      // Commit transaksi
+      await db.query("COMMIT");
+
       return res.status(200).json({
         message: passwordUpdated
-          ? "Profil dan password telah diperbarui"
-          : "Profil pengguna telah diperbarui",
+          ? "Profil Mentor dan password telah diperbarui"
+          : "Profil Mentor telah diperbarui",
         data: {
-          ...updateFields,
+          ...updateFields, // Data yang diupdate di tabel users
           ...(passwordUpdated && { password: "updated" }),
+          ...mentorUpdateFields, // Data yang diupdate di tabel mentors
         },
       });
     } catch (error) {
+      // Jika terjadi kesalahan, rollback transaksi
+      await db.query("ROLLBACK");
       return res.status(500).json({
-        message: "Terjadi kesalahan saat memperbarui profil pengguna",
+        message:
+          "Terjadi kesalahan saat memperbarui profil pengguna dan mentor",
       });
     }
-  }
-
-  // Jika pengguna adalah mentor, update data di tabel mentors
-  if (req.user.role === "mentor") {
-    try {
-      const mentorUpdateFields = {};
-      const mentorParams = [];
-
-      // Update data mentor jika ada perubahan
-      if (name && name !== "") {
-        mentorUpdateFields.name = name;
-        mentorParams.push(name);
-      }
-
-      if (expertise && expertise !== "") {
-        mentorUpdateFields.expertise = expertise;
-        mentorParams.push(expertise);
-      }
-
-      if (bio && bio !== "") {
-        mentorUpdateFields.bio = bio;
-        mentorParams.push(bio);
-      }
-
-      // Debugging: Cek apakah ada perubahan data
-      console.log("Fields yang akan diupdate di mentors:", mentorUpdateFields);
-
-      // Pastikan data yang akan diupdate valid dan ada perubahan
-      if (Object.keys(mentorUpdateFields).length > 0) {
-        let sql = "UPDATE mentors SET ";
-        const fields = Object.keys(mentorUpdateFields);
-        const setClauses = fields.map((field) => `${field} = ?`);
-        sql += setClauses.join(", ");
-        sql += " WHERE user_id = ?"; // Pastikan userIdFromParam digunakan di sini
-        mentorParams.push(userIdFromParam); // Gunakan userId dari parameter untuk query
-
-        await db.query(sql, mentorParams);
-
-        return res.status(200).json({
-          message: passwordUpdated
-            ? "Profil Mentor dan password telah diperbarui"
-            : "Profil Mentor telah diperbarui",
-          data: {
-            ...mentorUpdateFields,
-            ...(passwordUpdated && { password: "updated" }),
-          },
-        });
-      } else {
-        return res.status(400).json({
-          message: "Tidak ada data yang diupdate di tabel mentors",
-        });
-      }
-    } catch (error) {
-      return res.status(500).json({
-        message: "Terjadi kesalahan saat memperbarui data mentor",
-      });
-    }
-  }
-
-  // Jika hanya password yang diupdate
-  if (passwordUpdated) {
-    return res.status(200).json({
-      message: "Password berhasil diperbarui",
-    });
   }
 
   return res.status(400).json({

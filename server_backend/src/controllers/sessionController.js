@@ -17,7 +17,7 @@ exports.createSession = async (req, res) => {
     const { mentor_id, title, description, price, duration, service_type } =
       req.body;
 
-      console.log("Data diterima di backend:", req.body);
+    console.log("Data diterima di backend:", req.body);
 
     if (!mentor_id || !title || !price || !duration || !service_type) {
       return res.status(400).json({
@@ -53,17 +53,18 @@ exports.createSession = async (req, res) => {
         });
     }
 
-    // Ambil jumlah sesi yang sudah ada dengan service_type yang sama
-    const countQuery = `SELECT COUNT(*) AS count FROM sessions WHERE service_type = ?`;
+    // Ambil session_id terbesar dengan service_type yang sama
+    const maxIdQuery = `SELECT MAX(session_id) AS max_id FROM sessions WHERE service_type = ?`;
+    const [maxResult] = await db.query(maxIdQuery, [service_type]);
 
-    // Menggunakan promise dari mysql2
-    const [result] = await db.query(countQuery, [service_type]);
+    let nextNumber = 1; // Default jika belum ada sesi dengan service_type tersebut
+    if (maxResult[0].max_id) {
+      const lastNumber = parseInt(maxResult[0].max_id.split("-")[1], 10);
+      nextNumber = lastNumber + 1;
+    }
 
-    // Log hasil query count
-    console.log("countQuery result:", result);
-
-    const count = result[0].count + 1;
-    const session_id = `${prefix}-${String(count).padStart(4, "0")}`;
+    // Buat session_id baru
+    const session_id = `${prefix}-${String(nextNumber).padStart(4, "0")}`;
 
     // Insert Session Ke Database
     const insertQuery = `INSERT INTO sessions (session_id, mentor_id, title, description, price, duration, service_type) VALUES (?, ?, ?, ?, ?, ?, ?)`;
