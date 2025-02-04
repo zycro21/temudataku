@@ -1,4 +1,4 @@
-# GAMEX
+# TemuDataku
 
 __TemuDataku__ adalah aplikasi berbasis web yang digunakan sebagai platform untuk mentoring terkait data, seperti data science, data analyst, dan machine learning. Aplikasi ini dibangun dengan arsitektur full-stack menggunakan MySQL sebagai database, Node.js dengan Express sebagai backend, dan React sebagai frontend. Berikut adalah deskripsi lebih detail mengenai teknologi yang digunakan dan fitur-fitur yang disediakan oleh TemuDataku.
 
@@ -22,7 +22,7 @@ Pastikan Anda sudah menginstal Node.js, MySQL, dan NPM di lingkungan Anda.
 ### Langkah-Langkah Instalasi
 1. __Clone Repository__
    ```
-   git clone https://github.com/username/game-x.git
+   git clone https://github.com/zycro21/temudataku.git
    cd game-x
    ```
 2. __Set Up BackEnd__
@@ -39,9 +39,9 @@ Pastikan Anda sudah menginstal Node.js, MySQL, dan NPM di lingkungan Anda.
    npm start
    ```
 3. __Set Up FrontEnd__
-   * Pindah ke direktori `server_client` :
+   * Pindah ke direktori `frontend_client/temudatakugit` :
    ```
-   cd ../frontend_client
+   cd ../frontend_client/temudataku
    ```
    * Install dependencies :
    ```
