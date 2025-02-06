@@ -136,14 +136,13 @@ exports.getAllOrders = async (req, res) => {
       ? sort_order.toLowerCase()
       : "desc";
 
-    // Default sorting
-    let orderBy = "o.order_date";
+    let orderBy = "o.order_date"; // Default sorting
+
     if (sort_by === "total_price") {
-      orderBy = "o.total_price";
+      orderBy = `o.total_price`; // Tidak perlu CAST karena sudah DECIMAL
     } else if (sort_by === "order_date") {
       orderBy = "o.order_date";
     }
-
     // Base query
     let sql = `
         SELECT o.*, u.username, s.title 
@@ -168,7 +167,7 @@ exports.getAllOrders = async (req, res) => {
       sql += ` AND (LOWER(s.title) LIKE LOWER(?) OR LOWER(u.username) LIKE LOWER(?))`;
     }
 
-    // Tambahkan sorting
+    // Tentukan sorting setelah deklarasi sql
     sql += ` ORDER BY ${orderBy} ${sort_order}`;
 
     // Tambahkan pagination
@@ -186,6 +185,9 @@ exports.getAllOrders = async (req, res) => {
 
     // Jalankan query untuk mengambil data orders
     const [orders] = await db.query(sql, queryParams);
+
+    console.log("Final Query:", sql);
+    console.log("Query Params:", queryParams);
 
     // Query untuk menghitung total orders sesuai filter
     let countSql = `

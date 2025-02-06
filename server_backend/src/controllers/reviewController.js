@@ -193,14 +193,16 @@ exports.getAllReviews = async (req, res) => {
 exports.getReviewsByReviewId = async (req, res) => {
   try {
     const { review_id } = req.params; // Ambil review_id dari params
-    const { user_id, role } = req.user; // Ambil user_id & role dari token
+    const { user_id, role } = req.user; // Ambil user_id & role dari token (tanpa mentor_id)
 
     // Cek apakah review ini ada di database
-    const checkReviewSql = `SELECT r.session_id, s.title AS session_title, s.mentor_id, m.name AS mentor_name 
-                              FROM reviews r 
-                              LEFT JOIN sessions s ON r.session_id = s.session_id 
-                              LEFT JOIN mentors m ON s.mentor_id = m.mentor_id 
-                              WHERE r.review_id = ?`;
+    const checkReviewSql = `
+        SELECT r.session_id, s.title AS session_title, s.mentor_id, m.name AS mentor_name 
+        FROM reviews r 
+        LEFT JOIN sessions s ON r.session_id = s.session_id 
+        LEFT JOIN mentors m ON s.mentor_id = m.mentor_id 
+        WHERE r.review_id = ?`;
+
     const [reviewData] = await db.query(checkReviewSql, [review_id]);
 
     if (reviewData.length === 0) {
@@ -209,39 +211,40 @@ exports.getReviewsByReviewId = async (req, res) => {
 
     const sessionId = reviewData[0].session_id;
     const sessionTitle = reviewData[0].session_title;
-    const mentorId = reviewData[0].mentor_id;
+    const reviewMentorId = reviewData[0].mentor_id; // Mentor ID dari sesi review
     const mentorName = reviewData[0].mentor_name;
 
-    // Buat query untuk mendapatkan detail review
-    let sql = `
+    // Jika user adalah mentor, ambil mentor_id berdasarkan user_id dari database
+    let loggedInMentorId = null;
+
+    if (role === "mentor") {
+      const mentorQuery = `SELECT mentor_id FROM mentors WHERE user_id = ?`;
+      const [mentorData] = await db.query(mentorQuery, [user_id]);
+
+      if (mentorData.length > 0) {
+        loggedInMentorId = mentorData[0].mentor_id;
+      }
+
+      // Validasi apakah mentor yang login memiliki sesi review ini
+      if (loggedInMentorId !== reviewMentorId) {
+        return res.status(403).json({
+          message:
+            "Anda tidak memiliki akses untuk melihat review sesi mentor lain",
+        });
+      }
+    }
+
+    // Jika user adalah admin, langsung ambil review tanpa filter tambahan
+    const sql = `
         SELECT r.review_id, r.session_id, s.title AS session_title, 
-               r.user_id, u.name AS user_name, 
+               r.user_id, u.username, 
                r.rating, r.comment, r.created_at
         FROM reviews r
         LEFT JOIN users u ON r.user_id = u.user_id
         LEFT JOIN sessions s ON r.session_id = s.session_id
         WHERE r.review_id = ?`;
 
-    let queryParams = [review_id];
-
-    if (role === "user") {
-      // User hanya bisa melihat review jika dia yang memberi review tersebut
-      sql += ` AND r.user_id = ?`;
-      queryParams.push(user_id);
-    } else if (role === "mentor") {
-      // Mentor hanya bisa melihat review untuk sesi yang dia ajar
-      sql += ` AND s.mentor_id = ?`;
-      queryParams.push(mentorId);
-    }
-    // Admin tidak perlu filter tambahan, karena bisa melihat semua.
-
-    const [reviews] = await db.query(sql, queryParams);
-
-    if (reviews.length === 0) {
-      return res.status(404).json({
-        message: "Review tidak ditemukan atau Anda tidak memiliki akses",
-      });
-    }
+    const [reviews] = await db.query(sql, [review_id]);
 
     res.json({
       review_id,
@@ -280,27 +283,31 @@ exports.updateReview = async (req, res) => {
     }
 
     // Validasi rating jika ada
-    if (rating !== undefined && (rating < 0 || rating > 5)) {
+    if (rating !== undefined && rating !== "" && (rating < 1 || rating > 5)) {
       return res.status(400).json({ message: "Rating harus antara 1-5" });
     }
 
-    // Update hanya jika ada perubahan
+    // Cek perubahan yang dilakukan
     let updates = [];
     let values = [];
+    let updatedFields = {}; // Menyimpan perubahan
 
-    if (rating !== undefined) {
+    if (rating !== undefined && rating !== "" && rating !== review.rating) {
       updates.push("rating = ?");
       values.push(rating);
+      updatedFields.rating = { before: review.rating, after: rating };
     }
-    if (comment !== undefined) {
+    if (comment !== undefined && comment !== "" && comment !== review.comment) {
       updates.push("comment = ?");
       values.push(comment);
+      updatedFields.comment = { before: review.comment, after: comment };
     }
 
     if (updates.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Tidak ada perubahan yang dikirimkan" });
+      return res.status(400).json({
+        message:
+          "Tidak ada perubahan yang dikirimkan atau nilai yang dikirim tidak valid",
+      });
     }
 
     // Tambahkan updated_at untuk mencatat perubahan
@@ -313,7 +320,10 @@ exports.updateReview = async (req, res) => {
     )} WHERE review_id = ?`;
     await db.query(updateSql, values);
 
-    res.json({ message: "Review berhasil diperbarui!" });
+    res.json({
+      message: "Review berhasil diperbarui!",
+      updated_fields: updatedFields,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error: " + error.message });
   }

@@ -56,6 +56,9 @@ Pastikan Anda sudah menginstal Node.js, MySQL, dan NPM di lingkungan Anda.
 - `frontend_client` : Berisi source code untuk frontend aplikasi (React).
 - `server_backend` : Berisi source code untuk backend aplikasi (Node.js dan Express).
 
+### API Documentation
+https://documenter.getpostman.com/view/26430352/2sAYX3sioQ
+
 ### Example Page:
 ![Example 1](frontend_client/temudataku/src/assets/images/web1.png)
 ![Example 2](frontend_client/temudataku/src/assets/images/web2.png)
