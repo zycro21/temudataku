@@ -23,7 +23,7 @@ Pastikan Anda sudah menginstal Node.js, MySQL, dan NPM di lingkungan Anda.
 1. __Clone Repository__
    ```
    git clone https://github.com/zycro21/temudataku.git
-   cd game-x
+   cd temudataku
    ```
 2. __Set Up BackEnd__
    * Pindah ke direktori `server_backend`:
@@ -39,7 +39,7 @@ Pastikan Anda sudah menginstal Node.js, MySQL, dan NPM di lingkungan Anda.
    npm start
    ```
 3. __Set Up FrontEnd__
-   * Pindah ke direktori `frontend_client/temudatakugit` :
+   * Pindah ke direktori `frontend_client/temudataku` :
    ```
    cd ../frontend_client/temudataku
    ```
@@ -55,6 +55,7 @@ Pastikan Anda sudah menginstal Node.js, MySQL, dan NPM di lingkungan Anda.
 ### Struktur Folder
 - `frontend_client` : Berisi source code untuk frontend aplikasi (React).
 - `server_backend` : Berisi source code untuk backend aplikasi (Node.js dan Express).
+- file `database(sementara).zip`: Struktur database yang digunakan dalam project ini (isinya data dummy) dalam format.
 
 ### API Documentation
 https://documenter.getpostman.com/view/26430352/2sAYX3sioQ
