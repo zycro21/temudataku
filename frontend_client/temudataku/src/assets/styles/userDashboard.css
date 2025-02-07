@@ -11,6 +11,8 @@ body {
   flex-direction: column;
   font-family: "Poppins", sans-serif;
   margin-top: 0px;
+  padding-bottom: 5px;
+  /* background-color: red; */
   margin-right: -8px;
   overflow-y: auto;
   min-height: 100vh;

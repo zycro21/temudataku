@@ -1,0 +1,347 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+/* Overlay modal */
+.modal-detail-review-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Efek transparan */
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Pastikan modal selalu di atas */
+  opacity: 0;
+  visibility: hidden;
+  animation: modalDetailReview-fadeOut 0.3s ease-out forwards;
+}
+
+/* Modal konten */
+.modal-detail-review {
+  background: white;
+  padding: 20px;
+  padding-top: 5px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto; /* Scroll jika konten panjang */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(20px) scale(0.9);
+  opacity: 0;
+  animation: modalDetailReview-slideOut 0.3s ease-out forwards;
+}
+
+/* Animasi fade-in */
+.modal-detail-review-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  animation: modalDetailReview-fadeIn 0.3s ease-in forwards;
+}
+
+.modal-detail-review-overlay.show .modal-detail-review {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  animation: modalDetailReview-slideIn 0.3s ease-out forwards;
+}
+
+/* Animasi fade-out */
+.modal-detail-review-overlay.hide {
+  animation: modalDetailReview-fadeOut 0.3s ease-out forwards;
+}
+
+.modal-detail-review-overlay.hide .modal-detail-review {
+  animation: modalDetailReview-slideOut 0.3s ease-out forwards;
+}
+
+/* Header Modal */
+.modal-detail-review h2 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Hover judul */
+.modal-detail-review h2:hover {
+  color: #007bff;
+  transform: scale(1.05);
+}
+
+/* Konten dalam modal */
+.modal-detail-review p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #555;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Efek hover pada teks */
+.modal-detail-review p:hover {
+  color: #222;
+  transform: translateX(5px);
+}
+
+/* Strong dalam teks */
+.modal-detail-review p strong {
+  color: #111;
+  transition: color 0.2s ease;
+}
+
+/* Hover efek pada strong */
+.modal-detail-review p strong:hover {
+  color: #007bff;
+}
+
+.modal-detail-review-buttons {
+  display: flex;
+  justify-content: center; /* Memusatkan tombol */
+  margin-top: 15px;
+}
+
+/* Tombol Tutup (Merah) */
+.modal-detail-review-close-btn {
+  width: 50%;
+  padding: 12px;
+  margin-top: 15px;
+  background: #dc3545; /* Warna merah */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease;
+}
+
+/* Hover tombol tutup */
+.modal-detail-review-close-btn:hover {
+  background: #b52b39;
+  transform: scale(1.05);
+}
+
+/* Efek ketika tombol ditekan */
+.modal-detail-review-close-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsif */
+@media (max-width: 600px) {
+  .modal-detail-review {
+    width: 95%;
+  }
+}
+
+/* Animasi Keyframes */
+/* Fade In */
+@keyframes modalDetailReview-fadeIn {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Fade Out */
+@keyframes modalDetailReview-fadeOut {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Slide In (Muncul dari bawah dengan scale) */
+@keyframes modalDetailReview-slideIn {
+  from {
+    transform: translateY(20px) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Slide Out (Menghilang ke bawah dengan scale) */
+@keyframes modalDetailReview-slideOut {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(20px) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* Update Modal */
+/* Animasi fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Animasi fade out */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+}
+
+/* Overlay modal */
+.modal-update-review-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Efek transparan */
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: visibility 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Kontainer modal */
+.modal-update-review {
+  background: white;
+  padding: 20px;
+  padding-top: 5px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 450px;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+}
+
+/* Saat modal muncul */
+.modal-update-review-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  animation: fadeIn 0.3s ease-out forwards; /* Tambahkan forwards agar tidak reset */
+}
+
+.modal-update-review-overlay.show .modal-update-review {
+  animation: fadeIn 0.3s ease-out forwards; /* Tambahkan forwards agar tetap terlihat */
+}
+
+/* Saat modal menghilang */
+.modal-update-review-overlay.hide {
+  animation: fadeOut 0.3s ease-out forwards; /* Tambahkan forwards agar tidak muncul lagi */
+}
+
+.modal-update-review-overlay.hide .modal-update-review {
+  animation: fadeOut 0.3s ease-out forwards; /* Pastikan animasi fade-out berjalan */
+}
+
+/* Judul modal */
+.modal-update-review h2 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: #333;
+  text-align: center;
+}
+
+/* Label input */
+.modal-update-review label {
+  display: block;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Input field */
+.modal-update-review input,
+.modal-update-review textarea {
+  width: 95%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.modal-update-review input:focus,
+.modal-update-review textarea:focus {
+  border-color: #007bff;
+}
+
+/* Tombol aksi */
+.modal-update-review-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Tombol Simpan */
+.modal-update-review-buttons .btn-save {
+  padding: 10px 15px;
+  background: #28a745; /* Warna hijau */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease;
+}
+
+.modal-update-review-buttons .btn-save:hover {
+  background: #218838;
+  transform: scale(1.05);
+}
+
+/* Tombol Batal */
+.modal-update-review-buttons .btn-cancel {
+  padding: 10px 15px;
+  background: #dc3545; /* Warna merah */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease;
+}
+
+.modal-update-review-buttons .btn-cancel:hover {
+  background: #b52b39;
+  transform: scale(1.05);
+}
+
+/* Responsif */
+@media (max-width: 600px) {
+  .modal-update-review {
+    width: 95%;
+  }
+}

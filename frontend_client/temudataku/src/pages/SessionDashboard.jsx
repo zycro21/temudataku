@@ -417,27 +417,27 @@ const SessionDashboard = () => {
                             )}
                         </tbody>
                     </table>
-                </div>
 
-                {/* Pagination page controls */}
-                <div className="user-session-pagination">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                        &laquo;
-                    </button>
-
-                    {generatePagination().map((page, index) => (
-                        <button
-                            key={index}
-                            onClick={() => typeof page === "number" && handlePageChange(page)}
-                            className={page === currentPage ? "active" : ""}
-                            disabled={page === "..."}>
-                            {page}
+                    {/* Pagination page controls */}
+                    <div className="user-pagination">
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                            &laquo;
                         </button>
-                    ))}
 
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                        &raquo;
-                    </button>
+                        {generatePagination().map((page, index) => (
+                            <button
+                                key={index}
+                                onClick={() => typeof page === "number" && handlePageChange(page)}
+                                className={page === currentPage ? "active" : ""}
+                                disabled={page === "..."}>
+                                {page}
+                            </button>
+                        ))}
+
+                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                            &raquo;
+                        </button>
+                    </div>
                 </div>
 
                 {isModalCreateOpen && (

@@ -128,40 +128,6 @@
   }
 }
 
-.user-session-pagination {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  gap: 12px; /* Jarak antar tombol diperbesar */
-  justify-content: center;
-}
-
-.user-session-pagination button {
-  background: #f0f0f0;
-  border: 1px solid #ddd;
-  padding: 10px 15px; /* Ukuran tombol diperbesar */
-  font-size: 16px; /* Ukuran teks lebih besar */
-  cursor: pointer;
-  border-radius: 5px; /* Bikin agak rounded */
-  transition: 0.3s;
-}
-
-.user-session-pagination button.active {
-  background: #1e294c;
-  color: white;
-  font-weight: bold;
-  border: 1px solid #0056b3;
-}
-
-.user-session-pagination button:hover:not(:disabled) {
-  background: #1976d2;
-}
-
-.user-session-pagination button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
 /* Modal Detail Session */
 /* Overlay modal dengan efek blur */
 .detail-session-modal-overlay {
