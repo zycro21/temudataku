@@ -9,13 +9,14 @@ import MentorDashboard from "./pages/MentorDashboard";
 import SessionDashboard from "./pages/SessionDashboard";
 import OrderDashboard from "./pages/OrderDashboard";
 import ReviewDashboard from "./pages/ReviewDashboard";
+import UserMainPage from "./pages/UserMainPage";
 
 const App = () => {
   return (
     <SidebarProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LoginAdmin />} />
+          <Route path="/" element={<UserMainPage />} />
           <Route path="/registerAdmin" element={<Register />} />
           <Route path="/loginAdmin" element={<LoginAdmin />} />
           <Route path="/dashboard" element={<Dashboard />} />
