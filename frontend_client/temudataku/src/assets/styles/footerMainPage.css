@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Footer */
+.footer {
+  font-family: "Poppins", sans-serif;
+  background: #181818;
+  color: #ffffff;
+  padding: 35px 0;
+  padding-bottom: 20px;
+  margin-top: 130px;
+  width: 100vw; /* Pastikan benar-benar full */
+  position: relative;
+  box-sizing: border-box; /* Mencegah padding membuat lebar lebih besar */
+  /* border: 2px solid blue; */
+}
+
+/* Container */
+.footer-container {
+  max-width: 1200px; /* Tetap lebih kecil */
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 60px;
+  align-items: start;
+  /* border: 2px solid yellow; */
+}
+
+/* Footer Section */
+.footer-section {
+  text-align: left;
+}
+
+.footer-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Garis bawah (underline) menyesuaikan panjang teks di atasnya */
+.footer-section h3::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #00ffcc;
+  margin-top: 5px;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Logo */
+.footer-logo {
+  height: 100px; /* Ukuran lebih besar */
+  margin-bottom: 15px;
+  filter: brightness(1.5);
+}
+
+/* Links */
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 8px;
+}
+
+.footer-section ul li a {
+  text-decoration: none;
+  color: #ccc;
+  transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.footer-section ul li a:hover {
+  color: #ffffff;
+  transform: translateX(5px);
+}
+
+/* Social Media & Contact Icons */
+.footer-icons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: #ccc;
+  transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.icon:hover {
+  color: #00ffcc;
+  transform: scale(1.1);
+}
+
+/* Alamat sejajar dengan Social Media & Contact */
+.footer-address {
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-top: 5px;
+  transition: color 0.3s ease-in-out;
+  text-align: left;
+}
+
+.footer-address:hover {
+  color: #ffffff;
+}
+
+/* Pemilihan warna untuk teks "Be sure..." agar lebih jelas */
+.footer-text {
+  color: rgba(255, 255, 255, 0.85); /* Lebih terang */
+  font-size: 15px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+/* Links untuk Terms of Use dan Privacy Policy */
+.footer-links {
+  color: #00cc88;
+  font-size: 15px;
+  text-align: left;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #00cc88;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #00ffaa; /* Warna lebih cerah saat hover */
+}
+
+/* Copyright */
+.footer-copyright {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #444;
+}
+
+/* Animasi masuk */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.footer-section {
+  animation: fadeInUp 0.6s ease-in-out;
+}

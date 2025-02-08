@@ -4,6 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "../assets/styles/userMainPage.css";
 import NavbarMainPage from "../components/NavbarMainPage";
+import FooterMainPage from "../components/FooterMainPage";
 
 const UserMainPage = () => {
     return (
@@ -11,6 +12,8 @@ const UserMainPage = () => {
             <div className="mainpage-user">
                 <ToastContainer />
                 <NavbarMainPage />
+
+                <FooterMainPage />
             </div>
         </>
     )
