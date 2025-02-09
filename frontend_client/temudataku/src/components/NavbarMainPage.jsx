@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../assets/styles/navbarMainPage.css";
-import Logo from "../assets/images/logotemudataku.png"
 import { FaInstagram, FaLinkedin, FaWhatsapp, FaShoppingCart } from "react-icons/fa";
+
+const Logo = require("../assets/images/logotemudataku.png");
 
 const NavbarMainPage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isHeroAtTop, setIsHeroAtTop] = useState(false);
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -16,15 +19,32 @@ const NavbarMainPage = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            const heroSection = document.querySelector(".hero-section");
+            const navbar = document.querySelector(".navbar");
+
+            if (!heroSection || !navbar) return;
+
+            const heroRect = heroSection.getBoundingClientRect();
+            const navbarRect = navbar.getBoundingClientRect();
+
+            // ✅ Correct logic: Navbar is above hero when its bottom is inside the hero section
+            const isHeroAtTop = navbarRect.bottom > heroRect.top && navbarRect.top < heroRect.bottom;
+
+            if (isHeroAtTop) {
+                navbar.classList.add("hero-top");
+            } else {
+                navbar.classList.remove("hero-top");
+            }
         };
 
         window.addEventListener("scroll", handleScroll);
+        handleScroll(); // Run once on mount
+
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     return (
-        <div className={`navbar ${isScrolled ? "scrolled" : ""}`}>
+        <div className={`navbar ${isScrolled ? "scrolled" : ""} ${isHeroAtTop ? "hero-top" : ""}`} onClick={() => console.log("Classes:", isScrolled, isHeroAtTop)}>
             <div className="navbar-container">
                 {/* Logo (Klik untuk kembali ke Home) */}
                 <div className="navbar-logo" onClick={() => navigate("/")}>

@@ -92,7 +92,7 @@ body {
 }
 
 .icon {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #ccc;
   transition: color 0.3s ease-in-out, transform 0.2s ease-in-out;
 }
@@ -119,7 +119,7 @@ body {
 .footer-text {
   color: rgba(255, 255, 255, 0.85); /* Lebih terang */
   font-size: 15px;
-  margin-bottom: 5px;
+  margin-bottom: 0;
   text-align: left;
 }
 
@@ -128,6 +128,7 @@ body {
   color: #00cc88;
   font-size: 15px;
   text-align: left;
+  margin-top: 0px;
 }
 
 .footer-links a {

@@ -4,22 +4,22 @@
 .navbar {
   font-family: "Poppins", sans-serif;
   width: 100%;
-  position: fixed;
+  /* position: fixed; */
   top: 0;
   left: 0;
-  /* background: black; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 0;
-  min-height: 60px; /* Lebih rendah dari sebelumnya */
+  padding: 0; /* ✅ Mengurangi padding agar lebih ramping */
+  min-height: 40px; /* ✅ Mengurangi tinggi navbar */
   transition: all 0.3s ease-in-out;
   z-index: 1000;
-  /* border: 2px solid red; */
 }
 
 /* Navbar saat di-scroll */
 .navbar.scrolled {
   background: #ffffff;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  min-height: 45px; /* ✅ Saat scroll, lebih kecil lagi */
+  padding: 3px 0;
 }
 
 /* Navbar Content */
@@ -29,8 +29,7 @@
   justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 25px;
-  /* border: 2px solid red; */
+  padding: 0 20px; /* ✅ Mengurangi padding agar lebih compact */
 }
 
 /* Logo */
@@ -89,7 +88,7 @@
 
 /* Efek hover untuk ikon */
 .icon {
-  font-size: 3rem; /* Sedikit dikecilkan */
+  font-size: 1.8rem; /* Sedikit dikecilkan */
   color: #007f4e;
   cursor: pointer;
   transition: transform 0.3s ease, color 0.3s;
@@ -107,7 +106,7 @@
 }
 
 .cart {
-  font-size: 2.2rem; /* Sedikit dikecilkan */
+  font-size: 1.8rem; /* Sedikit dikecilkan */
 }
 
 .cart-badge {
@@ -125,3 +124,22 @@
   align-items: center;
   justify-content: center;
 }
+
+/* .navbar-links a,
+.icon,
+.cart {
+  color: #007f4e;
+  transition: color 0.3s ease-in-out;
+}
+
+.navbar.hero-top .navbar-links a,
+.navbar.hero-top .icon,
+.navbar.hero-top .cart {
+  color: gray !important; 
+}
+
+.navbar.hero-top .navbar-links a:hover,
+.navbar.hero-top .icon:hover,
+.navbar.hero-top .cart:hover {
+  color: #555 !important; 
+} */

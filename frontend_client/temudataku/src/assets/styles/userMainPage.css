@@ -9,3 +9,350 @@
   flex-direction: column;
   justify-content: space-between; /* Membuat footer tetap di bawah */
 }
+
+/* HERO SECTION */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 78vh;
+  background: url("../images/hero1.jpg") center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  overflow: hidden; /* Prevents animation overflow */
+}
+
+/* ANIMATED BACKGROUND */
+.hero-bg {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  background: url("../images/hero1.jpg") center/cover no-repeat;
+  animation: slideBg 10s infinite alternate linear;
+  z-index: -1;
+}
+
+.hero-overlay {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 0;
+}
+
+.hero-content {
+  max-width: 800px;
+}
+
+/* TEXT STYLES */
+.hero-content h2 {
+  font-size: 20px;
+  font-weight: 300;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.hero-content h1 {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-content h1 span {
+  color: #36d399; /* Accent color */
+}
+
+/* BUTTONS */
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.hero-buttons .btn-primary {
+  background-color: #36d399;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out,
+    background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.hero-buttons .btn-primary:hover {
+  background-color: white; /* ✅ Background berubah putih */
+  color: #36d399; /* ✅ Warna teks jadi hijau */
+  transform: scale(1.05);
+  box-shadow: 0px 4px 15px rgba(54, 211, 153, 0.5);
+}
+
+.hero-buttons .btn-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out, background 0.3s ease-in-out,
+    color 0.3s ease-in-out;
+}
+
+.hero-buttons .btn-secondary:hover {
+  background: white; /* ✅ Background berubah putih */
+  color: #36d399; /* ✅ Warna teks jadi hijau */
+  transform: scale(1.05);
+}
+
+/* TEXT ANIMATIONS */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1s ease-in-out forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.5s;
+}
+
+.delay-2 {
+  animation-delay: 1s;
+}
+
+/* Spacer to add gap below Hero Section */
+.spacer {
+  height: 100px; /* Adjust spacing */
+}
+
+/* Second Content Section */
+.second-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  justify-content: space-between;
+}
+
+/* Content Text */
+.content-text {
+  flex: 1;
+  max-width: 500px;
+  text-align: left;
+  position: relative;
+}
+
+/* Animated Title */
+.animated-title {
+  font-size: 2.8rem; /* Increased size for more impact */
+  color: #008080;
+  margin-bottom: 15px;
+  font-weight: bold;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: fadeInUp 1s ease-in-out;
+}
+
+/* Adding a subtle underline effect */
+.animated-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: #36d399;
+  margin-top: 5px;
+}
+
+/* Paragraph text */
+.content-text p {
+  font-size: 1rem;
+  color: #4a4a4a;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeIn 1s ease-in-out 0.5s forwards;
+}
+
+/* #1 Mentoring Badge */
+.highlight-badge {
+  display: inline-block;
+  background: #ffcc00;
+  color: #1a1a1a;
+  font-size: 0.85rem;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 15px;
+  margin-left: 10px;
+  opacity: 0;
+  animation: slideIn 1s ease-in-out 1s forwards;
+}
+
+/* View More Button */
+.btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: #36d399;
+  border: 2px solid #36d399;
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.2s ease, background 0.3s ease, color 0.3s ease;
+  animation: fadeInUp 1s ease-in-out 1.2s forwards;
+  opacity: 0;
+}
+
+.btn-outline:hover {
+  background: #36d399;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Content Grid (Images) */
+.content-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2x2 Grid */
+  gap: 40px;
+}
+
+/* Grid Item */
+.grid-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+/* Adjust Position of Images */
+.grid-item:nth-child(1),
+.grid-item:nth-child(3) {
+  transform: translateY(-30px) scale(1.05); /* Move up */
+}
+
+.grid-item:nth-child(2), /* Second image (top-right) */
+.grid-item:nth-child(4) {
+  /* Fourth image (bottom-right) */
+  transform: translateY(30px) scale(1.05); /* Move down */
+}
+
+.grid-item img {
+  width: 110%;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+/* Gradient Overlay at the Bottom */
+.grid-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%; /* Adjust height for visibility */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  transition: opacity 0.3s ease;
+}
+
+/* Text Overlay (Always Visible, Bottom Center) */
+.grid-item p {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-weight: bold;
+  font-size: 14px; /* Smaller font */
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6); /* Enhanced readability */
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* Hover Effect */
+.grid-item:hover p {
+  transform: translateX(-50%) scale(1.1); /* Slightly larger on hover */
+  color: #36d399; /* Color change */
+}
+
+.grid-item:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.8);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .second-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .content-text {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .content-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .btn-outline {
+    width: 100%;
+    padding: 12px 0;
+  }
+}
+
+/* BACKGROUND SLIDING EFFECT */
+@keyframes slideBg {
+  0% {
+    transform: translateX(-20%);
+  }
+  100% {
+    transform: translateX(20%);
+  }
+}
+
+/* FADE IN UP EFFECT */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
