@@ -148,55 +148,110 @@
 /* Content Text */
 .content-text {
   flex: 1;
-  max-width: 500px;
+  max-width: 550px;
   text-align: left;
   position: relative;
 }
 
-/* Animated Title */
+/* Animated Title with Underline */
 .animated-title {
-  font-size: 2.8rem; /* Increased size for more impact */
-  color: #008080;
-  margin-bottom: 15px;
+  font-size: 2.4rem;
+  color: #004d40;
   font-weight: bold;
-  position: relative;
+  margin-bottom: 20px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  position: relative;
   animation: fadeInUp 1s ease-in-out;
 }
 
-/* Adding a subtle underline effect */
 .animated-title::after {
   content: "";
   display: block;
-  width: 80px;
+  width: 360px;
   height: 4px;
-  background: #36d399;
+  background-color: #36d399;
   margin-top: 5px;
+  animation: slideInSection2 1s ease-in-out;
+}
+
+/* Container for Number & Text */
+.mentoring-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Styling for "#1" */
+.number-one {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
+}
+
+.small-hash {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-right: 5px;
+  transform: translateY(-5px);
+  animation: fadeInLeft 0.8s ease-in-out;
+  transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.big-number {
+  font-family: "Oswald", serif;
+  font-size: 10rem;
+  font-weight: bold;
+  color: #a7d7c5;
+  line-height: 1;
+  animation: fadeInRight 0.8s ease-in-out;
+  transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.number-one:hover {
+  transform: scale(1.05);
+}
+
+.number-one:hover .small-hash {
+  transform: translateY(-8px);
+  color: #004d40; /* Warna berubah saat hover */
+}
+
+.number-one:hover .big-number {
+  transform: scale(1.1);
+  color: #36d399; /* Warna berubah saat hover */
+}
+
+/* Mentoring Text */
+.mentoring-text {
+  flex: 1;
+  animation: fadeInUp 1.2s ease-in-out;
+}
+
+.brand-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.mentoring-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #004d40;
+  margin-bottom: 10px;
+  animation: fadeInUp 1.4s ease-in-out;
 }
 
 /* Paragraph text */
 .content-text p {
   font-size: 1rem;
   color: #4a4a4a;
-  margin-bottom: 20px;
   line-height: 1.6;
-  opacity: 0;
-  animation: fadeIn 1s ease-in-out 0.5s forwards;
-}
-
-/* #1 Mentoring Badge */
-.highlight-badge {
-  display: inline-block;
-  background: #ffcc00;
-  color: #1a1a1a;
-  font-size: 0.85rem;
-  font-weight: bold;
-  padding: 6px 12px;
-  border-radius: 15px;
-  margin-left: 10px;
-  opacity: 0;
-  animation: slideIn 1s ease-in-out 1s forwards;
+  text-align: left; /* Pastikan teks rata kiri */
+  animation: fadeInUp 1.6s ease-in-out;
 }
 
 /* View More Button */
@@ -212,8 +267,8 @@
   border-radius: 8px;
   text-align: center;
   transition: transform 0.2s ease, background 0.3s ease, color 0.3s ease;
-  animation: fadeInUp 1s ease-in-out 1.2s forwards;
-  opacity: 0;
+  margin-top: 20px;
+  animation: fadeInUp 1.8s ease-in-out;
 }
 
 .btn-outline:hover {
@@ -292,6 +347,38 @@
   filter: brightness(0.8);
 }
 
+/* Third Content Section */
+.third-content {
+  text-align: center;
+  padding: 30px 0;
+  background: white;
+  animation: fadeInSection3 1.5s ease-in-out;
+}
+
+/* Title Animation */
+.third-content-title {
+  font-size: 2.4rem;
+  color: #00875a;
+  font-weight: bold;
+  margin-bottom: 40px;
+  position: relative;
+  /* text-transform: uppercase; */
+  display: inline-block;
+}
+
+.third-content-title::after {
+  content: "";
+  display: block;
+  width: 80%;
+  height: 4px;
+  background: #36d399;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: slideInSection2 1s ease-in-out;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .second-content {
@@ -313,6 +400,93 @@
     width: 100%;
     padding: 12px 0;
   }
+}
+
+.fourth-section {
+  text-align: center;
+  padding: 50px 20px;
+  background: #f9f9f9;
+}
+
+.fourth-content-title {
+  font-size: 26px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.fourth-content-desc {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.service-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.service-card {
+  position: relative;
+  width: 500px;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.service-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.service-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  text-align: center;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.service-card:hover .service-overlay {
+  background: rgba(44, 62, 80, 0.85);
+}
+
+.service-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #ffffff;
+  background: #3498db;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.service-btn:hover {
+  background: #2980b9;
 }
 
 /* BACKGROUND SLIDING EFFECT */
@@ -354,5 +528,47 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInSection2 {
+  from {
+    width: 0;
+  }
+  to {
+    width: 80px;
+  }
+}
+
+@keyframes fadeInSection3 {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

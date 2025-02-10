@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+.custom-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 80%;
+  margin: auto;
+  padding: 30px 0;
+}
+
+.carousel-container {
+  overflow: hidden;
+  width: 80%;
+  max-width: 900px;
+  position: relative;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  will-change: transform;
+}
+
+.tool-item {
+  flex: 0 0 calc(100% / 3); /* Ensure 3 items per view */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.tool-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.tool-item p {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  margin-top: 10px;
+}
+
+/* Fix arrows */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  font-size: 2rem;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.carousel-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.left-btn {
+  left: -40px;
+}
+
+.right-btn {
+  right: -40px;
+}
