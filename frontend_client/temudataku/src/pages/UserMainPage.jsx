@@ -15,6 +15,31 @@ const gambar5 = require("../assets/images/content4.jpg");
 const gambar6 = require("../assets/images/content4-2.jpg");
 
 const UserMainPage = () => {
+    const [openFAQ, setOpenFAQ] = useState(null);
+
+    const toggleFAQ = (index) => {
+        setOpenFAQ(openFAQ === index ? null : index);
+    };
+
+    const faqData = [
+        {
+            question: "Apa yang saya dapatkan nanti setelah mentoring?",
+            answer: "Tentu kamu akan mendapatkan penjelasan materi yang belum kamu pahami dari mentor yang ahli di bidangnya."
+        },
+        {
+            question: "Apakah saya bisa mentoring secara berkelompok?",
+            answer: "Ya, tersedia sesi mentoring baik secara individu maupun berkelompok sesuai kebutuhanmu."
+        },
+        {
+            question: "Layanan apa saja yang ada di TemuDataku?",
+            answer: "Kami menyediakan berbagai layanan seperti mentoring 1-on-1, mentoring kelompok, dan project assistance di bidang Data Science."
+        },
+        {
+            question: "Data seperti apa yang disediakan oleh TemuDataku?",
+            answer: "Kami menyediakan materi, dataset, dan pembelajaran yang berkaitan dengan Data Science, Machine Learning, dan Analisis Data."
+        }
+    ];
+
     return (
         <>
             <div className="mainpage-user">
@@ -92,12 +117,13 @@ const UserMainPage = () => {
 
                 <div className="spacer"></div>
 
-                {/* Fourth Content Section */}
                 <div className="fourth-section">
                     <h2 className="fourth-content-title">Layanan TemuDataku</h2>
                     <p className="fourth-content-desc">
                         Temukan berbagai layanan unggulan yang kami tawarkan untuk membantumu berkembang di dunia Data Science.
                     </p>
+
+                    {/* Container untuk dua card di atas */}
                     <div className="service-container">
                         <div className="service-card">
                             <img src={gambar6} alt="1 on 1 & Group Mentoring" />
@@ -113,6 +139,43 @@ const UserMainPage = () => {
                                 <button className="service-btn">Lihat Detail</button>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Card Besar di Bawah */}
+                    <div className="service-large-card">
+                        <div className="service-large-content">
+                            <div className="service-large-icon">
+                                ✅ {/* Bisa diganti dengan <img> jika ada ikon */}
+                            </div>
+                            <div className="service-large-text">
+                                <h3>Bangun Portofolio dengan Data Science Practice</h3>
+                                <p>
+                                    Tersedia berbagai macam studi kasus yang bisa kamu coba dan explore untuk membangun portofolio kamu.
+                                </p>
+                            </div>
+                        </div>
+                        <button className="service-large-btn">Coba Sekarang</button>
+                    </div>
+                </div>
+
+
+                <div className="spacer"></div>
+
+                {/* Fifth Content Section - FAQ */}
+                <div className="faq-section">
+                    <h2 className="faq-title">FAQ</h2>
+                    <div className="faq-container">
+                        {faqData.map((faq, index) => (
+                            <div key={index} className="faq-item">
+                                <button className="faq-question" onClick={() => toggleFAQ(index)}>
+                                    {faq.question}
+                                    <span className={`faq-icon ${openFAQ === index ? "open" : ""}`}>▾</span>
+                                </button>
+                                <div className={`faq-answer ${openFAQ === index ? "show" : ""}`}>
+                                    <p>{faq.answer}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
 

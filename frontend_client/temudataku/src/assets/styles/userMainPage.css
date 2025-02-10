@@ -358,7 +358,7 @@
 /* Title Animation */
 .third-content-title {
   font-size: 2.4rem;
-  color: #00875a;
+  color: #004d40;
   font-weight: bold;
   margin-bottom: 40px;
   position: relative;
@@ -406,12 +406,13 @@
   text-align: center;
   padding: 50px 20px;
   background: #f9f9f9;
+  font-family: "Poppins", sans-serif;
 }
 
 .fourth-content-title {
   font-size: 26px;
   font-weight: bold;
-  color: #2c3e50;
+  color: #004d40;
   margin-bottom: 10px;
 }
 
@@ -458,17 +459,32 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  color: #ffffff;
+  background: rgba(0, 0, 255, 0.5); /* Biru transparan */
+  color: #ffffff; /* Warna teks dasar putih */
   text-align: center;
-  padding: 15px;
+  padding-bottom: 10px;
   font-size: 18px;
   font-weight: bold;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.service-overlay p {
+  color: #ffffff; /* Warna dasar teks tetap putih */
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .service-card:hover .service-overlay {
-  background: rgba(44, 62, 80, 0.85);
+  background: rgba(
+    255,
+    255,
+    255,
+    1
+  ); /* Background jadi putih solid saat hover */
+}
+
+.service-card:hover .service-overlay p {
+  color: #008000; /* Warna teks berubah jadi hijau saat hover */
+  transform: scale(1.1); /* Efek zoom pada teks */
 }
 
 .service-btn {
@@ -487,6 +503,93 @@
 
 .service-btn:hover {
   background: #2980b9;
+}
+
+/* ============ SECTION FAQ ============ */
+.faq-section {
+  padding: 0px 20px;
+  text-align: center;
+  background: white;
+}
+
+.faq-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+  font-family: "Poppins", sans-serif;
+}
+
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.faq-item {
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 18px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+  transition: all 0.3s ease-in-out;
+}
+
+.faq-question:hover {
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.faq-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.faq-icon.open {
+  transform: rotate(180deg);
+  color: #1d4ed8;
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out, padding 0.3s ease-in-out;
+  font-size: 1rem;
+  color: #555;
+  font-family: "Poppins", sans-serif;
+  padding: 0 18px;
+  background: white;
+}
+
+.faq-answer.show {
+  max-height: 200px;
+  padding: 5px 18px;
+}
+
+/* Animasi aktif */
+.faq-item.active {
+  border-left: 5px solid #1d4ed8;
 }
 
 /* BACKGROUND SLIDING EFFECT */
