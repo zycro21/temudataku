@@ -20,22 +20,28 @@
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   padding: 20px 0;
+  display: flex;
+  justify-content: center;
 }
 
 .carousel-track {
   display: flex;
-  justify-content: space-around; /* Menyebarkan item secara merata */
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out; /* Animasi geser */
+  width: 100%;
+  justify-content: space-between;
 }
 
 .tool-item {
-  flex: 0 0 30%; /* Pastikan setiap item mengambil sekitar 30% lebar */
+  flex: 0 0 30%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 15px;
   text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Animasi */
+  opacity: 0.5;
 }
 
 .tool-item img {
@@ -51,7 +57,37 @@
   margin-top: 10px;
 }
 
-/* Tombol navigasi */
+/* Efek Zoom untuk Item Tengah */
+.tool-item.active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Dot Indicator */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #d3d3d3;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dot.active {
+  background-color: #008000;
+}
+
+/* Tombol Navigasi */
 .carousel-btn {
   position: absolute;
   top: 50%;
