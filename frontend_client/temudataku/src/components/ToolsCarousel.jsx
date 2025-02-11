@@ -8,7 +8,7 @@ const tools = [
     { name: "Numpy", src: require("../assets/images/numpy.png") },
     { name: "Pandas", src: require("../assets/images/pandas.png") },
     { name: "Scikit-Learn", src: require("../assets/images/scikit-learn.png") },
-    { name: "Seaborn", src: require("../assets/images/seaborn.png") },
+    { name: "Seaborn", src: require("../assets/images/seaborn-2.png") },
     { name: "Tensorflow", src: require("../assets/images/tensorflow.png") },
     { name: "Tableau", src: require("../assets/images/tableau.png") }
 ];
@@ -17,15 +17,14 @@ const ToolCarousel = () => {
     const [index, setIndex] = useState(0);
     const visibleItems = 3;
     const totalItems = tools.length;
+    const maxIndex = totalItems - visibleItems;
 
     const prevSlide = () => {
-        setIndex((prevIndex) => Math.max(prevIndex - visibleItems, 0));
+        setIndex((prevIndex) => Math.max(prevIndex - 1, 0));
     };
 
     const nextSlide = () => {
-        setIndex((prevIndex) =>
-            Math.min(prevIndex + visibleItems, totalItems - visibleItems)
-        );
+        setIndex((prevIndex) => Math.min(prevIndex + 1, maxIndex));
     };
 
     return (
@@ -37,7 +36,7 @@ const ToolCarousel = () => {
             <div className="carousel-container">
                 <div
                     className="carousel-track"
-                    style={{ transform: `translateX(-${index * (100 / visibleItems)}%)` }}
+                    style={{ transform: `translateX(-${index * 33.33}%)` }}
                 >
                     {tools.map((tool, i) => (
                         <div key={i} className="tool-item">
@@ -56,4 +55,3 @@ const ToolCarousel = () => {
 };
 
 export default ToolCarousel;
-

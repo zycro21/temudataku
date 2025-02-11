@@ -1,82 +1,80 @@
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
 .custom-carousel {
+  font-family: "Poppins", sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  width: 80%;
+  width: 100%;
+  max-width: 1100px;
   margin: auto;
   padding: 30px 0;
 }
 
 .carousel-container {
   overflow: hidden;
-  width: 80%;
-  max-width: 900px;
-  position: relative;
+  width: 85%;
+  max-width: 850px;
   background: white;
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px 0;
 }
 
 .carousel-track {
   display: flex;
+  justify-content: space-around; /* Menyebarkan item secara merata */
   transition: transform 0.5s ease-in-out;
-  will-change: transform;
 }
 
 .tool-item {
-  flex: 0 0 calc(100% / 3); /* Ensure 3 items per view */
+  flex: 0 0 30%; /* Pastikan setiap item mengambil sekitar 30% lebar */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 15px;
   text-align: center;
 }
 
 .tool-item img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
 }
 
 .tool-item p {
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   margin-top: 10px;
 }
 
-/* Fix arrows */
+/* Tombol navigasi */
 .carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.7);
+  background: white;
   border: none;
-  font-size: 2rem;
-  padding: 10px;
+  font-size: 1.8rem;
+  padding: 12px;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: 0.3s ease;
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
 }
 
 .carousel-btn:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: translateY(-50%) scale(1.1);
+  background: #f5f5f5;
 }
 
 .left-btn {
-  left: -40px;
+  left: 10px;
 }
 
 .right-btn {
-  right: -40px;
+  right: 10px;
 }

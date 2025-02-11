@@ -505,6 +505,98 @@
   background: #2980b9;
 }
 
+/* CARD BESAR DI BAWAH */
+.service-large-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to right, #2b5876, #4e4376);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  max-width: 960px;
+  width: 100%;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-large-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.service-large-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* ANIMASI & IKON CENTANG */
+.service-large-icon {
+  font-size: 2.5rem;
+  color: #1abc9c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 40px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+/* Efek saat hover */
+.service-large-icon:hover {
+  transform: scale(1.3) rotate(360deg);
+  color: #16a085;
+}
+
+/* Efek saat ditekan */
+.service-large-icon:active {
+  transform: scale(1.5) rotate(0deg);
+  color: #2ecc71;
+}
+
+/* STYLING TEKS */
+.service-large-text h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-family: "Poppins", sans-serif;
+}
+
+.service-large-text p {
+  font-size: 1rem;
+  color: #dcdcdc;
+  font-family: "Poppins", sans-serif;
+}
+
+/* TOMBOL "COBA SEKARANG" */
+.service-large-btn {
+  padding: 10px 20px;
+  background: #1abc9c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efek hover */
+.service-large-btn:hover {
+  background: #16a085;
+  transform: scale(1.1);
+  box-shadow: 0px 4px 10px rgba(26, 188, 156, 0.6);
+}
+
+/* Efek saat ditekan */
+.service-large-btn:active {
+  transform: scale(0.95);
+  background: #2ecc71;
+}
+
 /* ============ SECTION FAQ ============ */
 .faq-section {
   padding: 0px 20px;
@@ -513,7 +605,7 @@
 }
 
 .faq-title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 30px;
   color: #333;

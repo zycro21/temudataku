@@ -143,15 +143,13 @@ const UserMainPage = () => {
 
                     {/* Card Besar di Bawah */}
                     <div className="service-large-card">
-                        <div className="service-large-content">
-                            <div className="service-large-icon">
-                                ✅ {/* Bisa diganti dengan <img> jika ada ikon */}
-                            </div>
+                        <div className="service-large-left">
+                            <span className="service-large-icon">
+                                ✅ {/* Bisa diganti dengan Font Awesome atau SVG */}
+                            </span>
                             <div className="service-large-text">
                                 <h3>Bangun Portofolio dengan Data Science Practice</h3>
-                                <p>
-                                    Tersedia berbagai macam studi kasus yang bisa kamu coba dan explore untuk membangun portofolio kamu.
-                                </p>
+                                <p>Tersedia berbagai macam studi kasus yang bisa kamu coba dan explore untuk membangun portofolio kamu.</p>
                             </div>
                         </div>
                         <button className="service-large-btn">Coba Sekarang</button>
