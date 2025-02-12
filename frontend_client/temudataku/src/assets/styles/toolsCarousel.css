@@ -88,7 +88,7 @@
 }
 
 /* Tombol Navigasi */
-.carousel-btn {
+.custom-carousel .carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -103,14 +103,14 @@
   z-index: 10;
 }
 
-.carousel-btn:hover {
+.custom-carousel .carousel-btn:hover {
   background: #f5f5f5;
 }
 
-.left-btn {
+.custom-carousel .carousel-btn.left-btn {
   left: 10px;
 }
 
-.right-btn {
+.custom-carousel .carousel-btn.right-btn {
   right: 10px;
 }

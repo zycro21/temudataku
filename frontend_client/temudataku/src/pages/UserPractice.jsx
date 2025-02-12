@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import NavbarMainPage from "../components/NavbarMainPage";
 import FooterMainPage from "../components/FooterMainPage";
-import "../assets/styles/userPractice.css";
+import style from "../assets/styles/userPractice.module.css";
 
 const UserPractice = () => {
     return (

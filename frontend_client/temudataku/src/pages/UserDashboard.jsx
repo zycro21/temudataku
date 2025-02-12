@@ -423,24 +423,26 @@ const UserDashboard = () => {
                                     <td>{user.username}</td>
                                     <td className={`role ${user.role.toLowerCase()}`}>{user.role}</td>
                                     <td>
-                                        <button
-                                            className="action-button btn-detail"
-                                            onClick={() => handleDetailClick(user.user_id)}
-                                        >
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button
-                                            className="action-button btn-edit"
-                                            onClick={() => handleEditUser(user.user_id)}
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button
-                                            className="action-button btn-delete"
-                                            onClick={() => handleDeleteUser(user.user_id)}
-                                        >
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
+                                        <div className="action-container">
+                                            <button
+                                                className="action-button btn-detail"
+                                                onClick={() => handleDetailClick(user.user_id)}
+                                            >
+                                                <FontAwesomeIcon icon={faEye} />
+                                            </button>
+                                            <button
+                                                className="action-button btn-edit"
+                                                onClick={() => handleEditUser(user.user_id)}
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </button>
+                                            <button
+                                                className="action-button btn-delete"
+                                                onClick={() => handleDeleteUser(user.user_id)}
+                                            >
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))

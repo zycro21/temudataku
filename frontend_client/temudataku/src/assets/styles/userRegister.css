@@ -75,7 +75,7 @@
 }
 
 /* Tombol */
-button {
+.user-register-container button {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -87,11 +87,11 @@ button {
   transition: background 0.3s;
 }
 
-button:hover {
+.user-register-container button:hover {
   background: #004d32;
 }
 
-button:disabled {
+.user-register-container button:disabled {
   background: gray;
   cursor: not-allowed;
 }

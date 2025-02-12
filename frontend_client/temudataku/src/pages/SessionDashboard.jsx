@@ -393,24 +393,26 @@ const SessionDashboard = () => {
                                             <td>{session.duration} Minutes</td>
                                             <td>{session.service_type}</td>
                                             <td>
-                                                <button
-                                                    className="action-button btn-detail"
-                                                    onClick={() => handleDetailSessionClick(session.session_id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faEye} />
-                                                </button>
-                                                <button
-                                                    className="action-button btn-edit"
-                                                    onClick={() => handleOpenUpdateModal(session)}
-                                                >
-                                                    <FontAwesomeIcon icon={faEdit} />
-                                                </button>
-                                                <button
-                                                    className="action-button btn-delete"
-                                                    onClick={() => handleDeleteSession(session.session_id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrashAlt} />
-                                                </button>
+                                                <div className="action-container">
+                                                    <button
+                                                        className="action-button btn-detail"
+                                                        onClick={() => handleDetailSessionClick(session.session_id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faEye} />
+                                                    </button>
+                                                    <button
+                                                        className="action-button btn-edit"
+                                                        onClick={() => handleOpenUpdateModal(session)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </button>
+                                                    <button
+                                                        className="action-button btn-delete"
+                                                        onClick={() => handleDeleteSession(session.session_id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

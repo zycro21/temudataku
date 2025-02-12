@@ -59,11 +59,11 @@
 }
 
 /* Input group */
-.input-group {
+.user-login-container .input-group {
   margin-bottom: 15px;
 }
 
-.input-group input {
+.user-login-container .input-group input {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -72,13 +72,13 @@
   transition: border 0.3s;
 }
 
-.input-group input:focus {
+.user-login-container .input-group input:focus {
   border-color: #007f4e;
   outline: none;
 }
 
 /* Opsi login */
-.login-options {
+.user-login-container .login-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -86,14 +86,14 @@
   color: #555;
 }
 
-.login-options a {
+.user-login-container .login-options a {
   text-decoration: none;
   color: #007f4e;
   font-weight: bold;
 }
 
 /* Tombol login */
-button {
+.user-login-container button {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -105,11 +105,11 @@ button {
   transition: background 0.3s;
 }
 
-button:hover {
+.user-login-container button:hover {
   background: #004d32;
 }
 
-button:disabled {
+.user-login-container button:disabled {
   background: gray;
   cursor: not-allowed;
 }

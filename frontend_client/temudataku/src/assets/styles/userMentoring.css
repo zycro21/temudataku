@@ -325,51 +325,77 @@
   margin-bottom: 30px;
 }
 
-/* Container untuk kedua paket */
-.mentoring-packages .packages-container {
+/* Container untuk paket */
+.packages-container {
   display: flex;
   justify-content: center;
   gap: 40px;
 }
 
 /* Card setiap paket */
-.mentoring-packages .package-card {
+.package-card {
   background: white;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 350px;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.mentoring-packages .package-title {
+/* Animasi hover */
+.package-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Animasi klik */
+.package-btn.clicked {
+  animation: clickEffect 0.3s ease-in-out;
+}
+
+@keyframes clickEffect {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Judul dan harga */
+.package-title {
   font-size: 18px;
   font-weight: bold;
   color: #008000;
   margin-bottom: 10px;
 }
 
-.mentoring-packages .package-price {
+.package-price {
   font-size: 28px;
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
 }
 
-.mentoring-packages .package-features {
+/* Fitur paket */
+.package-features {
   list-style: none;
   padding: 0;
   margin-bottom: 20px;
 }
 
-.mentoring-packages .package-features li {
+.package-features li {
   font-size: 14px;
   color: #555;
   margin-bottom: 5px;
 }
 
-/* Tombol package */
-.mentoring-packages .package-btn {
+/* Tombol paket */
+.package-btn {
   width: 100%;
   padding: 10px 0;
   font-size: 16px;
@@ -377,31 +403,41 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.mentoring-packages .btn-red {
+.btn-red {
   background: #ff4d4d;
   color: white;
 }
 
-.mentoring-packages .btn-green {
+.btn-green {
   background: #4caf50;
   color: white;
 }
 
-.mentoring-packages .package-btn:hover {
-  opacity: 0.8;
+/* Animasi hover tombol */
+.package-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
 }
 
-/* Catatan di bawah paket */
+/* Catatan tambahan */
 .package-note {
   font-size: 12px;
   color: #777;
   margin-top: 20px;
   max-width: 600px;
-  text-align: center;
+  text-align: left;
   line-height: 1.5;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Menyelaraskan tanda * dan ** */
+.note-marker {
+  font-weight: bold;
+  color: #ff4d4d;
 }
 
 @keyframes fadeIn {

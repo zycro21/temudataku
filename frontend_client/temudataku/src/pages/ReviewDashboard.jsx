@@ -317,24 +317,26 @@ const ReviewDashboard = () => {
                                         <td>{review.rating}</td>
                                         <td>{formatDate(review.created_at)}</td>
                                         <td>
-                                            <button
-                                                className="action-button btn-detail"
-                                                onClick={() => fetchReviewDetail(review.review_id)}
-                                            >
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </button>
-                                            <button
-                                                className="action-button btn-edit"
-                                                onClick={() => openUpdateReviewModal(review)}
-                                            >
-                                                <FontAwesomeIcon icon={faEdit} />
-                                            </button>
-                                            <button
-                                                className="action-button btn-delete"
-                                                onClick={() => handleDeleteReview(review.review_id)}
-                                            >
-                                                <FontAwesomeIcon icon={faTrashAlt} />
-                                            </button>
+                                            <div className="action-container">
+                                                <button
+                                                    className="action-button btn-detail"
+                                                    onClick={() => fetchReviewDetail(review.review_id)}
+                                                >
+                                                    <FontAwesomeIcon icon={faEye} />
+                                                </button>
+                                                <button
+                                                    className="action-button btn-edit"
+                                                    onClick={() => openUpdateReviewModal(review)}
+                                                >
+                                                    <FontAwesomeIcon icon={faEdit} />
+                                                </button>
+                                                <button
+                                                    className="action-button btn-delete"
+                                                    onClick={() => handleDeleteReview(review.review_id)}
+                                                >
+                                                    <FontAwesomeIcon icon={faTrashAlt} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

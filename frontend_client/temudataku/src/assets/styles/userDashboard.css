@@ -146,6 +146,13 @@ body {
 }
 
 /* Tombol Aksi */
+.action-container {
+  display: flex;
+  gap: 8px; /* Jarak antar tombol */
+  justify-content: center; /* Agar tombol tetap rata tengah */
+  align-items: center; /* Menyamakan tinggi tombol */
+}
+
 .action-button {
   padding: 8px 12px;
   font-size: 0.9rem;
@@ -155,6 +162,7 @@ body {
   cursor: pointer;
   margin-right: 10px;
   margin-bottom: 8px;
+  /* white-space: nowrap; */
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -316,22 +324,23 @@ body {
 }
 
 .user-pagination {
-  margin-top: 30px;
+  margin-top: 20px;
   display: flex;
-  gap: 12px; /* Jarak antar tombol diperbesar */
+  gap: 6px; /* Kurangi jarak antar tombol */
   justify-content: center;
+  align-items: center;
 }
 
 .user-pagination button {
   background: #f0f0f0;
   border: 1px solid #ddd;
-  padding: 10px 15px; /* Ukuran tombol diperbesar */
-  font-size: 16px; /* Ukuran teks lebih besar */
+  padding: 5px 10px; /* Ukuran tombol lebih kecil */
+  font-size: 14px; /* Ukuran teks lebih kecil */
   cursor: pointer;
-  border-radius: 5px; /* Bikin agak rounded */
+  border-radius: 5px;
   transition: 0.3s;
+  min-width: 35px; /* Biar tombolnya tidak melebar */
 }
-
 .user-pagination button.active {
   background: #1e294c;
   color: white;

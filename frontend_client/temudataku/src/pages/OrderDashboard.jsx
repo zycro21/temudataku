@@ -373,24 +373,26 @@ const OrderDashboard = () => {
                                                     : "-"}
                                             </td>
                                             <td>
-                                                <button
-                                                    className="action-button btn-detail"
-                                                    onClick={() => handleDetailOrderClick(order.order_id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faEye} />
-                                                </button>
-                                                <button
-                                                    className="action-button btn-edit"
-                                                    onClick={() => openEditOrderModal(order)}
-                                                >
-                                                    <FontAwesomeIcon icon={faEdit} />
-                                                </button>
-                                                <button
-                                                    className="action-button btn-delete"
-                                                    onClick={() => handleDeleteOrder(order.order_id)}
-                                                >
-                                                    <FontAwesomeIcon icon={faTrashAlt} />
-                                                </button>
+                                                <div className="action-container">
+                                                    <button
+                                                        className="action-button btn-detail"
+                                                        onClick={() => handleDetailOrderClick(order.order_id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faEye} />
+                                                    </button>
+                                                    <button
+                                                        className="action-button btn-edit"
+                                                        onClick={() => openEditOrderModal(order)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </button>
+                                                    <button
+                                                        className="action-button btn-delete"
+                                                        onClick={() => handleDeleteOrder(order.order_id)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

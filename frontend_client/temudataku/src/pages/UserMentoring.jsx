@@ -144,10 +144,10 @@ const UserMentoring = () => {
                             <li>✔ Mentoring 45 menit</li>
                             <li>✔ Tanya apapun permasalahan dalam bidang data science</li>
                             <li>✔ Rekaman sesi mentoring</li>
-                            <li>✔ Garansi kepuasan*</li>
-                            <li>✔ Dapatkan akses ke praktik data science**</li>
+                            <li>✔ Garansi kepuasan <span className="note-marker">*</span></li>
+                            <li>✔ Dapatkan akses ke praktik data science <span className="note-marker">**</span></li>
                         </ul>
-                        <button className="package-btn btn-red">choose plan</button>
+                        <button className="package-btn btn-red" onClick={(e) => e.target.classList.add("clicked")}>choose plan</button>
                     </div>
 
                     <div className="package-card">
@@ -157,18 +157,18 @@ const UserMentoring = () => {
                             <li>✔ Mentoring 90 menit</li>
                             <li>✔ Tanya apapun permasalahan dalam bidang data science</li>
                             <li>✔ Rekaman sesi mentoring</li>
-                            <li>✔ Garansi kepuasan*</li>
-                            <li>✔ Dapatkan akses ke praktik data science**</li>
+                            <li>✔ Garansi kepuasan <span className="note-marker">*</span></li>
+                            <li>✔ Dapatkan akses ke praktik data science <span className="note-marker">**</span></li>
                         </ul>
-                        <button className="package-btn btn-green">choose plan</button>
+                        <button className="package-btn btn-green" onClick={(e) => e.target.classList.add("clicked")}>choose plan</button>
                     </div>
                 </div>
 
                 {/* Catatan tambahan */}
-                <p className="package-note">
-                    * Garansi kepuasan bisa didapatkan jika peserta tidak puas dan mengisi form untuk melakukan klaim garansi serta memberikan bukti valid.<br />
-                    ** Untuk peserta yang pertama kali mengikuti mentoring akan mendapatkan akses ke praktik data science.
-                </p>
+                <div className="package-note">
+                    <p><span className="note-marker">*</span> Garansi kepuasan bisa didapatkan jika peserta tidak puas dan mengisi form untuk melakukan klaim garansi serta memberikan bukti valid.</p>
+                    <p><span className="note-marker">**</span> Untuk peserta yang pertama kali mengikuti mentoring akan mendapatkan akses ke praktik data science.</p>
+                </div>
             </section>
 
             <FooterMainPage />
