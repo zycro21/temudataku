@@ -11,6 +11,9 @@ import OrderDashboard from "./pages/OrderDashboard";
 import ReviewDashboard from "./pages/ReviewDashboard";
 import UserMainPage from "./pages/UserMainPage";
 import UserMentoring from "./pages/UserMentoring";
+import UserPractice from "./pages/UserPractice";
+import UserLogin from "./pages/UserLogin";
+import UserRegister from "./pages/UserRegister";
 
 const App = () => {
   return (
@@ -19,6 +22,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<UserMainPage />} />
           <Route path="/mentoring" element={<UserMentoring />}/>
+          <Route path="/practice" element={<UserPractice />}/>
+          <Route path="/login" element={<UserLogin />}/>
+          <Route path="/register" element={<UserRegister />}/>
           <Route path="/registerAdmin" element={<Register />} />
           <Route path="/loginAdmin" element={<LoginAdmin />} />
           <Route path="/dashboard" element={<Dashboard />} />

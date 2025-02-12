@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../assets/styles/navbarMainPage.css";
-import { FaInstagram, FaLinkedin, FaWhatsapp, FaShoppingCart } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaWhatsapp, FaShoppingCart, FaUser } from "react-icons/fa";
 
 const Logo = require("../assets/images/logotemudataku.png");
 
@@ -16,6 +16,7 @@ const NavbarMainPage = () => {
     const currentPath = location.pathname;
     const isMentoring = currentPath === "/mentoring";
     const isPractice = currentPath === "/practice";
+    const isLogin = currentPath === "/login";
 
     useEffect(() => {
         const handleScroll = () => {
@@ -63,13 +64,32 @@ const NavbarMainPage = () => {
 
                 {/* Social Media & Cart */}
                 <div className="navbar-icons">
-                    <FaInstagram className="icon" />
-                    <FaLinkedin className="icon" />
-                    <FaWhatsapp className="icon" />
+                    <a href="https://instagram.com/temudataku" target="_blank" rel="noopener noreferrer" className="social-icon">
+                        <FaInstagram className="icon" />
+                        <span className="tooltip">Instagram</span>
+                    </a>
+                    <a href="https://linkedin.com/company/temudataku" target="_blank" rel="noopener noreferrer" className="social-icon">
+                        <FaLinkedin className="icon" />
+                        <span className="tooltip">LinkedIn</span>
+                    </a>
+                    <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="social-icon">
+                        <FaWhatsapp className="icon" />
+                        <span className="tooltip">WhatsApp</span>
+                    </a>
                     <div className="cart-container">
-                        <FaShoppingCart className="icon cart" />
+                        <Link to="/order" className="order-icon">
+                            <FaShoppingCart className="icon cart" />
+                            <span className="tooltip">Order</span>
+                        </Link>
                         <span className="cart-badge">0</span>
                     </div>
+                </div>
+
+                <div className="login-main-page">
+                    <Link to="/login" className="login-user-page">
+                        <FaUser className="icon" />
+                        <span className="tooltip-login">Login</span>
+                    </Link>
                 </div>
             </div>
         </div>

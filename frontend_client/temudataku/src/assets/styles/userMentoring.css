@@ -1,0 +1,416 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+/* Hero Section */
+.hero-section-mentoring {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  background: url("../images/mentoringhero.jpg") no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+.hero-section-mentoring .overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Lebih gelap agar teks terlihat */
+  pointer-events: none;
+}
+
+/* Title */
+.hero-section-mentoring .animated-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff; /* Putih agar jelas */
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Efek Hover: Membesarkan teks */
+.hero-section-mentoring .animated-title:hover {
+  text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.8);
+  transform: scale(1.05); /* Tambahkan efek scale */
+}
+
+/* Underline */
+.hero-section-mentoring .animated-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: #00d4ff; /* Warna biru muda */
+  margin: 8px auto 0;
+  transition: width 0.3s ease-in-out; /* Animasi perubahan lebar */
+}
+
+/* Efek Hover: Memanjangkan underline */
+.hero-section-mentoring .animated-title:hover::after {
+  width: 420px; /* Underline memanjang saat hover */
+}
+
+/* CTA Button */
+.hero-section-mentoring .cta-button-mentoring {
+  position: relative; /* Supaya tidak kena efek dari overlay */
+  z-index: 2; /* Pastikan ada di atas overlay */
+  margin-top: 15px;
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background: #36d399; /* Hijau terang */
+  border: 2px solid #36d399; /* Tambahkan border agar efek hover lebih smooth */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Efek Hover */
+.hero-section-mentoring .cta-button-mentoring:hover {
+  background: white; /* Warna latar jadi putih */
+  color: #36d399; /* Warna teks jadi hijau */
+  border: 2px solid #36d399; /* Pastikan border tetap hijau */
+  transform: scale(1.1);
+}
+
+/* Section - Apa yang Akan Kamu Dapatkan */
+.user-mentoring-info {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.user-mentoring-info h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Animasi Fade-in */
+.user-mentoring-info p {
+  font-size: 1rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+/* Benefit Cards */
+.user-mentoring-info .mentoring-benefits {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.user-mentoring-info .benefit-card {
+  width: 200px;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.user-mentoring-info .benefit-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Benefit Icon */
+.user-mentoring-info .benefit-icon {
+  font-size: 2rem;
+  color: #4caf50;
+  margin-bottom: 10px;
+}
+
+.career-differences {
+  background: linear-gradient(
+    135deg,
+    #0a0a0b,
+    #111118,
+    #191924,
+    #202037,
+    #121e46
+  ); /* Biru donker lebih gelap */
+  color: #ffffff;
+  padding-right: 50px;
+  height: 90vh;
+  display: flex;
+  gap: 40px;
+  overflow: hidden;
+}
+/* Gambar masuk dari kiri */
+.career-image {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  opacity: 0;
+  transform: translateX(-50px);
+  animation: slideInCareerImage 1s ease-out forwards;
+}
+
+@keyframes slideInCareerImage {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.career-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Efek zoom sedikit saat hover */
+.career-image img:hover {
+  transform: scale(1.05);
+}
+
+/* Konten teks muncul dengan fade dan slide-up */
+.career-content {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUpCareerContent 1s ease-out forwards 0.3s;
+}
+
+@keyframes fadeInUpCareerContent {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.career-differences h2 {
+  text-align: center;
+  font-size: 20px; /* Ukuran diperkecil */
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Tabs */
+.career-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  color: #b5b5b5;
+  font-size: 14px; /* Ukuran diperkecil */
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: color 0.3s, background 0.3s, transform 0.2s ease-in-out;
+}
+
+/* Animasi hover & klik */
+.tab:hover {
+  color: #ffb400;
+  transform: scale(1.1);
+}
+
+.tab.active {
+  color: #ffb400;
+  background-color: rgba(255, 180, 0, 0.2);
+  border-radius: 5px;
+  animation: pulseTab 0.3s ease-in-out;
+}
+
+@keyframes pulseTab {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.career-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: fadeInCareerCard 0.5s ease-in-out forwards;
+}
+
+.career-card.animating {
+  animation: fadeOutCareerCard 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeInCareerCard {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutCareerCard {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.career-card h3 {
+  font-size: 16px; /* Ukuran diperkecil */
+  margin-bottom: 8px;
+}
+
+.career-card h3 span {
+  color: #ffb400;
+  font-weight: bold;
+}
+
+.career-card ul {
+  padding-left: 15px;
+}
+
+.career-card li {
+  font-size: 14px; /* Ukuran diperkecil */
+  margin-bottom: 4px;
+}
+
+/* Section mentoring packages */
+.mentoring-packages {
+  text-align: center;
+  background: #f8f9fa;
+  padding: 50px 100px;
+}
+
+.mentoring-packages h2 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2c2c2c;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+}
+
+/* Container untuk kedua paket */
+.mentoring-packages .packages-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+/* Card setiap paket */
+.mentoring-packages .package-card {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  text-align: center;
+}
+
+.mentoring-packages .package-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #008000;
+  margin-bottom: 10px;
+}
+
+.mentoring-packages .package-price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.mentoring-packages .package-features {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.mentoring-packages .package-features li {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+/* Tombol package */
+.mentoring-packages .package-btn {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.mentoring-packages .btn-red {
+  background: #ff4d4d;
+  color: white;
+}
+
+.mentoring-packages .btn-green {
+  background: #4caf50;
+  color: white;
+}
+
+.mentoring-packages .package-btn:hover {
+  opacity: 0.8;
+}
+
+/* Catatan di bawah paket */
+.package-note {
+  font-size: 12px;
+  color: #777;
+  margin-top: 20px;
+  max-width: 600px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

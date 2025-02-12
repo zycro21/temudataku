@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300..800&display=swap");
+
+.user-register-container {
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #004d32, #007f4e);
+}
+
+.user-register-card {
+  display: flex;
+  width: 800px;
+  height: 500px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* Sisi kiri */
+.user-register-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #007f4e, #004d32);
+}
+
+.logo-image {
+  width: 120px;
+  height: auto;
+}
+
+.logo {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+}
+
+/* Sisi kanan */
+.user-register-right {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-register-right h2 {
+  font-size: 2rem;
+  color: #004d32;
+  margin-bottom: 20px;
+}
+
+/* Input group */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: border 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #007f4e;
+  outline: none;
+}
+
+/* Tombol */
+button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  background: #007f4e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #004d32;
+}
+
+button:disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+/* Sudah punya akun */
+.user-register-right p {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.user-register-right p a {
+  color: #007f4e;
+  font-weight: bold;
+  text-decoration: none;
+}

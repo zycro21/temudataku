@@ -60,7 +60,7 @@
 
 .navbar-links a {
   text-decoration: none;
-  font-size: 1.2rem; /* Sedikit dikecilkan */
+  font-size: 1.2rem;
   font-weight: 700;
   color: #007f4e;
   transition: color 0.3s ease-in-out, transform 0.2s;
@@ -73,10 +73,10 @@
   transform: scale(1.1);
 }
 
-/* Link aktif */
+/* Link aktif (warna biru keunguan) */
 .navbar-links a.active {
   font-weight: bold;
-  text-decoration: underline;
+  color: #4b3f72; /* Biru keunguan gelap */
 }
 
 /* Social Icons */
@@ -97,6 +97,39 @@
 .icon:hover {
   color: #004d32;
   transform: scale(1.2);
+}
+
+/* Tooltip (awal: tersembunyi) */
+.tooltip {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Munculkan tooltip saat hover */
+.social-icon,
+.order-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.social-icon:hover .tooltip,
+.order-icon:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Shopping Cart */
@@ -123,6 +156,50 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Container login */
+.login-main-page {
+  display: flex;
+  align-items: center;
+}
+
+/* Link login */
+.login-user-page {
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+/* Ikon login */
+.login-user-page .icon {
+  font-size: 20px;
+}
+
+/* Tooltip (awal: tersembunyi) */
+.tooltip-login {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Munculkan tooltip saat hover */
+.login-user-page:hover .tooltip-login {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* .navbar-links a,
