@@ -1,0 +1,340 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+/* Hero Section */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  background: url("../images/realmentoring.jpg") center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Overlay Transparan dengan Animasi */
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Efek gelap */
+  top: 0;
+  left: 0;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Konten di Tengah */
+.content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeSlideIn 1s ease-in-out forwards;
+}
+
+/* Animasi Teks */
+.title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: white;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Efek Hover: Membesarkan teks */
+.title:hover {
+  text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.8);
+  transform: scale(1.05);
+}
+
+/* Underline animasi */
+.title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: #00d4ff; /* Biru muda */
+  margin: 8px auto 0;
+  transition: width 0.3s ease-in-out;
+}
+
+.title:hover::after {
+  width: 420px;
+}
+
+/* Subtitle Animasi */
+.subtitle {
+  font-size: 1.2rem;
+  color: #ddd;
+  margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.subtitle:hover {
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+/* Tombol CTA dengan Animasi */
+.ctaButton {
+  background-color: #005f73; /* Biru donker */
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 12px 24px;
+  border: 2px solid #005f73;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Efek Hover */
+.ctaButton:hover {
+  background: white;
+  color: #005f73;
+  border: 2px solid #005f73;
+  transform: scale(1.1);
+}
+
+/* Efek Klik */
+.ctaButton:active {
+  transform: scale(0.95);
+}
+
+/* Animasi */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section 2 - Apa yang Akan Kamu Dapatkan */
+.benefitSection {
+  text-align: center;
+  padding: 80px 20px;
+  background: #f8f9fa; /* Warna latar belakang lebih soft */
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #005f73; /* Biru donker */
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.sectionSubtitle {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #444;
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.benefitWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Memastikan quoteContainer sejajar */
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Benefit Cards */
+.benefitGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.benefitCard {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Efek Hover */
+.benefitCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Efek Klik */
+.benefitCard:active {
+  transform: scale(0.98);
+}
+
+.benefitIcon {
+  font-size: 2.5rem;
+  color: #36d399; /* Hijau terang */
+  margin-bottom: 12px;
+}
+
+.benefitCard h3 {
+  font-size: 1.3rem;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.benefitCard p {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* Efek Hover */
+.benefitCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Quote Section */
+.quoteContainer {
+  background: linear-gradient(
+    135deg,
+    #022c43,
+    #064663
+  ); /* Warna lebih gelap agar kontras lebih baik */
+  color: #ffffff; /* Warna teks putih agar lebih jelas */
+  max-width: 1000px;
+  width: 100%;
+  padding: 20px;
+  padding-top: 10px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  margin-top: 40px; /* Tambahkan jarak dari elemen sebelumnya */
+}
+
+.quoteContainer:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.quoteContainer:active {
+  transform: scale(0.98);
+}
+
+.quoteText {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.quoteAuthor {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+/* Section 3 */
+.practiceSection {
+  padding: 50px 10%;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+/* Grid Container */
+.practiceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+/* Card Styling */
+.practiceCard {
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Bagian atas card (Ikon) */
+.practiceCardHeader {
+  background-color: #005f73;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 40px;
+}
+
+/* Bagian bawah card (Konten) */
+.practiceCardBody {
+  background-color: #f3f4f6;
+  padding: 20px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Efek hover card */
+.practiceCard:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Tombol Aktif */
+.activeButton {
+  background-color: #005f73;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Efek Hover Tombol Aktif */
+.activeButton:hover {
+  background-color: #16a34a;
+  transform: scale(1.05);
+}
+
+/* Tombol Nonaktif */
+.disabledButton {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  width: 100%;
+  font-weight: bold;
+  opacity: 0.7;
+}

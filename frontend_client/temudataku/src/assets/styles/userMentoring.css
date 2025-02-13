@@ -63,8 +63,8 @@
   font-size: 1rem;
   font-weight: bold;
   color: white;
-  background: #36d399; /* Hijau terang */
-  border: 2px solid #36d399; /* Tambahkan border agar efek hover lebih smooth */
+  background: #005f73; /* Hijau terang */
+  border: 2px solid #005f73; /* Tambahkan border agar efek hover lebih smooth */
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
@@ -74,8 +74,8 @@
 /* Efek Hover */
 .hero-section-mentoring .cta-button-mentoring:hover {
   background: white; /* Warna latar jadi putih */
-  color: #36d399; /* Warna teks jadi hijau */
-  border: 2px solid #36d399; /* Pastikan border tetap hijau */
+  color: #005f73; /* Warna teks jadi hijau */
+  border: 2px solid #005f73; /* Pastikan border tetap hijau */
   transform: scale(1.1);
 }
 

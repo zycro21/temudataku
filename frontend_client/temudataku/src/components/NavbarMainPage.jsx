@@ -16,7 +16,6 @@ const NavbarMainPage = () => {
     const currentPath = location.pathname;
     const isMentoring = currentPath === "/mentoring";
     const isPractice = currentPath === "/practice";
-    const isLogin = currentPath === "/login";
 
     useEffect(() => {
         const handleScroll = () => {

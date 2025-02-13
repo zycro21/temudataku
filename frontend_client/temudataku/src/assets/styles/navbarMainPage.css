@@ -201,22 +201,3 @@
   opacity: 1;
   visibility: visible;
 }
-
-/* .navbar-links a,
-.icon,
-.cart {
-  color: #007f4e;
-  transition: color 0.3s ease-in-out;
-}
-
-.navbar.hero-top .navbar-links a,
-.navbar.hero-top .icon,
-.navbar.hero-top .cart {
-  color: gray !important; 
-}
-
-.navbar.hero-top .navbar-links a:hover,
-.navbar.hero-top .icon:hover,
-.navbar.hero-top .cart:hover {
-  color: #555 !important; 
-} */
