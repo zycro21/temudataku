@@ -9,7 +9,7 @@
   left: 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 0; /* ✅ Mengurangi padding agar lebih ramping */
-  min-height: 40px; /* ✅ Mengurangi tinggi navbar */
+  max-height: 200px; /* ✅ Mengurangi tinggi navbar */
   transition: all 0.3s ease-in-out;
   z-index: 1000;
 }
@@ -197,7 +197,85 @@
 }
 
 /* Munculkan tooltip saat hover */
-.login-user-page:hover .tooltip-login {
+.login-main-page .login-user-page:hover .tooltip-login {
   opacity: 1;
   visibility: visible;
+}
+/* Wrapper user profile */
+.login-main-page .user-profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  /* gap: 10px; */
+  cursor: pointer;
+}
+
+/* Avatar */
+.login-main-page .user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Efek hover pada avatar */
+.login-main-page .user-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* Dropdown Menu */
+.login-main-page .user-dropdown {
+  position: absolute;
+  top: 50px; /* Dekatkan dropdown ke avatar */
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: row; /* Sejajar horizontal */
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  z-index: 1000;
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Tampilkan dropdown saat aktif */
+.login-main-page .user-profile:hover .user-dropdown {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+/* Button di dalam dropdown */
+.login-main-page .user-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  white-space: nowrap; /* Supaya teks tidak terpotong */
+}
+
+/* Icon dalam dropdown */
+.login-main-page .user-dropdown button .icon {
+  color: #003366; /* Biru donker */
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* Hover effect pada tombol dropdown */
+.login-main-page .user-dropdown button:hover {
+  background: #f0f0f0;
+  border-radius: 5px;
 }

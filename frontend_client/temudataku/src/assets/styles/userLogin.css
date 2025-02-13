@@ -33,14 +33,8 @@
 
 /* Gambar Logo */
 .user-login-container .logo-image {
-  width: 120px; /* Atur ukuran logo */
+  width: 350px; /* Atur ukuran logo */
   height: auto;
-}
-
-.user-login-container .logo {
-  font-size: 2.5rem;
-  color: white;
-  font-weight: bold;
 }
 
 /* Sisi kanan */
@@ -86,27 +80,68 @@
   color: #555;
 }
 
-.user-login-container .login-options a {
-  text-decoration: none;
-  color: #007f4e;
-  font-weight: bold;
+/* Animasi untuk checkbox */
+.user-login-container .login-options label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: color 0.3s;
 }
 
-/* Tombol login */
+.user-login-container .login-options label:hover {
+  color: #007f4e;
+}
+
+.user-login-container .login-options input[type="checkbox"] {
+  accent-color: #007f4e; /* Warna checkbox */
+  transform: scale(1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.user-login-container .login-options input[type="checkbox"]:active {
+  transform: scale(1.2);
+}
+
+/* Animasi untuk link "Lupa password?" */
+.user-login-container .login-options a {
+  position: relative;
+  color: #007f4e;
+  transition: color 0.3s;
+}
+
+.user-login-container .login-options a:hover {
+  color: #004d32;
+}
+
+.user-login-container .login-options a::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #007f4e;
+  transition: width 0.3s;
+}
+
+/* Animasi untuk tombol login */
 .user-login-container button {
   width: 100%;
   padding: 12px;
+  margin-top: 20px;
   font-size: 1rem;
   background: #007f4e;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: transform 0.2s, background 0.3s;
 }
 
 .user-login-container button:hover {
-  background: #004d32;
+  transform: scale(1.05);
+}
+
+.user-login-container button:active {
+  transform: scale(0.95);
 }
 
 .user-login-container button:disabled {
@@ -114,7 +149,7 @@
   cursor: not-allowed;
 }
 
-/* Daftar */
+/* Animasi untuk link "Daftar" */
 .user-login-right p {
   margin-top: 15px;
   text-align: center;
@@ -122,7 +157,22 @@
 }
 
 .user-login-right p a {
+  position: relative;
   color: #007f4e;
   font-weight: bold;
   text-decoration: none;
+  transition: color 0.3s;
+}
+
+.user-login-right p a:hover {
+  color: #004d32;
+}
+
+.user-login-right p a::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #007f4e;
+  transition: width 0.3s;
 }

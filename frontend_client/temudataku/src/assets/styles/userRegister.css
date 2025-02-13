@@ -9,7 +9,7 @@
   background: linear-gradient(135deg, #004d32, #007f4e);
 }
 
-.user-register-card {
+.user-register-container .user-register-card {
   display: flex;
   width: 800px;
   height: 500px;
@@ -29,15 +29,9 @@
   background: linear-gradient(135deg, #007f4e, #004d32);
 }
 
-.logo-image {
-  width: 120px;
+.user-register-left .logo-image {
+  width: 350px;
   height: auto;
-}
-
-.logo {
-  font-size: 2.5rem;
-  color: white;
-  font-weight: bold;
 }
 
 /* Sisi kanan */
@@ -56,11 +50,11 @@
 }
 
 /* Input group */
-.input-group {
+.user-register-right .input-group {
   margin-bottom: 15px;
 }
 
-.input-group input {
+.user-register-right .input-group input {
   width: 100%;
   padding: 12px;
   font-size: 1rem;
@@ -69,7 +63,7 @@
   transition: border 0.3s;
 }
 
-.input-group input:focus {
+.user-register-right .input-group input:focus {
   border-color: #007f4e;
   outline: none;
 }

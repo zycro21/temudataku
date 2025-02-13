@@ -14,6 +14,8 @@ import UserMentoring from "./pages/UserMentoring";
 import UserPractice from "./pages/UserPractice";
 import UserLogin from "./pages/UserLogin";
 import UserRegister from "./pages/UserRegister";
+import RequestResetPassword from "./pages/RequestResetPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   return (
@@ -21,10 +23,15 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<UserMainPage />} />
-          <Route path="/mentoring" element={<UserMentoring />}/>
-          <Route path="/practice" element={<UserPractice />}/>
-          <Route path="/login" element={<UserLogin />}/>
-          <Route path="/register" element={<UserRegister />}/>
+          <Route path="/mentoring" element={<UserMentoring />} />
+          <Route path="/practice" element={<UserPractice />} />
+          <Route path="/login" element={<UserLogin />} />
+          <Route path="/register" element={<UserRegister />} />
+          <Route
+            path="/request-reset-password"
+            element={<RequestResetPassword />}
+          />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/registerAdmin" element={<Register />} />
           <Route path="/loginAdmin" element={<LoginAdmin />} />
           <Route path="/dashboard" element={<Dashboard />} />

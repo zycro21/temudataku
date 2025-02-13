@@ -7,6 +7,8 @@ import NavbarMainPage from "../components/NavbarMainPage";
 import FooterMainPage from "../components/FooterMainPage";
 import "../assets/styles/userLogin.css";
 
+const LogoLogin = require("../assets/images/TemuDataku-07.png");
+
 const UserLogin = () => {
     const [emailOrUsername, setEmailOrUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -23,17 +25,25 @@ const UserLogin = () => {
                 password,
             });
 
-            toast.success("Login Berhasil!");
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("user", JSON.stringify(response.data.user));
+            const { user, token } = response.data;
 
+            // Cek apakah role adalah admin
+            if (user.role === "admin") {
+                toast.error("Akun admin tidak dapat login di sini.");
+                setLoading(false);
+                return;
+            }
+
+            // Simpan token dan user ke localStorage hanya jika bukan admin
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(user));
+
+            toast.success("Login Berhasil!");
             setTimeout(() => {
                 navigate("/");
             }, 1500);
         } catch (error) {
-            toast.error(
-                error.response?.data?.message || "Terjadi kesalahan, coba lagi."
-            );
+            toast.error(error.response?.data?.message || "Terjadi kesalahan, coba lagi.");
         } finally {
             setLoading(false);
         }
@@ -46,8 +56,8 @@ const UserLogin = () => {
 
                 <div className="user-login-card">
                     <div className="user-login-left">
-                        <img src="../assets/images/logo-temudataku.png" alt="TemuDataku Logo" className="logo-image" />
-                        <h1 className="logo">TemuDataku</h1>
+                        <img src={LogoLogin} alt="TemuDataku Logo" className="logo-image" />
+                        {/* <h1 className="logo">TemuDataku</h1> */}
                     </div>
                     <div className="user-login-right">
                         <h2>Sign In</h2>
@@ -74,7 +84,7 @@ const UserLogin = () => {
                                 <label>
                                     <input type="checkbox" /> Ingat saya
                                 </label>
-                                <a href="#">Lupa password?</a>
+                                <Link to="/request-reset-password">Lupa password?</Link>
                             </div>
                             <button type="submit" disabled={loading}>
                                 {loading ? "Memproses..." : "Login"}

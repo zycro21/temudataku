@@ -5,16 +5,24 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../assets/styles/userRegister.css";
 
+const LogoRegister = require("../assets/images/TemuDataku-07.png");
+
 const UserRegister = () => {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        if (password !== confirmPassword) {
+            toast.error("Password dan Konfirmasi Password tidak cocok!");
+            return; // Hentikan proses registrasi
+        }
 
         try {
             const response = await axios.post("http://localhost:8000/api/users/register", {
@@ -32,9 +40,17 @@ const UserRegister = () => {
                 navigate("/login");
             }, 2000);
         } catch (error) {
-            toast.error(error.response?.data?.message || "Pendaftaran Gagal", {
-                position: "top-right",
-            });
+            if (error.response?.data?.errors) {
+                error.response.data.errors.forEach((err) => {
+                    toast.error(err.msg, {
+                        position: "top-right",
+                    });
+                });
+            } else {
+                toast.error(error.response?.data?.message || "Pendaftaran Gagal", {
+                    position: "top-right",
+                });
+            }
         } finally {
             setLoading(false);
         }
@@ -46,8 +62,7 @@ const UserRegister = () => {
                 <div className="user-register-card">
                     <div className="user-register-left">
                         <div className="logo-container">
-                            <img src="/assets/images/logo-temudataku.png" alt="TemuDataku Logo" className="logo-image" />
-                            <h1 className="logo">TemuDataku</h1>
+                            <img src={LogoRegister} alt="TemuDataku Logo" className="logo-image" />
                         </div>
                     </div>
 
@@ -78,6 +93,15 @@ const UserRegister = () => {
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="input-group">
+                                <input
+                                    type="password"
+                                    placeholder="Konfirmasi Password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                 />
                             </div>

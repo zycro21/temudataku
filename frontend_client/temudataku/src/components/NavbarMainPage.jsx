@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import axiosInstanceUser from "./axiosInstanceUser";
 import "../assets/styles/navbarMainPage.css";
-import { FaInstagram, FaLinkedin, FaWhatsapp, FaShoppingCart, FaUser } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaWhatsapp, FaShoppingCart, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Logo = require("../assets/images/logotemudataku.png");
 
 const NavbarMainPage = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isHeroAtTop, setIsHeroAtTop] = useState(false);
+
+    const [user, setUser] = useState(null);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -27,7 +34,6 @@ const NavbarMainPage = () => {
             const heroRect = heroSection.getBoundingClientRect();
             const navbarRect = navbar.getBoundingClientRect();
 
-            // ✅ Correct logic: Navbar is above hero when its bottom is inside the hero section
             const isHeroAtTop = navbarRect.bottom > heroRect.top && navbarRect.top < heroRect.bottom;
 
             if (isHeroAtTop) {
@@ -43,8 +49,58 @@ const NavbarMainPage = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    useEffect(() => {
+        // Cek apakah ada user di localStorage
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+
+        // Cek apakah token masih valid dengan memanggil API sederhana
+        const checkToken = async () => {
+            try {
+                await axiosInstanceUser.get("/users/check-auth"); // Endpoint dummy untuk validasi token
+            } catch (error) {
+                console.error("Token tidak valid, logout otomatis.");
+            }
+        };
+
+        checkToken();
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setUser(null);
+
+        toast.success("Logout berhasil! Sampai jumpa lagi.", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "colored",
+        });
+
+        navigate("/");
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
-        <div className={`navbar ${isScrolled ? "scrolled" : ""} ${isHeroAtTop ? "hero-top" : ""}`} onClick={() => console.log("Classes:", isScrolled, isHeroAtTop)}>
+        <div className={`navbar ${isScrolled ? "scrolled" : ""} ${isHeroAtTop ? "hero-top" : ""}`}>
+            <ToastContainer />
             <div className="navbar-container">
                 {/* Logo (Klik untuk kembali ke Home) */}
                 <div className="navbar-logo" onClick={() => navigate("/")}>
@@ -84,11 +140,33 @@ const NavbarMainPage = () => {
                     </div>
                 </div>
 
+                {/* Login / User Profile */}
                 <div className="login-main-page">
-                    <Link to="/login" className="login-user-page">
-                        <FaUser className="icon" />
-                        <span className="tooltip-login">Login</span>
-                    </Link>
+                    {user ? (
+                        <div className="user-profile">
+                            <img
+                                src={user.profileImage || { Logo }}
+                                alt="User Profile"
+                                className="user-avatar"
+                                onClick={() => setShowDropdown(!showDropdown)}
+                            />
+                            {showDropdown && (
+                                <div className="user-dropdown" ref={dropdownRef}>
+                                    <button onClick={() => navigate("/profile")}>
+                                        <FaUser className="icon" /> Info User
+                                    </button>
+                                    <button onClick={handleLogout}>
+                                        <FaSignOutAlt className="icon" /> Logout
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <Link to="/login" className="login-user-page">
+                            <FaUser className="icon" />
+                            <span className="tooltip-login">Login</span>
+                        </Link>
+                    )}
                 </div>
             </div>
         </div>
