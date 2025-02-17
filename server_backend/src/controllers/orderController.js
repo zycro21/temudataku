@@ -14,40 +14,60 @@ const RESET_PASSWORD_EXPIRATION = "1h";
 
 exports.createOrder = async (req, res) => {
   try {
-    const { user_id, session_id, status } = req.body;
-    const { role, user_id: loggedInUserId } = req.user; // Ambil role & user_id dari token
+    const { user_id, session_ids, status } = req.body;
+    const { role, user_id: loggedInUserId } = req.user;
 
-    // Validasi wajib diisi
-    if (!user_id || !session_id || !status) {
-      return res
-        .status(400)
-        .json({ message: "User ID, Session ID, dan Status wajib diisi" });
+    // Pastikan session_ids berupa array dan tidak kosong
+    if (!Array.isArray(session_ids) || session_ids.length === 0) {
+      return res.status(400).json({
+        message: "Session ID harus berupa array dan minimal 1 sesi",
+      });
     }
 
     // Jika role adalah "user", pastikan dia hanya bisa membuat order untuk dirinya sendiri
     if (role === "user" && user_id !== loggedInUserId) {
-      return res
-        .status(403)
-        .json({ message: "Anda hanya bisa membuat order untuk diri sendiri" });
+      return res.status(403).json({
+        message: "Anda hanya bisa membuat order untuk diri sendiri",
+      });
     }
 
-    // Validasi status hanya boleh: pending, confirmed, completed, cancelled
-    const validStatuses = ["pending", "confirmed", "completed", "cancelled"];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ message: "Status tidak valid" });
+    // Jika bukan admin, pastikan status hanya bisa "pending"
+    if (role !== "admin" && status !== "pending") {
+      return res.status(403).json({
+        message: "Anda tidak memiliki izin untuk mengatur status order",
+      });
     }
 
-    // Ambil service_type berdasarkan session_id
-    const [sessionData] = await db.query(
-      "SELECT service_type FROM sessions WHERE session_id = ?",
-      [session_id]
+    // Ambil data sesi berdasarkan session_ids
+    const placeholders = session_ids.map(() => "?").join(",");
+    const [sessions] = await db.query(
+      `SELECT session_id, service_type, price FROM sessions WHERE session_id IN (${placeholders})`,
+      session_ids
     );
 
-    if (sessionData.length === 0) {
-      return res.status(400).json({ message: "Session tidak dapat ditemukan" });
+    // Pastikan semua session ditemukan
+    if (sessions.length !== session_ids.length) {
+      return res.status(400).json({ message: "Beberapa sesi tidak ditemukan" });
     }
 
-    const service_type = sessionData[0].service_type; // Ambil service_type dari session
+    // Hitung total harga dari semua sesi yang diorder (pastikan harga dikonversi ke angka)
+    const total_price = sessions.reduce(
+      (sum, session) => sum + Number(session.price),
+      0
+    );
+
+    // Pastikan formatnya benar sebagai angka desimal, bukan string
+    const formattedTotalPrice = parseFloat(total_price.toFixed(2));
+
+    // Pastikan semua sesi memiliki jenis layanan yang sama
+    const service_types = [...new Set(sessions.map((s) => s.service_type))];
+    if (service_types.length !== 1) {
+      return res.status(400).json({
+        message: "Semua sesi dalam order harus memiliki service type yang sama",
+      });
+    }
+
+    const service_type = service_types[0];
 
     // Generate order_id berdasarkan service_type
     const orderPrefix =
@@ -69,37 +89,38 @@ exports.createOrder = async (req, res) => {
       [service_type]
     );
 
-    let newNumber = 1; // Default jika belum ada order
-
+    let newNumber = 1;
     if (lastOrder.length > 0) {
-      const lastOrderId = lastOrder[0].order_id; // Misalnya "order-BC-0003"
-      const lastNumber = parseInt(lastOrderId.split("-").pop(), 10); // Ambil angka terakhir (0003)
-      newNumber = lastNumber + 1; // Tambah 1
+      const lastOrderId = lastOrder[0].order_id;
+      const lastNumber = parseInt(lastOrderId.split("-").pop(), 10);
+      newNumber = lastNumber + 1;
     }
 
     const order_id = `${orderPrefix}${String(newNumber).padStart(4, "0")}`;
 
-    // Buat timestamp order_date
-    const order_date = new Date();
+    await db.query(
+      `INSERT INTO orders (order_id, user_id, order_date, status, service_type, total_price)
+       VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, ?)`,
+      [order_id, user_id, status, service_type, formattedTotalPrice]
+    );
 
-    // Insert Order ke dalam database
-    const sql = `
-          INSERT INTO orders (order_id, user_id, session_id, order_date, status, service_type)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `;
+    // Insert ke `order_details` (hubungan antara order & sesi)
+    const orderDetailSql = `
+      INSERT INTO order_details (order_id, session_id)
+      VALUES ${session_ids.map(() => "(?, ?)").join(", ")}
+    `;
 
-    await db.query(sql, [
-      order_id,
-      user_id,
-      session_id,
-      order_date,
-      status,
-      service_type,
-    ]);
+    const orderDetailParams = [];
+    session_ids.forEach((session_id) => {
+      orderDetailParams.push(order_id, session_id);
+    });
+
+    await db.query(orderDetailSql, orderDetailParams);
 
     res.status(201).json({
       message: "Order Berhasil Dibuat",
       order_id,
+      total_price,
     });
   } catch (error) {
     console.error("Error saat membuat order:", error);
@@ -226,40 +247,121 @@ exports.getOrderById = async (req, res) => {
     const { orderId } = req.params;
     const { user_id, role } = req.user; // Ambil user_id dan role dari token
 
+    console.log(orderId);
+
     // Query untuk mengambil detail order beserta informasi mentor dan session
     let sql = `
-          SELECT o.order_id, o.user_id, o.session_id, o.order_date, o.status, o.total_price, o.service_type, 
-                 s.title AS session_title, m.mentor_id, m.name AS mentor_name
-          FROM orders o
-          LEFT JOIN sessions s ON o.session_id = s.session_id
-          LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
-          WHERE o.order_id = ?
-        `;
+        SELECT o.order_id, o.user_id, od.session_id, o.order_date, o.status, CAST(o.total_price AS UNSIGNED) AS total_price, o.service_type, 
+              s.title AS session_title, m.mentor_id, m.name AS mentor_name
+        FROM orders o
+        LEFT JOIN order_details od ON o.order_id = od.order_id
+        LEFT JOIN sessions s ON od.session_id = s.session_id
+        LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
+        WHERE o.order_id = ?
+    `;
 
     // Jika role user adalah "user", pastikan hanya bisa mengakses order_id miliknya sendiri
     if (role === "user") {
       sql += ` AND o.user_id = ?`;
     }
 
-    const [order] = await db.query(
+    const [orderDetails] = await db.query(
       sql,
       role === "user" ? [orderId, user_id] : [orderId]
     );
 
-    if (order.length === 0) {
+    if (orderDetails.length === 0) {
       return res
         .status(404)
         .json({ message: "Order tidak ditemukan", status: "error" });
     }
 
+    // Gabungkan data sesi berdasarkan order_id
+    const order = {
+      order_id: orderDetails[0].order_id,
+      user_id: orderDetails[0].user_id,
+      order_date: orderDetails[0].order_date,
+      status: orderDetails[0].status,
+      total_price: orderDetails[0].total_price,
+      service_type: orderDetails[0].service_type,
+      sessions: orderDetails.map((detail) => ({
+        session_id: detail.session_id,
+        session_title: detail.session_title,
+        mentor_name: detail.mentor_name,
+      })),
+    };
+
     // Mengembalikan detail order beserta informasi mentor
     res.status(200).json({
       message: "Detail order berhasil ditemukan",
       status: "success",
-      data: order[0],
+      data: order,
     });
   } catch (error) {
     console.error("Error saat mengambil detail order:", error);
+    res.status(500).json({
+      message: "Terjadi kesalahan, coba lagi nanti.",
+      status: "error",
+    });
+  }
+};
+
+exports.getOrdersByUser = async (req, res) => {
+  try {
+    const { user_id } = req.user; // Hanya ambil user_id dari token
+
+    // Query untuk mengambil daftar order beserta informasi mentor dan session
+    const sql = `
+      SELECT o.order_id, o.user_id, od.session_id, o.order_date, o.status, CAST(o.total_price AS UNSIGNED) AS total_price, o.service_type, 
+             s.title AS session_title, m.mentor_id, m.name AS mentor_name
+      FROM orders o
+      LEFT JOIN order_details od ON o.order_id = od.order_id
+      LEFT JOIN sessions s ON od.session_id = s.session_id
+      LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
+      WHERE o.user_id = ?
+    `;
+
+    const [orderDetails] = await db.query(sql, [user_id]);
+
+    if (orderDetails.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Order tidak ditemukan", status: "error" });
+    }
+
+    // Gabungkan data sesi berdasarkan order_id
+    const orders = orderDetails.reduce((result, detail) => {
+      let order = result.find((o) => o.order_id === detail.order_id);
+
+      if (!order) {
+        order = {
+          order_id: detail.order_id,
+          user_id: detail.user_id,
+          order_date: detail.order_date,
+          status: detail.status,
+          total_price: detail.total_price,
+          service_type: detail.service_type,
+          sessions: [],
+        };
+        result.push(order);
+      }
+
+      order.sessions.push({
+        session_id: detail.session_id,
+        session_title: detail.session_title,
+        mentor_name: detail.mentor_name,
+      });
+
+      return result;
+    }, []);
+
+    res.status(200).json({
+      message: "Daftar order berhasil ditemukan",
+      status: "success",
+      data: orders,
+    });
+  } catch (error) {
+    console.error("Error saat mengambil daftar order:", error);
     res.status(500).json({
       message: "Terjadi kesalahan, coba lagi nanti.",
       status: "error",

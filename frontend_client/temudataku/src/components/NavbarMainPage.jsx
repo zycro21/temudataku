@@ -5,6 +5,7 @@ import "../assets/styles/navbarMainPage.css";
 import { FaInstagram, FaLinkedin, FaWhatsapp, FaShoppingCart, FaUser, FaSignOutAlt } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useOrder } from "./OrderContext";
 
 const Logo = require("../assets/images/logotemudataku.png");
 
@@ -16,6 +17,10 @@ const NavbarMainPage = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);
 
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -23,6 +28,8 @@ const NavbarMainPage = () => {
     const currentPath = location.pathname;
     const isMentoring = currentPath === "/mentoring";
     const isPractice = currentPath === "/practice";
+
+    const { orderCount } = useOrder();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -50,6 +57,14 @@ const NavbarMainPage = () => {
     }, []);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            console.log("Token tidak ditemukan, redirect ke login");
+            setUser(null);
+            return;
+        }
+
         // Cek apakah ada user di localStorage
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
@@ -59,9 +74,30 @@ const NavbarMainPage = () => {
         // Cek apakah token masih valid dengan memanggil API sederhana
         const checkToken = async () => {
             try {
-                await axiosInstanceUser.get("/users/check-auth"); // Endpoint dummy untuk validasi token
+                const storedUser = localStorage.getItem("user");
+                const token = localStorage.getItem("token");
+
+                if (!storedUser || !token) return;
+
+                const { user_id } = JSON.parse(storedUser);
+
+                await axiosInstanceUser.get(`/api/users/getUser/${user_id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
             } catch (error) {
-                console.error("Token tidak valid, logout otomatis.");
+                if (error.response?.status === 401) {
+                    console.error("Token tidak valid, logout otomatis.");
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    window.location.href = "/";
+                } else if (error.response?.status === 404) {
+                    console.error("User tidak ditemukan, logout otomatis.");
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    window.location.href = "/";
+                } else {
+                    console.error("Terjadi kesalahan saat validasi token:", error);
+                }
             }
         };
 
@@ -98,6 +134,43 @@ const NavbarMainPage = () => {
         };
     }, []);
 
+    // Fungsi untuk fetch data user
+    const fetchUserProfile = async () => {
+        try {
+            const storedUser = localStorage.getItem("user");
+            const token = localStorage.getItem("token");
+
+            if (!storedUser || !token) {
+                return;
+            }
+
+            const parsedUser = JSON.parse(storedUser);
+            const { user_id, role } = parsedUser;
+
+            let response;
+            if (role === "mentor") {
+                response = await axiosInstanceUser.get(`/api/users/getMentorProfile/${user_id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+            } else {
+                response = await axiosInstanceUser.get(`/api/users/getUser/${user_id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+            }
+
+            setUserData(response.data.data || response.data);
+        } catch (err) {
+            console.error("Error fetching user data:", err);
+            setError("Gagal mengambil data profil.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserProfile();
+    }, []);
+
     return (
         <div className={`navbar ${isScrolled ? "scrolled" : ""} ${isHeroAtTop ? "hero-top" : ""}`}>
             <ToastContainer />
@@ -131,12 +204,13 @@ const NavbarMainPage = () => {
                         <FaWhatsapp className="icon" />
                         <span className="tooltip">WhatsApp</span>
                     </a>
+                    {/* Order Cart */}
                     <div className="cart-container">
                         <Link to="/order" className="order-icon">
                             <FaShoppingCart className="icon cart" />
                             <span className="tooltip">Order</span>
                         </Link>
-                        <span className="cart-badge">0</span>
+                        {orderCount > 0 && <span className="cart-badge">{orderCount}</span>}
                     </div>
                 </div>
 
@@ -145,16 +219,22 @@ const NavbarMainPage = () => {
                     {user ? (
                         <div className="user-profile">
                             <img
-                                src={user.profileImage || { Logo }}
+                                src={userData && userData.image ? `http://localhost:8000${userData.image}` : Logo}
                                 alt="User Profile"
                                 className="user-avatar"
                                 onClick={() => setShowDropdown(!showDropdown)}
                             />
                             {showDropdown && (
                                 <div className="user-dropdown" ref={dropdownRef}>
-                                    <button onClick={() => navigate("/profile")}>
+                                    <button
+                                        onClick={() => {
+                                            console.log("Navigating to /profile");
+                                            navigate("/profile");
+                                        }}
+                                    >
                                         <FaUser className="icon" /> Info User
                                     </button>
+
                                     <button onClick={handleLogout}>
                                         <FaSignOutAlt className="icon" /> Logout
                                     </button>

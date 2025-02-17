@@ -31,6 +31,14 @@ router.get(
   orderController.getOrderById
 );
 
+router.get(
+  "/getOrderByUser", 
+  verifyLogin,
+  checkTokenBlacklist, 
+  verifyRole(["user"]),
+  orderController.getOrdersByUser
+);
+
 router.put(
   "/updateOrderById/:orderId",
   verifyLogin,

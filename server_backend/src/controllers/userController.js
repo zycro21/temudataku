@@ -354,22 +354,22 @@ exports.getMentorProfile = async (req, res) => {
 
     // Kembalikan data profil mentor
     return res.status(200).json({
-      mentor_id: mentor.mentor_id,
-      user_id: mentor.user_id,
-      username: user.username,
-      email: user.email,
-      profile_picture: user.image,
-      name: mentor.name,
-      expertise: mentor.expertise,
-      bio: mentor.bio,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "Terjadi kesalahan saat mengambil data profil mentor",
-    });
-  }
-};
+        mentor_id: mentor.mentor_id,
+        user_id: mentor.user_id,
+        username: user.username,
+        email: user.email,
+        profile_picture: user.image,
+        name: mentor.name,
+        expertise: mentor.expertise,
+        bio: mentor.bio,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        message: "Terjadi kesalahan saat mengambil data profil mentor",
+      });
+    }
+  };
 
 exports.updateUserProfile = async (req, res) => {
   const {
@@ -574,13 +574,18 @@ exports.updateUserProfile = async (req, res) => {
       await db.query("COMMIT");
 
       return res.status(200).json({
-        message: passwordUpdated
-          ? "Profil Mentor dan password telah diperbarui"
-          : "Profil Mentor telah diperbarui",
+        message:
+          req.user.role === "mentor"
+            ? passwordUpdated
+              ? "Profil Mentor dan password telah diperbarui"
+              : "Profil Mentor telah diperbarui"
+            : passwordUpdated
+            ? "Profil User dan password telah diperbarui"
+            : "Profil User telah diperbarui",
         data: {
-          ...updateFields, // Data yang diupdate di tabel users
+          ...updateFields,
           ...(passwordUpdated && { password: "updated" }),
-          ...mentorUpdateFields, // Data yang diupdate di tabel mentors
+          ...mentorUpdateFields,
         },
       });
     } catch (error) {

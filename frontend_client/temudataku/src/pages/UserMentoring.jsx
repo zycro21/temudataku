@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import NavbarMainPage from "../components/NavbarMainPage";
 import FooterMainPage from "../components/FooterMainPage";
@@ -8,6 +9,7 @@ import { FaChalkboardTeacher, FaUserGraduate, FaLightbulb } from "react-icons/fa
 const mentoringImg = require("../assets/images/realmentoring.jpg");
 
 const UserMentoring = () => {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("Data Analyst");
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -147,7 +149,7 @@ const UserMentoring = () => {
                             <li>✔ Garansi kepuasan <span className="note-marker">*</span></li>
                             <li>✔ Dapatkan akses ke praktik data science <span className="note-marker">**</span></li>
                         </ul>
-                        <button className="package-btn btn-red" onClick={(e) => e.target.classList.add("clicked")}>choose plan</button>
+                        <button className="package-btn btn-red" onClick={() => navigate("/mentoring-list?type=one-on-one")}>choose plan</button>
                     </div>
 
                     <div className="package-card">
@@ -160,7 +162,7 @@ const UserMentoring = () => {
                             <li>✔ Garansi kepuasan <span className="note-marker">*</span></li>
                             <li>✔ Dapatkan akses ke praktik data science <span className="note-marker">**</span></li>
                         </ul>
-                        <button className="package-btn btn-green" onClick={(e) => e.target.classList.add("clicked")}>choose plan</button>
+                        <button className="package-btn btn-green" onClick={() => navigate("/mentoring-list?type=group")}>choose plan</button>
                     </div>
                 </div>
 

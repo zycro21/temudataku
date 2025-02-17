@@ -1,0 +1,215 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+.userInfoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  margin-top: 50px;
+  font-family: "Poppins", sans-serif;
+}
+
+.profileCard {
+  background-color: #ffffff; /* Putih */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profileCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.profileCard .profileImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #003366; /* Biru donker */
+  margin-bottom: 10px;
+}
+
+/* --- PERBAIKAN: h2 dan p hanya berlaku di dalam .profileCard --- */
+.profileCard h2 {
+  color: #003366;
+  margin: 10px 0;
+}
+
+.profileCard p {
+  color: #666666; /* Abu-abu gelap */
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.profileCard .updateButton {
+  background-color: #008f4c; /* Hijau */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.profileCard .updateButton:hover {
+  background-color: #00703c; /* Hijau lebih gelap */
+  transform: scale(1.05);
+}
+
+.error {
+  color: #ff3333; /* Merah */
+  font-weight: bold;
+}
+
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Box */
+.modalContent {
+  background: #ffffff;
+  width: 400px;
+  max-height: 80vh; /* Maksimal 80% dari tinggi layar */
+  padding: 10px 25px 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow-y: auto; /* Tambahkan scroll jika konten melebihi max-height */
+}
+
+/* Judul Modal */
+.modalContent h2 {
+  margin-bottom: 10px;
+  color: #003366; /* Biru donker */
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Form Container */
+.modalContent form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Label */
+.modalContent form label {
+  font-weight: bold;
+  margin-top: 12px;
+  color: #003366;
+  font-size: 14px;
+}
+
+/* Input & Textarea */
+.modalContent form input,
+.modalContent form textarea {
+  width: 95%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #b0b0b0;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #f8f8f8;
+  outline: none;
+  transition: border 0.2s ease-in-out;
+}
+
+.modalContent form input:focus,
+.modalContent form textarea:focus {
+  border-color: #003366;
+}
+
+/* Textarea Styling */
+.modalContent form textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* Tombol Aksi */
+.modalActions {
+  width: 100%;
+  display: flex;
+  gap: 10px; /* Spasi antar tombol */
+  margin-top: 20px;
+}
+
+/* Styling tombol agar ukurannya seragam */
+.modalActions .updateButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.modalActions .cancelButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Tombol Simpan */
+.updateButton {
+  background: #006400; /* Hijau */
+  color: white;
+}
+
+.updateButton:hover {
+  background: #008000;
+}
+
+.updateButton:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Tombol Batal */
+.cancelButton {
+  background: #808080;
+  color: white;
+}
+
+.cancelButton:hover {
+  background: #a9a9a9;
+}

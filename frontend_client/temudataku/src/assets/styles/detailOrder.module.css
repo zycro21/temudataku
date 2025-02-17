@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+.orderDetailContainer {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  padding-top: 8px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.orderDetailContainer:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.orderDetailContainer h2 {
+  font-size: 24px;
+  color: #024f80;
+  margin-bottom: 20px;
+}
+
+.orderDetailContainer p {
+  font-size: 16px;
+  color: #333;
+  margin: 8px 0;
+}
+
+.orderDetailContainer p strong {
+  color: #024f80;
+  margin-bottom: 10px;
+}
+
+.totalPrice {
+  font-size: 18px;
+  font-weight: bold;
+  color: #d9534f;
+  margin-top: 10px;
+}
+
+.waButton {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 18px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #25d366;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.waButton::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.5s ease;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.waButton:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.waButton:hover {
+  background-color: #1ebe5d;
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  margin-top: 50px;
+}
+
+/* Styling untuk tabel sesi */
+.sessionTitle {
+  color: #024f80; /* Biru donker */
+}
+
+.sessionTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.sessionTable th,
+.sessionTable td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.sessionTable th {
+  background-color: #f8f8f8;
+  color: #024f80;
+}
+
+.sessionTable tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Responsif untuk Mobile */
+@media (max-width: 768px) {
+  .orderDetailContainer {
+    max-width: 90%;
+    padding: 15px;
+  }
+
+  .orderDetailContainer h2 {
+    font-size: 20px;
+  }
+
+  .orderDetailContainer p {
+    font-size: 14px;
+  }
+
+  .waButton {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  .sessionTable {
+    font-size: 14px;
+  }
+
+  .sessionTable th,
+  .sessionTable td {
+    padding: 8px;
+  }
+}

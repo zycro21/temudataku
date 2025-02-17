@@ -188,32 +188,12 @@ exports.getAllSession = async (req, res) => {
 exports.getSessionById = async (req, res) => {
   try {
     const { id } = req.params;
-    const { role, user_id } = req.user; // Ambil info dari token
 
-    console.log("Role:", role);
     console.log("Session ID dari request:", id);
 
     // Pastikan session_id valid
     if (!id) {
       return res.status(400).json({ message: "Session ID tidak valid" });
-    }
-
-    let mentor_id = null;
-
-    // Jika role mentor, cari mentor_id dari database
-    if (role === "mentor") {
-      const [mentorResult] = await db.query(
-        "SELECT mentor_id FROM mentors WHERE user_id = ?",
-        [user_id]
-      );
-
-      if (mentorResult.length > 0) {
-        mentor_id = mentorResult[0].mentor_id;
-      } else {
-        return res.status(403).json({ message: "Anda bukan mentor terdaftar" });
-      }
-
-      console.log("Mentor ID dari database:", mentor_id);
     }
 
     let sql = `
@@ -232,34 +212,16 @@ exports.getSessionById = async (req, res) => {
         FROM sessions s
         LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
         LEFT JOIN reviews r ON s.session_id = r.session_id
+        WHERE s.session_id = ? 
+        GROUP BY s.session_id, s.title, s.description, s.price, s.duration, s.service_type, m.name
       `;
 
-    let queryParams = [id];
-
-    // Role-based filtering
-    if (role === "mentor") {
-      sql += ` WHERE s.session_id = ? AND s.mentor_id = ?`;
-      queryParams.push(mentor_id);
-    } else if (role === "user") {
-      sql += `
-          INNER JOIN orders o ON s.session_id = o.session_id
-          WHERE s.session_id = ? AND o.user_id = ?
-        `;
-      queryParams.push(user_id);
-    } else {
-      sql += ` WHERE s.session_id = ?`; // Admin bisa lihat semua session
-    }
-
-    sql +=
-      " GROUP BY s.session_id, s.title, s.description, s.price, s.duration, s.service_type, m.name";
-
     // Eksekusi query
-    const [results] = await db.query(sql, queryParams);
+    const [results] = await db.query(sql, [id]);
 
     if (results.length === 0) {
       return res.status(404).json({
-        message:
-          "Session tidak dapat ditemukan atau anda tidak memiliki izin akses",
+        message: "Session tidak ditemukan.",
       });
     }
 
@@ -316,20 +278,16 @@ exports.updateSessionById = async (req, res) => {
 
     // Role "user" tidak diizinkan
     if (role === "user") {
-      return res
-        .status(403)
-        .json({
-          message: "Anda tidak memiliki izin untuk mengupdate session!",
-        });
+      return res.status(403).json({
+        message: "Anda tidak memiliki izin untuk mengupdate session!",
+      });
     }
 
     // Mentor hanya bisa update session miliknya sendiri
     if (role === "mentor" && session.mentor_id !== loggedMentorId) {
-      return res
-        .status(403)
-        .json({
-          message: "Anda hanya bisa mengupdate session milik Anda sendiri!",
-        });
+      return res.status(403).json({
+        message: "Anda hanya bisa mengupdate session milik Anda sendiri!",
+      });
     }
 
     // Validasi price dan duration harus berupa angka

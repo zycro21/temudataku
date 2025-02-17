@@ -1,0 +1,141 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap");
+
+.orderContainer {
+  max-width: 600px;
+  margin: 30px auto;
+  margin-bottom: 0;
+  background: white;
+  padding: 20px;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Efek shadow */
+  border: 2px solid #ddd; /* Border */
+  transition: transform 0.3s ease-in-out;
+}
+
+.orderContainer:hover {
+  transform: scale(1.02); /* Efek zoom saat hover */
+}
+
+.orderTitle {
+  background: #005f73; /* Biru donker */
+  color: white;
+  padding: 15px;
+  border-radius: 8px 8px 0 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.orderText {
+  color: #555;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.orderTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+.orderTable th {
+  background: #94d2bd; /* Hijau */
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #ddd;
+}
+
+.orderTable td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.totalPrice {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.orderBtn {
+  background: #005f73; /* Biru donker */
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.orderBtn:hover {
+  background: #023e8a; /* Biru lebih gelap */
+  transform: scale(1.05); /* Efek tombol membesar */
+}
+
+.paymentMethod {
+  background: #94d2bd; /* Hijau */
+  color: white;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.paymentBtn {
+  background: #ddd; /* Abu-abu */
+  padding: 15px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.paymentBtn:hover {
+  background: #bbb;
+  transform: scale(1.05);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .orderContainer {
+    width: 90%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .orderTitle {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  .orderText {
+    font-size: 13px;
+  }
+
+  .orderTable th,
+  .orderTable td {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .totalPrice {
+    font-size: 16px;
+  }
+
+  .orderBtn {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  .paymentMethod {
+    font-size: 16px;
+    padding: 12px;
+  }
+}
