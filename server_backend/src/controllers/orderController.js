@@ -134,9 +134,10 @@ exports.getAllOrders = async (req, res) => {
 
     // Hanya admin yang bisa mengakses
     if (role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Akses ditolak, hanya admin yang bisa mengakses." });
+      return res.status(403).json({
+        message: "Akses ditolak, hanya admin yang bisa mengakses.",
+        status: "error",
+      });
     }
 
     // Ambil query params untuk filter, sort, pagination, dan search
@@ -158,87 +159,120 @@ exports.getAllOrders = async (req, res) => {
       : "desc";
 
     let orderBy = "o.order_date"; // Default sorting
+    if (sort_by === "total_price") orderBy = "o.total_price";
 
-    if (sort_by === "total_price") {
-      orderBy = `o.total_price`; // Tidak perlu CAST karena sudah DECIMAL
-    } else if (sort_by === "order_date") {
-      orderBy = "o.order_date";
-    }
-    // Base query
-    let sql = `
-        SELECT o.*, u.username, s.title 
-        FROM orders o
-        JOIN users u ON o.user_id = u.user_id
-        JOIN sessions s ON o.session_id = s.session_id
-        WHERE 1=1
-      `;
-
-    // Tambahkan filter berdasarkan status
-    if (status) {
-      sql += ` AND o.status = ?`;
-    }
-
-    // Tambahkan filter berdasarkan service_type
-    if (service_type) {
-      sql += ` AND o.service_type = ?`;
-    }
-
-    // Tambahkan fitur pencarian (case insensitive)
-    if (search) {
-      sql += ` AND (LOWER(s.title) LIKE LOWER(?) OR LOWER(u.username) LIKE LOWER(?))`;
-    }
-
-    // Tentukan sorting setelah deklarasi sql
-    sql += ` ORDER BY ${orderBy} ${sort_order}`;
-
-    // Tambahkan pagination
-    sql += ` LIMIT ? OFFSET ?`;
-
-    // Buat array parameter untuk query
+    // Ambil daftar order_id unik untuk pagination
+    let baseFilter = `FROM orders o WHERE 1=1`;
     const queryParams = [];
-    if (status) queryParams.push(status);
-    if (service_type) queryParams.push(service_type);
+
+    if (status) {
+      baseFilter += ` AND o.status = ?`;
+      queryParams.push(status);
+    }
+
+    if (service_type) {
+      baseFilter += ` AND o.service_type = ?`;
+      queryParams.push(service_type);
+    }
+
     if (search) {
+      baseFilter += ` AND EXISTS (
+        SELECT 1 FROM order_details od
+        JOIN sessions s ON od.session_id = s.session_id
+        JOIN users u ON o.user_id = u.user_id
+        WHERE od.order_id = o.order_id
+        AND (LOWER(s.title) LIKE LOWER(?) OR LOWER(u.username) LIKE LOWER(?))
+      )`;
       const searchPattern = `%${search}%`;
       queryParams.push(searchPattern, searchPattern);
     }
+
+    // Query pagination untuk order_id unik
+    const orderIdsQuery = `
+      SELECT o.order_id
+      ${baseFilter}
+      ORDER BY ${orderBy} ${sort_order}
+      LIMIT ? OFFSET ?
+    `;
     queryParams.push(limit, offset);
 
-    // Jalankan query untuk mengambil data orders
-    const [orders] = await db.query(sql, queryParams);
+    const [orderIds] = await db.query(orderIdsQuery, queryParams);
+    const orderIdsList = orderIds.map((o) => o.order_id);
 
-    console.log("Final Query:", sql);
-    console.log("Query Params:", queryParams);
-
-    // Query untuk menghitung total orders sesuai filter
-    let countSql = `
-        SELECT COUNT(*) AS total_count
-        FROM orders o
-        JOIN users u ON o.user_id = u.user_id
-        JOIN sessions s ON o.session_id = s.session_id
-        WHERE 1=1
-      `;
-    if (status) countSql += ` AND o.status = ?`;
-    if (service_type) countSql += ` AND o.service_type = ?`;
-    if (search) {
-      countSql += ` AND (LOWER(s.title) LIKE LOWER(?) OR LOWER(u.username) LIKE LOWER(?))`;
+    if (orderIdsList.length === 0) {
+      return res.json({
+        message: "Tidak ada order ditemukan",
+        status: "success",
+        data: [],
+      });
     }
 
-    // Jalankan query untuk menghitung jumlah total orders
-    const [[{ total_count }]] = await db.query(countSql, queryParams);
+    // Ambil detail berdasarkan order_id yang sudah difilter
+    const ordersQuery = `
+      SELECT o.order_id, o.user_id, o.order_date, o.status, 
+             CAST(o.total_price AS UNSIGNED) AS total_price, o.service_type,
+             u.username,
+             od.session_id, s.title AS session_title, m.name AS mentor_name
+      FROM orders o
+      LEFT JOIN users u ON o.user_id = u.user_id
+      LEFT JOIN order_details od ON o.order_id = od.order_id
+      LEFT JOIN sessions s ON od.session_id = s.session_id
+      LEFT JOIN mentors m ON s.mentor_id = m.mentor_id
+      WHERE o.order_id IN (?)
+      ORDER BY o.order_date ${sort_order};
+    `;
+
+    const [ordersData] = await db.query(ordersQuery, [orderIdsList]);
+
+    // Gabungkan sesi berdasarkan order_id
+    const ordersMap = new Map();
+    ordersData.forEach((order) => {
+      if (!ordersMap.has(order.order_id)) {
+        ordersMap.set(order.order_id, {
+          order_id: order.order_id,
+          user_id: order.user_id,
+          order_date: order.order_date,
+          status: order.status,
+          total_price: order.total_price,
+          service_type: order.service_type,
+          username: order.username,
+          sessions: [],
+        });
+      }
+
+      if (order.session_id) {
+        ordersMap.get(order.order_id).sessions.push({
+          session_id: order.session_id,
+          session_title: order.session_title,
+          mentor_name: order.mentor_name,
+        });
+      }
+    });
+
+    // Hitung total orders sesuai filter tanpa LIMIT
+    const countQuery = `SELECT COUNT(DISTINCT o.order_id) AS total_count ${baseFilter}`;
+    const [[{ total_count }]] = await db.query(
+      countQuery,
+      queryParams.slice(0, -2)
+    );
 
     // Hitung total halaman
     const total_pages = Math.ceil(total_count / limit);
 
     res.status(200).json({
-      page,
+      message: "Daftar order berhasil ditemukan",
+      status: "success",
+      page: Number(page),
       total_pages,
       total_count,
-      data: orders,
+      data: Array.from(ordersMap.values()),
     });
   } catch (error) {
     console.error("Error saat mengambil orders:", error);
-    res.status(500).json({ message: "Terjadi kesalahan, coba lagi nanti." });
+    res.status(500).json({
+      message: "Terjadi kesalahan, coba lagi nanti.",
+      status: "error",
+    });
   }
 };
 
@@ -369,13 +403,11 @@ exports.getOrdersByUser = async (req, res) => {
   }
 };
 
-// Update data order (Hanya Admin)
 exports.updateOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
     const { role } = req.user;
-    const { status, session_id, total_price, order_date, service_type } =
-      req.body;
+    const { status, session_ids, total_price, order_date } = req.body;
 
     // Hanya admin yang boleh mengupdate order
     if (role !== "admin") {
@@ -412,25 +444,53 @@ exports.updateOrderById = async (req, res) => {
     if (order_date && order_date !== currentOrder.order_date)
       updates.order_date = order_date;
 
-    // **Jika session_id diubah, update juga service_type**
-    if (session_id && session_id !== currentOrder.session_id) {
-      // Cek apakah session_id baru ada di database
-      const [newSessionData] = await db.query(
-        "SELECT service_type FROM sessions WHERE session_id = ?",
-        [session_id]
+    // Jika session_ids diubah, update relasi ke order_details
+    if (
+      session_ids &&
+      JSON.stringify(session_ids) !== JSON.stringify(currentOrder.session_ids)
+    ) {
+      // Cek apakah semua session_id baru ada di database
+      const placeholders = session_ids.map(() => "?").join(",");
+      const [sessions] = await db.query(
+        `SELECT session_id, service_type FROM sessions WHERE session_id IN (${placeholders})`,
+        session_ids
       );
 
-      if (newSessionData.length === 0) {
+      // Pastikan semua session ditemukan
+      if (sessions.length !== session_ids.length) {
         return res
           .status(400)
-          .json({ message: "Session ID baru tidak ditemukan!" });
+          .json({ message: "Beberapa sesi tidak ditemukan" });
       }
 
-      const newServiceType = newSessionData[0].service_type;
+      // Ambil service_type dari sesi pertama (semua sesi harus memiliki service_type yang sama)
+      const service_types = [...new Set(sessions.map((s) => s.service_type))];
+      if (service_types.length !== 1) {
+        return res.status(400).json({
+          message:
+            "Semua sesi dalam order harus memiliki service type yang sama",
+        });
+      }
 
-      // Update session_id dan service_type
-      updates.session_id = session_id;
+      const newServiceType = service_types[0];
+
+      // Update service_type di tabel orders (tidak perlu update session_ids)
       updates.service_type = newServiceType;
+
+      // Hapus data di tabel order_details yang lama
+      await db.query("DELETE FROM order_details WHERE order_id = ?", [orderId]);
+
+      // Insert data order_details yang baru
+      const orderDetailSql = `
+        INSERT INTO order_details (order_id, session_id)
+        VALUES ${session_ids.map(() => "(?, ?)").join(", ")}
+      `;
+      const orderDetailParams = [];
+      session_ids.forEach((session_id) => {
+        orderDetailParams.push(orderId, session_id);
+      });
+
+      await db.query(orderDetailSql, orderDetailParams);
     }
 
     // Jika tidak ada perubahan data, return error

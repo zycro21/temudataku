@@ -30,22 +30,24 @@ const OrderDashboard = () => {
     const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
     const [formData, setFormData] = useState({
         user_id: "",
-        session_id: "",
+        session_ids: [],
         status: "pending",
     });
+    const [sessions, setSessions] = useState([]);
+    const [currentPageSession, setCurrentPageSession] = useState(1);
+    const [totalPagesSessions, setTotalPagesSessions] = useState(1);
 
     // State untuk detail order
     const [isModalDetailOpen, setIsModalDetailOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
 
-    // State untuk update atau edit ordwer
+    // State untuk update atau edit order
     const [isModalEditOpen, setIsModalEditOpen] = useState(false);
     const [editFormData, setEditFormData] = useState({
         status: "",
-        session_id: "",
-        total_price: "",
+        session_ids: [],
+        total_price: 0,
         order_date: "",
-        service_type: ""
     });
 
     const { isOpen } = useSidebar();
@@ -62,9 +64,9 @@ const OrderDashboard = () => {
                 params: {
                     search,
                     status: statusFilter,
-                    sortBy,
+                    sort_by: sortBy,
                     sort_order: sortOrder,
-                    currentPage
+                    page: currentPage
                 },
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -132,7 +134,7 @@ const OrderDashboard = () => {
         setSortOrder(sortOrder === "" ? "asc" : sortOrder === "asc" ? "desc" : "");
     };
 
-    // Fungsi Submit Creat Order
+    // Fungsi Submit Create Order
     const handleSubmitOrder = async (e) => {
         e.preventDefault();
 
@@ -140,6 +142,12 @@ const OrderDashboard = () => {
             const token = localStorage.getItem("token");
             if (!token) {
                 toast.error("Token tidak dapat ditemukan!");
+                return;
+            }
+
+            // Pastikan session_ids berupa array dan tidak kosong
+            if (!Array.isArray(formData.session_ids) || formData.session_ids.length === 0) {
+                toast.error("Harap pilih minimal satu sesi.");
                 return;
             }
 
@@ -161,14 +169,65 @@ const OrderDashboard = () => {
     };
 
     const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value, type, selectedOptions } = e.target;
+
+        if (name === "session_ids") {
+            // Jika multiple select, ambil semua sesi yang dipilih
+            const selectedValues = Array.from(selectedOptions, (option) => option.value);
+            setFormData({ ...formData, session_ids: selectedValues });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
-    const handleAddOrderClick = () => {
-        console.log("Modal Dibuka");
-        setFormData({});
-        setIsModalCreateOpen(true);
+    const fetchSessions = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                toast.error("Token tidak ditemukan!");
+                return;
+            }
+
+            const response = await axiosInstance.get("http://localhost:8000/api/sessions/getAllSessions", {
+                params: {
+                    page: currentPageSession,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setSessions(response.data.sessions);
+            setTotalPagesSessions(response.data.totalPages);
+        } catch (error) {
+            console.error("Error fetching sessions:", error);
+        }
     }
+
+    useEffect(() => {
+        fetchSessions();
+    }, [currentPageSession]);
+
+    // Handler untuk menangani perubahan checkbox yang dipilih
+    const handleCheckboxChange = (sessionId) => {
+        setFormData(prevState => {
+            const updatedSessionIds = prevState.session_ids.includes(sessionId)
+                ? prevState.session_ids.filter(id => id !== sessionId) // Jika sudah ada, hapus
+                : [...prevState.session_ids, sessionId]; // Jika belum ada, tambahkan
+
+            return { ...prevState, session_ids: updatedSessionIds };
+        });
+    };
+
+    const handlePageChangeSession = (page) => {
+        setCurrentPageSession(page);
+    };
+
+    // Fungsi untuk membuka modal tambah order
+    const handleAddOrderClick = () => {
+        setFormData({ user_id: "", session_ids: [], status: "pending" });
+        setIsModalCreateOpen(true);
+    };
 
     // Fungsi Detail Order
     const handleDetailOrderClick = async (orderId) => {
@@ -194,14 +253,15 @@ const OrderDashboard = () => {
 
     // Fungsi membuka modal dan mengisi form dengan data dari database
     const openEditOrderModal = (order) => {
-        console.log("Selected Order:", order); // Debugging
+        // Ambil session_id dari sessions dan masukkan ke session_ids
+        const sessionIds = order.sessions.map(session => session.session_id);
+
         setSelectedOrder(order);
         setEditFormData({
             status: order.status,
-            session_id: order.session_id,
             total_price: order.total_price,
             order_date: order.order_date ? order.order_date.split("T")[0] : "", // Format YYYY-MM-DD
-            service_type: order.service_type
+            session_ids: sessionIds || []  // Gunakan session_ids yang sudah diperbaiki
         });
         setIsModalEditOpen(true);
     };
@@ -211,9 +271,28 @@ const OrderDashboard = () => {
         setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
     };
 
+    // Handler untuk menangani perubahan checkbox yang dipilih saat mengedit order
+    const handleSessionCheckboxChange = (sessionId) => {
+        console.log("Changing sessionId:", sessionId);
+
+        setEditFormData((prevState) => {
+            const updatedSessionIds = prevState.session_ids.includes(sessionId)
+                ? prevState.session_ids.filter(id => id !== sessionId) // Jika sudah ada, hapus
+                : [...prevState.session_ids, sessionId]; // Jika belum ada, tambahkan
+
+            return { ...prevState, session_ids: updatedSessionIds };
+        });
+    };
+
     // Fungsi submit input form
     const handleUpdateOrderClick = async (e) => {
         e.preventDefault();
+
+        // Validasi session_ids, pastikan tidak kosong atau format sesuai
+        if (editFormData.session_ids.length === 0) {
+            toast.error("Harap pilih setidaknya satu sesi");
+            return;
+        }
 
         try {
             const token = localStorage.getItem("token");
@@ -237,8 +316,8 @@ const OrderDashboard = () => {
         } catch (error) {
             toast.error(error.response?.data?.message || "Gagal melakukan update data order");
         }
-
     };
+
 
     // Fungsi Delete Order
     const handleDeleteOrder = async (orderId) => {
@@ -327,7 +406,7 @@ const OrderDashboard = () => {
                                 <th>No</th>
                                 <th>Order ID</th>
                                 <th>User ID</th>
-                                <th>Session ID</th>
+                                <th>Session</th>
                                 <th onClick={handleOrderDateClick} style={{ cursor: "pointer" }}>
                                     Tanggal Order {sortBy === "order_date" && (sortOrder === "asc" ? "🔼" : sortOrder === "desc" ? "🔽" : "")}
                                 </th>
@@ -342,65 +421,74 @@ const OrderDashboard = () => {
                         </thead>
                         <tbody>
                             {orders.length > 0 ? (
-                                [...orders] // Salin array orders untuk menghindari mutasi data asli
+                                [...orders] // Salin array agar tidak memodifikasi state langsung
                                     .sort((a, b) => {
-                                        if (!sortBy || !sortOrder) return 0; // Jika tidak ada sorting, urutkan sesuai default
+                                        if (!sortBy || !sortOrder) return 0;
 
-                                        // Convert to number untuk kolom harga dan tanggal
+                                        // Konversi nilai total_price agar bisa diurutkan dengan benar
                                         const valueA = sortBy === "total_price" ? parseFloat(a[sortBy]) : a[sortBy];
                                         const valueB = sortBy === "total_price" ? parseFloat(b[sortBy]) : b[sortBy];
 
-                                        // Sort based on ascending/descending order
-                                        if (sortOrder === "asc") {
-                                            return valueA - valueB;
-                                        } else if (sortOrder === "desc") {
-                                            return valueB - valueA;
-                                        }
-
-                                        return 0;
+                                        // Urutkan berdasarkan order (ascending/descending)
+                                        return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
                                     })
-                                    .map((order, index) => (
-                                        <tr key={order.order_id}>
-                                            <td>{(currentPage - 1) * 10 + index + 1}</td>
-                                            <td>{order.order_id}</td>
-                                            <td>{order.user_id}</td>
-                                            <td>{order.session_id}</td>
-                                            <td>{new Date(order.order_date).toLocaleDateString()}</td>
-                                            <td>{order.status}</td>
-                                            <td>
-                                                {order.total_price
-                                                    ? `Rp${parseFloat(order.total_price).toLocaleString('id-ID')}`
-                                                    : "-"}
-                                            </td>
-                                            <td>
-                                                <div className="action-container">
-                                                    <button
-                                                        className="action-button btn-detail"
-                                                        onClick={() => handleDetailOrderClick(order.order_id)}
-                                                    >
-                                                        <FontAwesomeIcon icon={faEye} />
-                                                    </button>
-                                                    <button
-                                                        className="action-button btn-edit"
-                                                        onClick={() => openEditOrderModal(order)}
-                                                    >
-                                                        <FontAwesomeIcon icon={faEdit} />
-                                                    </button>
-                                                    <button
-                                                        className="action-button btn-delete"
-                                                        onClick={() => handleDeleteOrder(order.order_id)}
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrashAlt} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
+                                    .map((order, index) => {
+                                        const sessionList = order.sessions.length > 0
+                                            ? order.sessions.map(s => (
+                                                <li key={s.session_id} style={{
+                                                    borderBottom: "1px solid #ddd",
+                                                    padding: "5px 0",
+                                                    listStyle: "none"
+                                                }}>
+                                                    {s.session_id} (Mentor: {s.mentor_name || "-"})
+                                                </li>
+                                            ))
+                                            : <li style={{ listStyle: "none" }}>-</li>;
+
+                                        return (
+                                            <tr key={order.order_id}>
+                                                <td>{(currentPage - 1) * 10 + index + 1}</td>
+                                                <td>{order.order_id}</td>
+                                                <td>{order.user_id}</td>
+                                                <td>
+                                                    <ul style={{ padding: 0, margin: 0 }}>{sessionList}</ul>
+                                                </td>
+                                                <td>{new Date(order.order_date).toLocaleDateString()}</td>
+                                                <td>{order.status}</td>
+                                                <td>
+                                                    {order.total_price
+                                                        ? `Rp${parseFloat(order.total_price).toLocaleString('id-ID')}`
+                                                        : "-"}
+                                                </td>
+                                                <td>
+                                                    <div className="action-container">
+                                                        <button
+                                                            className="action-button btn-detail"
+                                                            onClick={() => handleDetailOrderClick(order.order_id)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEye} />
+                                                        </button>
+                                                        <button
+                                                            className="action-button btn-edit"
+                                                            onClick={() => openEditOrderModal(order)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEdit} />
+                                                        </button>
+                                                        <button
+                                                            className="action-button btn-delete"
+                                                            onClick={() => handleDeleteOrder(order.order_id)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrashAlt} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
                             ) : (
                                 <tr>
-                                    <td colSpan="8" style={{ textAlign: "center" }} >Tidak ada data yang tersedia</td>
+                                    <td colSpan="8" style={{ textAlign: "center" }}>Tidak ada data yang tersedia</td>
                                 </tr>
-
                             )}
                         </tbody>
                     </table>
@@ -441,14 +529,39 @@ const OrderDashboard = () => {
                                     required
                                 />
 
-                                <label>Session ID:</label>
-                                <input
-                                    type="text"
-                                    name="session_id"
-                                    value={formData.session_id}
-                                    onChange={handleInputChange}
-                                    required
-                                />
+                                <label>Pilih Sesi:</label>
+                                <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                    {sessions.map((session) => (
+                                        <div key={session.session_id} className="session-item-order">
+                                            <div className="session-info">
+                                                <label htmlFor={session.session_id} className="session-title">{session.session_id}</label>
+                                            </div>
+                                            <div className="checkbox-container">
+                                                <input
+                                                    type="checkbox"
+                                                    id={session.session_id}
+                                                    value={session.session_id}
+                                                    checked={formData.session_ids.includes(session.session_id)}
+                                                    onChange={() => handleCheckboxChange(session.session_id)}
+                                                    className="session-checkbox"
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    <div className="pagination-session-order">
+                                        {Array.from({ length: totalPagesSessions }, (_, index) => (
+                                            <button
+                                                key={index + 1}
+                                                onClick={() => handlePageChangeSession(index + 1)}
+                                                disabled={totalPagesSessions === 1 && index + 1 !== currentPageSession}
+                                                className={`page-button ${currentPageSession === index + 1 ? 'active' : ''}`}
+                                            >
+                                                {index + 1}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
 
                                 <label>Status:</label>
                                 <select
@@ -472,6 +585,7 @@ const OrderDashboard = () => {
                     </div>
                 )}
 
+                {/* Modal Detail Order */}
                 {isModalDetailOpen && selectedOrder && (
                     <div className="create-order-modal">
                         <div className="detail-order-modal-content">
@@ -480,15 +594,22 @@ const OrderDashboard = () => {
                                 <div className="modal-detail-order-left">
                                     <p><strong>Order ID:</strong> {selectedOrder.order_id}</p>
                                     <p><strong>User ID:</strong> {selectedOrder.user_id}</p>
-                                    <p><strong>Session ID:</strong> {selectedOrder.session_id}</p>
-                                    <p><strong>Session Title:</strong> {selectedOrder.session_title}</p>
-                                </div>
-                                <div className="modal-detail-order-right">
-                                    <p><strong>Mentor:</strong> {selectedOrder.mentor_name}</p>
                                     <p><strong>Order Date:</strong> {new Date(selectedOrder.order_date).toLocaleDateString()}</p>
                                     <p><strong>Status:</strong> {selectedOrder.status}</p>
                                     <p><strong>Total Harga:</strong> {selectedOrder.total_price}</p>
                                     <p><strong>Service Type:</strong> {selectedOrder.service_type}</p>
+                                </div>
+                                <div className="modal-detail-order-right">
+                                    <h3>SESI YANG DIPILIH:</h3>
+                                    <ul>
+                                        {selectedOrder.sessions.map((session, index) => (
+                                            <li key={index}>
+                                                <strong>Session ID:</strong> {session.session_id}<br />
+                                                <strong>Title:</strong> {session.session_title}<br />
+                                                <strong>Mentor:</strong> {session.mentor_name}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
                             </div>
                             <button className="detail-order-close-modal-btn" onClick={() => setIsModalDetailOpen(false)}>Tutup</button>
@@ -514,14 +635,26 @@ const OrderDashboard = () => {
                                     <option value="cancelled">Cancelled</option>
                                 </select>
 
-                                <label>Session ID:</label>
-                                <input
-                                    type="text"
-                                    name="session_id"
-                                    value={editFormData.session_id}
-                                    onChange={handleEditInputChange}
-                                    required
-                                />
+                                <label>Session:</label>
+                                <div style={{ maxHeight: '300px', overflowY: 'auto', scrollbarWidth: 'thin' }}>
+                                    {sessions.map((session) => (
+                                        <div key={session.session_id} className="session-item-order">
+                                            <div className="session-info">
+                                                <label htmlFor={session.session_id} className="session-title">{session.session_id}</label>
+                                            </div>
+                                            <div className="checkbox-container">
+                                                <input
+                                                    type="checkbox"
+                                                    // id={session.session_id}
+                                                    value={session.session_id}
+                                                    checked={editFormData.session_ids.includes(session.session_id)}
+                                                    onChange={() => handleSessionCheckboxChange(session.session_id)}
+                                                    className="session-checkbox"
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
 
                                 <label>Total Harga:</label>
                                 <input
@@ -529,28 +662,16 @@ const OrderDashboard = () => {
                                     name="total_price"
                                     value={editFormData.total_price}
                                     onChange={handleEditInputChange}
-                                    required
+                                    disabled
                                 />
 
                                 <label>Order Date:</label>
                                 <input
                                     type="date"
                                     name="order_date"
-                                    value={editFormData.order_date ? editFormData.order_date : ""}
+                                    value={editFormData.order_date || ""}
                                     onChange={handleEditInputChange}
                                 />
-
-                                <label>Service Type:</label>
-                                <select
-                                    name="status"
-                                    value={editFormData.service_type}
-                                    onChange={handleEditInputChange}
-                                    required
-                                >
-                                    <option value="one_on_one">One on one</option>
-                                    <option value="bootcamp">Bootcamp</option>
-                                    <option value="group">Group</option>
-                                </select>
 
                                 <div className="modal-order-edit-button-actions">
                                     <button type="submit" className="btn-submit">Submit</button>

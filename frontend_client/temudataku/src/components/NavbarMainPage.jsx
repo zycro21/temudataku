@@ -206,7 +206,7 @@ const NavbarMainPage = () => {
                     </a>
                     {/* Order Cart */}
                     <div className="cart-container">
-                        <Link to="/order" className="order-icon">
+                        <Link to="/orders" className="order-icon">
                             <FaShoppingCart className="icon cart" />
                             <span className="tooltip">Order</span>
                         </Link>

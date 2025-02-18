@@ -13,6 +13,17 @@
   align-items: center;
   z-index: 1100;
   visibility: visible;
+  animation: fadeInOverlay 0.3s ease-in-out;
+}
+
+/* Animasi Fade In untuk Overlay */
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Konten Modal */
@@ -86,6 +97,75 @@
   border-color: #4caf50;
 }
 
+.session-item-order {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.session-item-order .session-info {
+  flex: 1;
+}
+
+.session-item-order .session-title {
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.session-item-order .checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.session-item-order .session-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-left: 10px;
+  accent-color: #2e8b57;
+}
+
+.session-item-order .session-checkbox:checked {
+  background-color: #003366;
+  border-color: #003366;
+}
+
+.pagination-session-order {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-session-order .page-button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.2s ease-in-out; /* Add transition */
+}
+
+.pagination-session-order .page-button.active {
+  background-color: #2e8b57;
+  color: white;
+}
+
+.pagination-session-order .page-button.active:hover {
+  background-color: #1e6f43; /* Change color when hovering active button */
+  transform: scale(1.1); /* Slightly scale up the button */
+}
+
+.pagination-session-order .page-button:hover {
+  background-color: #e0e0e0; /* Change background on hover */
+}
+
+.pagination-session-order .page-button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
 /* Tombol Aksi */
 .modal-order-create-button-actions {
   display: flex;
@@ -131,38 +211,14 @@
 }
 
 /* Modal Detail */
-/* Modal Overlay */
-.create-order-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Background transparan */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1100;
-  animation: fadeInOverlay 0.3s ease-in-out;
-}
-
-/* Animasi Fade In untuk Overlay */
-@keyframes fadeInOverlay {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 /* Modal Container */
 .detail-order-modal-content {
   background: white;
   padding: 25px;
   padding-top: 10px;
   border-radius: 10px;
-  width: 500px;
+  width: 80%; /* Lebar modal disesuaikan supaya responsif */
+  max-width: 700px; /* Maksimal lebar modal */
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -193,18 +249,46 @@
 .modal-detail-order-grid {
   display: flex;
   justify-content: space-between;
-  gap: 30px;
+  gap: 40px; /* Menambahkan jarak antar kolom */
   margin-bottom: 20px;
 }
 
 /* Kolom kiri */
 .modal-detail-order-left {
   flex: 1;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.modal-detail-order-right {
+  flex: 1;
+  font-size: 1rem;
+  color: #333;
+  line-height: 1.5;
+  max-height: 200px; /* Menentukan batas tinggi maksimal */
+  overflow-y: auto; /* Menambahkan scroll jika konten melebihi tinggi */
+  padding-right: 10px; /* Memberikan sedikit jarak ke kanan */
 }
 
 /* Kolom kanan */
-.modal-detail-order-right {
-  flex: 1;
+.modal-detail-order-right ul {
+  list-style: none; /* Menghilangkan bullet points */
+  padding: 0;
+  margin: 0;
+}
+
+/* Gaya untuk setiap item dalam list */
+.modal-detail-order-right li {
+  padding: 10px 0; /* Memberikan jarak antar item */
+  border-bottom: 1px solid #ddd; /* Menambahkan border bawah */
+  margin-bottom: 10px; /* Memberikan jarak antar item */
+}
+
+/* Efek hover pada setiap item */
+.modal-detail-order-right li:hover {
+  background-color: #f9f9f9; /* Memberikan background saat hover */
+  cursor: pointer;
 }
 
 /* Gaya teks dalam modal */
@@ -226,7 +310,7 @@
 .detail-order-close-modal-btn {
   width: 100%;
   padding: 12px;
-  background: #e74c3c;
+  background: #b02a37;
   color: white;
   border: none;
   cursor: pointer;
@@ -237,12 +321,11 @@
 }
 
 .detail-order-close-modal-btn:hover {
-  background: #c0392b;
+  background: #248e4d;
   transform: scale(1.05);
 }
 
 /* Modal Edit */
-/* ====== Overlay (Background Gelap dengan Blur) ====== */
 .edit-order-modal {
   position: fixed;
   top: 0;
@@ -266,19 +349,18 @@
   visibility: visible;
 }
 
-/* ====== Kontainer Modal ====== */
 .edit-order-modal-content {
-  background: #ffffff;
-  width: 400px;
-  max-width: 90%;
+  background: white;
   padding: 20px;
+  padding-top: 0;
   border-radius: 10px;
-  position: relative;
-  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
-  animation: scaleIn 0.3s ease-in-out;
+  width: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-/* ====== Animasi Scale In saat Modal Muncul ====== */
 @keyframes scaleIn {
   from {
     transform: scale(0.8);
@@ -290,54 +372,52 @@
   }
 }
 
-/* ====== Heading Modal ====== */
+/* Header Modal */
 .edit-order-modal-content h2 {
-  text-align: center;
   margin-bottom: 15px;
   font-size: 1.5rem;
   color: #333;
+  text-align: center;
 }
 
-/* ====== Form Styling ====== */
+/* Form Modal */
 .edit-order-modal-content form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
-/* ====== Label Styling ====== */
+/* Label Form */
 .edit-order-modal-content label {
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #444;
-  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555;
 }
 
-/* ====== Input & Select Styling ====== */
-
+/* Input dan Select */
 .edit-order-modal-content input {
-  width: 95%;
   padding: 10px;
-  font-size: 14px;
+  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-  transition: all 0.3s ease-in-out;
+  margin-bottom: 15px;
+  width: 90%;
+  outline: none;
 }
 
 .edit-order-modal-content select {
-  width: 100%;
   padding: 10px;
-  font-size: 14px;
+  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-  transition: all 0.3s ease-in-out;
+  margin-bottom: 15px;
+  width: 95%; /* Sama dengan input */
+  outline: none;
 }
 
-/* Fokus pada input */
 .edit-order-modal-content input:focus,
 .edit-order-modal-content select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: #4caf50;
 }
 
 /* ====== Tombol Aksi ====== */
@@ -349,14 +429,17 @@
 
 /* Style untuk tombol submit */
 .modal-order-edit-button-actions .btn-submit {
-  background-color: #007bff;
+  background: #4caf50;
   color: white;
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
-  font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  flex: 1;
+  margin-right: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s;
 }
 
 .modal-order-edit-button-actions .btn-submit:hover {
@@ -365,14 +448,16 @@
 
 /* Style untuk tombol cancel */
 .modal-order-edit-button-actions .btn-cancel {
-  background-color: #dc3545;
+  background: #e63946;
   color: white;
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
-  font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.3s;
 }
 
 .modal-order-edit-button-actions .btn-cancel:hover {

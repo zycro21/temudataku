@@ -3,10 +3,10 @@ import { FaInstagram, FaLinkedin, FaPhone, FaEnvelope } from "react-icons/fa";
 import LogoPutih from "../assets/images/logoputih.png";
 import "../assets/styles/footerMainPage.css";
 
-const FooterMainPage = () => {
+const FooterMainPage = ({ footerRef }) => {
     return (
         <>
-            <footer className="footer">
+            <footer className="footer" ref={footerRef}>
                 <div className="footer-container">
                     {/* Logo dan Terms */}
                     <div className="footer-section">

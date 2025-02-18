@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "../assets/styles/userMainPage.css";
@@ -15,6 +15,11 @@ const gambar5 = require("../assets/images/content4.jpg");
 const gambar6 = require("../assets/images/content4-2.jpg");
 
 const UserMainPage = () => {
+    const footerRef = useRef(null);
+    const scrollToFooter = () => {
+        footerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
     const [openFAQ, setOpenFAQ] = useState(null);
 
     const toggleFAQ = (index) => {
@@ -53,8 +58,10 @@ const UserMainPage = () => {
                             <h2 className="fade-in-up">BOSAN BELAJAR DATA SCIENCE SENDIRIAN?</h2>
                             <h1 className="fade-in-up delay-1">Yuk, Temu Mentor di <span>TemuDataku!</span></h1>
                             <div className="hero-buttons fade-in-up delay-2">
-                                <button className="btn-primary">Coba Sekarang</button>
-                                <button className="btn-secondary">Kontak Kami</button>
+                                <Link to="/mentoring">
+                                    <button className="btn-primary">Coba Sekarang</button>
+                                </Link>
+                                <button className="btn-secondary" onClick={scrollToFooter}>Kontak Kami</button>
                             </div>
                         </div>
                     </div>
@@ -177,7 +184,7 @@ const UserMainPage = () => {
                     </div>
                 </div>
 
-                <FooterMainPage />
+                <FooterMainPage footerRef={footerRef}/>
             </div>
         </>
     )
