@@ -279,3 +279,172 @@
   background: #f0f0f0;
   border-radius: 5px;
 }
+
+/* Burger menu default (sembunyikan di desktop) */
+.burger-menu-navbar {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  position: relative; /* Supaya dropdown mengikuti burger */
+  z-index: 1100; /* Pastikan di atas elemen lain */
+}
+
+/* Garis burger */
+.burger-menu-navbar div {
+  width: 30px;
+  height: 3px;
+  background-color: #1a1a2e;
+  transition: all 0.3s ease;
+}
+
+/* Dropdown styling */
+.burger-dropdown-navbar {
+  position: absolute;
+  top: 100px; /* Beri jarak dari burger */
+  left: 100px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s;
+  z-index: 1000;
+  min-width: 200px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Saat dropdown aktif */
+.burger-dropdown-navbar.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Styling untuk setiap item di dalam dropdown */
+.burger-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #1a1a2e;
+  font-weight: bold;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background 0.2s ease;
+}
+
+/* Efek hover */
+.burger-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive: Tampilkan burger menu di mobile */
+@media screen and (min-width: 480px) and (max-width: 768px) {
+  .navbar-links {
+    display: none; /* Sembunyikan link utama */
+  }
+
+  .burger-menu-navbar {
+    display: flex; /* Tampilkan burger menu */
+  }
+
+  .navbar-icons {
+    display: flex !important; /* Pastikan ikon sosial tetap muncul */
+    gap: 15px; /* Beri jarak agar tidak berdempetan */
+  }
+
+  /* Pastikan ikon sosial tidak masuk ke dropdown */
+  .burger-dropdown-navbar .social-icon,
+  .burger-dropdown-navbar .cart-container {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .burger-menu-navbar {
+    display: flex;
+  }
+
+  /* Sembunyikan navbar utama */
+  .navbar-icons,
+  .navbar-links {
+    display: none !important;
+  }
+
+  /* Styling dropdown agar lebih rapi */
+  .burger-dropdown-navbar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Link mentoring & practice tetap vertikal */
+  .burger-dropdown-navbar .burger-item {
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a1a2e;
+    text-decoration: none;
+    padding: 10px;
+  }
+
+  /* Sosmed sejajar horizontal */
+  .burger-dropdown-navbar .social-icons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  /* Styling untuk ikon sosial */
+  .burger-dropdown-navbar .social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    font-size: 18px;
+    color: #1a1a2e;
+    transition: background 0.3s ease;
+  }
+
+  .burger-dropdown-navbar .social-icon:hover {
+    background: #007bff;
+    color: white;
+  }
+
+  /* Cart berada di bawah ikon sosial */
+  .cart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    background: #f5f5f5;
+    border-radius: 50%;
+    position: relative;
+    margin-top: 10px;
+  }
+
+  /* Badge order di cart */
+  .cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+  }
+}

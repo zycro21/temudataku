@@ -36,7 +36,7 @@ Pastikan Anda sudah menginstal Node.js, MySQL, dan NPM di lingkungan Anda.
    ```
    * Atur konfigurasi database di file `.env` dan jalankan server backend
    ```
-   npm start
+   npm src/server.js
    ```
 3. __Set Up FrontEnd__
    * Pindah ke direktori `frontend_client/temudataku` :

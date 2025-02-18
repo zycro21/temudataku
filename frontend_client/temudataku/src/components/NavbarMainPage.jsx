@@ -21,6 +21,11 @@ const NavbarMainPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    const [burgerMenuVisible, setBurgerMenuVisible] = useState(false);
+    const toggleBurgerMenu = () => {
+        setBurgerMenuVisible(prev => !prev);
+    };
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -103,6 +108,22 @@ const NavbarMainPage = () => {
 
         checkToken();
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.target.closest(".burger-menu-navbar") && !event.target.closest(".burger-dropdown-navbar")) {
+                setBurgerMenuVisible(false);
+            }
+        };
+
+        if (burgerMenuVisible) {
+            document.addEventListener("click", handleClickOutside);
+        } else {
+            document.removeEventListener("click", handleClickOutside);
+        }
+
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, [burgerMenuVisible]);
 
     const handleLogout = () => {
         const savedEmail = localStorage.getItem("savedEmail");
@@ -198,6 +219,39 @@ const NavbarMainPage = () => {
                     <Link to="/practice" className={isPractice ? "active" : ""}>
                         PRACTICE
                     </Link>
+                </div>
+
+                {/* Burger Menu (Hanya tampil di mobile) */}
+                <div className="burger-menu-navbar" onClick={toggleBurgerMenu}>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+
+                {/* Burger Dropdown */}
+                <div className={`burger-dropdown-navbar ${burgerMenuVisible ? "show" : ""}`}>
+                    <Link to="/mentoring" className="burger-item">MENTORING</Link>
+                    <Link to="/practice" className="burger-item">PRACTICE</Link>
+
+                    <div className="social-icons-container">
+                        <a href="https://instagram.com/temudataku" target="_blank" rel="noopener noreferrer" className="social-icon">
+                            <FaInstagram className="icon" />
+                        </a>
+                        <a href="https://linkedin.com/company/temudataku" target="_blank" rel="noopener noreferrer" className="social-icon">
+                            <FaLinkedin className="icon" />
+                        </a>
+                        <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="social-icon">
+                            <FaWhatsapp className="icon" />
+                        </a>
+                    </div>
+
+                    {/* Order Cart */}
+                    <div className="cart-container">
+                        <Link to="/orders" className="order-icon">
+                            <FaShoppingCart className="icon cart" />
+                        </Link>
+                        {orderCount > 0 && <span className="cart-badge">{orderCount}</span>}
+                    </div>
                 </div>
 
                 {/* Social Media & Cart */}
