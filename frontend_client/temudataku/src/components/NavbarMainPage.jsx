@@ -105,8 +105,18 @@ const NavbarMainPage = () => {
     }, []);
 
     const handleLogout = () => {
+        const savedEmail = localStorage.getItem("savedEmail");
+        const savedPassword = localStorage.getItem("savedPassword");
+
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+
+        // Hanya hapus email & password jika "Ingat Saya" tidak digunakan
+        if (!savedEmail || !savedPassword) {
+            localStorage.removeItem("savedEmail");
+            localStorage.removeItem("savedPassword");
+        }
+
         setUser(null);
 
         toast.success("Logout berhasil! Sampai jumpa lagi.", {

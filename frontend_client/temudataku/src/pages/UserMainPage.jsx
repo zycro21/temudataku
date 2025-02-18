@@ -15,6 +15,7 @@ const gambar5 = require("../assets/images/content4.jpg");
 const gambar6 = require("../assets/images/content4-2.jpg");
 
 const UserMainPage = () => {
+    const navigate = useNavigate();
     const footerRef = useRef(null);
     const scrollToFooter = () => {
         footerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -48,7 +49,6 @@ const UserMainPage = () => {
     return (
         <>
             <div className="mainpage-user">
-                <ToastContainer />
                 <NavbarMainPage />
 
                 {/* Hero Section */}
@@ -136,14 +136,18 @@ const UserMainPage = () => {
                             <img src={gambar6} alt="1 on 1 & Group Mentoring" />
                             <div className="service-overlay">
                                 <p>1 on 1 & Group Mentoring</p>
-                                <button className="service-btn">Lihat Detail</button>
+                                <button className="service-btn" onClick={() => navigate("/mentoring#packages")}>
+                                    Lihat Detail
+                                </button>
                             </div>
                         </div>
                         <div className="service-card">
                             <img src={gambar5} alt="Data Science Practice" />
                             <div className="service-overlay">
                                 <p>Data Science Practice</p>
-                                <button className="service-btn">Lihat Detail</button>
+                                <button className="service-btn">
+                                    Lihat Detail
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -184,7 +188,7 @@ const UserMainPage = () => {
                     </div>
                 </div>
 
-                <FooterMainPage footerRef={footerRef}/>
+                <FooterMainPage footerRef={footerRef} />
             </div>
         </>
     )

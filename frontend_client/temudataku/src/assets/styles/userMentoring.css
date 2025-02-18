@@ -317,6 +317,10 @@
   padding: 50px 100px;
 }
 
+.mentoring-packages#packages {
+  scroll-margin-top: 8px;
+}
+
 .mentoring-packages h2 {
   font-size: 22px;
   font-weight: bold;

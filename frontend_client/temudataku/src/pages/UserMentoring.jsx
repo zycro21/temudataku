@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import NavbarMainPage from "../components/NavbarMainPage";
 import FooterMainPage from "../components/FooterMainPage";
@@ -9,6 +9,7 @@ import { FaChalkboardTeacher, FaUserGraduate, FaLightbulb } from "react-icons/fa
 const mentoringImg = require("../assets/images/realmentoring.jpg");
 
 const UserMentoring = () => {
+    const location = useLocation();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("Data Analyst");
     const [isAnimating, setIsAnimating] = useState(false);
@@ -57,6 +58,17 @@ const UserMentoring = () => {
         }
     };
 
+    useEffect(() => {
+        if (location.hash === "#packages") {
+            setTimeout(() => {
+                const element = document.getElementById("packages");
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 100);
+        }
+    }, [location]);
+
     return (
         <>
             <ToastContainer />
@@ -67,7 +79,7 @@ const UserMentoring = () => {
                 <div className="overlay"></div>
                 <div className="hero-content">
                     <h1 className="animated-title">MENTORING DATA SCIENCE</h1>
-                    <button className="cta-button-mentoring">Mulai Mentoring</button>
+                    <button className="cta-button-mentoring" onClick={() => navigate("/mentoring#packages")}>Mulai Mentoring</button>
                 </div>
             </div>
 
@@ -136,7 +148,7 @@ const UserMentoring = () => {
 
             <div className="spacer"></div>
 
-            <section className="mentoring-packages">
+            <section id="packages" className="mentoring-packages">
                 <h2>PILIH PAKET MU</h2>
                 <div className="packages-container">
                     <div className="package-card">
