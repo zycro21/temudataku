@@ -12,11 +12,15 @@ const OrderUserPage = () => {
     const token = localStorage.getItem("token");
 
     useEffect(() => {
+        if (!token) return;
+
         const fetchUserOrders = async () => {
             try {
                 const response = await axiosInstanceUser.get("/api/orders/getOrderByUser", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+
+                console.log("Data Orders dari API:", response.data.data);
 
                 setOrders(response.data.data);
             } catch (error) {
@@ -27,7 +31,7 @@ const OrderUserPage = () => {
         };
 
         fetchUserOrders();
-    }, [token, navigate]);
+    }, [token]);
 
     if (!token) {
         return (
@@ -59,6 +63,7 @@ const OrderUserPage = () => {
                                 <th>Service Type</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
+                                <th>Review</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,6 +83,26 @@ const OrderUserPage = () => {
                                         >
                                             Lihat Detail
                                         </button>
+                                    </td>
+                                    <td>
+                                        {order.sessions && order.sessions.length > 0 ? (
+                                            <ul className={styles.sessionList}>
+                                                {order.sessions.map((session) => (
+                                                    <li key={session.session_id} className={styles.sessionItem}>
+                                                        <button
+                                                            className={styles.reviewButton}
+                                                            onClick={() => navigate(`/order-review/${order.order_id}`)}
+                                                            disabled={order.status !== "completed"}
+                                                        >
+                                                            Review Sesi
+                                                        </button>
+                                                        <span className={styles.sessionTitle}>{session.session_id}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>-</p>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

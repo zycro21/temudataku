@@ -22,6 +22,7 @@ import MentoringList from "./pages/MentoringList";
 import OrderDetail from "./pages/DetailOrder";
 import CreateOrder from "./pages/CreateOrder";
 import OrderUserPage from "./pages/OrderPages";
+import OrderReview from "./pages/OrderReview";
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
             <Route path="/create-order" element={<CreateOrder />} />
             <Route path="/order-detail/:order_id" element={<OrderDetail />} />
             <Route path="/orders" element={<OrderUserPage />} />
+            <Route path="/order-review/:order_id" element={<OrderReview />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/registerAdmin" element={<Register />} />
             <Route path="/loginAdmin" element={<LoginAdmin />} />

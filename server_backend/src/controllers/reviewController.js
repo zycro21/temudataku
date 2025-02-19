@@ -11,91 +11,93 @@ require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const RESET_PASSWORD_TOKEN_SECRET = process.env.RESET_PASSWORD_TOKEN_SECRET;
 
-// Create Reviews
 exports.createReview = async (req, res) => {
-  const connection = await db.getConnection(); // Ambil koneksi untuk transaksi
+  const connection = await db.getConnection(); // Gunakan koneksi transaksi
+
   try {
-    const { session_id, rating, comment } = req.body;
+    const { session_id, order_id, rating, comment } = req.body;
     const { user_id, role } = req.user; // Ambil user_id & role dari token
 
-    // Validasi wajib isi
-    if (!session_id || !rating) {
+    // Validasi input wajib
+    if (!session_id || !order_id || !rating) {
       return res
-        .status(400) // Bad Request
-        .json({ message: "Session ID dan rating wajib diisi" });
+        .status(400)
+        .json({ message: "Order ID, Session ID, dan rating wajib diisi" });
     }
 
     // Cek apakah session_id valid
     const checkSessionSql = `SELECT * FROM sessions WHERE session_id = ? LIMIT 1`;
     const [sessionResults] = await db.query(checkSessionSql, [session_id]);
     if (sessionResults.length === 0) {
-      return res
-        .status(400) // Bad Request
-        .json({ message: "Session ID tidak valid!" });
+      return res.status(400).json({ message: "Session ID tidak valid!" });
     }
 
     // Validasi rating (1-5)
-    if (rating < 0 || rating > 5) {
-      return res
-        .status(400) // Bad Request
-        .json({ message: "Rating harus antara 0-5" });
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ message: "Rating harus antara 1-5" });
     }
 
-    // Hanya admin & user bisa review
+    // Hanya user & admin yang bisa review
     if (role !== "user" && role !== "admin") {
       return res
-        .status(403) // Forbidden
+        .status(403)
         .json({ message: "Anda tidak memiliki izin untuk memberikan review!" });
     }
 
-    // Jika role "user", cek apakah pernah order session ini
+    // Jika role "user", cek apakah pernah order session ini dalam order yang diberikan
     if (role === "user") {
-      const checkOrderSql = `SELECT * FROM orders WHERE user_id = ? AND session_id = ? LIMIT 1`;
+      const checkOrderSql = `
+        SELECT od.* 
+        FROM order_details od
+        JOIN orders o ON od.order_id = o.order_id
+        WHERE od.order_id = ? AND od.session_id = ? AND o.user_id = ?
+        LIMIT 1
+      `;
       const [orderResults] = await db.query(checkOrderSql, [
-        user_id,
+        order_id,
         session_id,
+        user_id,
       ]);
 
       if (orderResults.length === 0) {
-        return res
-          .status(403) // Forbidden
-          .json({
-            message:
-              "Anda hanya bisa memberikan review untuk session yang pernah Anda order!",
-          });
+        return res.status(403).json({
+          message:
+            "Anda hanya bisa memberikan review untuk sesi dalam order yang Anda miliki!",
+        });
       }
     }
 
-    // Cek apakah user sudah pernah review session ini
-    const checkExistingReviewSql = `SELECT * FROM reviews WHERE session_id = ? AND user_id = ? LIMIT 1`;
+    // Cek apakah user sudah mereview session ini dalam order yang sama
+    const checkExistingReviewSql = `SELECT * FROM reviews WHERE session_id = ? AND user_id = ? AND order_id = ? LIMIT 1`;
     const [existingReview] = await db.query(checkExistingReviewSql, [
       session_id,
       user_id,
+      order_id,
     ]);
 
     if (existingReview.length > 0) {
-      return res
-        .status(400) // Bad Request
-        .json({ message: "Anda sudah memberikan review untuk sesi ini!" });
+      return res.status(400).json({
+        message: "Anda sudah memberikan review untuk sesi ini dalam order ini!",
+      });
     }
 
-    // Cari nomor urut terakhir untuk session_id yang sama
+    // Cari nomor urut terakhir untuk session_id + order_id yang sama
     const countSql = `SELECT COUNT(*) AS count FROM reviews WHERE session_id = ?`;
     const [countResult] = await db.query(countSql, [session_id]);
     const nextNumber = countResult[0].count + 1; // Urutan berikutnya
 
-    // Buat review_id dengan format "review-{session_id}-000X"
-    const review_id = `review-${session_id}-${String(nextNumber).padStart(
-      4,
-      "0"
-    )}`;
+    // Buat review_id dengan format "review-{session_id}-{order_id}-000X"
+    const review_id = `review-${session_id}-${order_id}-${String(
+      nextNumber
+    ).padStart(4, "0")}`;
 
-    // Gunakan transaksi untuk insert
+    // Gunakan transaksi untuk insert review
     await connection.beginTransaction();
-    const insertSql = `INSERT INTO reviews (review_id, session_id, user_id, rating, comment) VALUES (?, ?, ?, ?, ?)`;
+    const insertSql = `INSERT INTO reviews (review_id, session_id, order_id, user_id, rating, comment) VALUES (?, ?, ?, ?, ?, ?)`;
     await connection.query(insertSql, [
       review_id,
       session_id,
+      order_id,
       user_id,
       rating,
       comment,
@@ -104,11 +106,11 @@ exports.createReview = async (req, res) => {
 
     // Response sukses
     return res
-      .status(201) // Created
+      .status(201)
       .json({ message: "Review berhasil ditambahkan!", review_id });
   } catch (error) {
     await connection.rollback();
-    // Response error server
+    console.error("Error saat create review:", error);
     return res.status(500).json({ message: "Server error: " + error.message });
   } finally {
     connection.release();
@@ -159,7 +161,7 @@ exports.getAllReviews = async (req, res) => {
 
     // Query utama dengan join ke sessions & mentors
     const sql = `
-    SELECT r.review_id, r.session_id, s.title AS session_title, 
+    SELECT r.review_id, r.session_id, r.order_id, s.title AS session_title, 
            r.user_id, u.username, m.name AS mentor_name, 
            r.rating, r.comment, r.created_at
     FROM reviews r
@@ -192,12 +194,12 @@ exports.getAllReviews = async (req, res) => {
 // Get Reviews Detail by review_id
 exports.getReviewsByReviewId = async (req, res) => {
   try {
-    const { review_id } = req.params; // Ambil review_id dari params
-    const { user_id, role } = req.user; // Ambil user_id & role dari token (tanpa mentor_id)
+    const { review_id } = req.params;
+    const { user_id, role } = req.user;
 
-    // Cek apakah review ini ada di database
+    // Cek apakah review ada di database
     const checkReviewSql = `
-        SELECT r.session_id, s.title AS session_title, s.mentor_id, m.name AS mentor_name 
+        SELECT r.session_id, r.order_id, s.title AS session_title, s.mentor_id, m.name AS mentor_name 
         FROM reviews r 
         LEFT JOIN sessions s ON r.session_id = s.session_id 
         LEFT JOIN mentors m ON s.mentor_id = m.mentor_id 
@@ -210,11 +212,12 @@ exports.getReviewsByReviewId = async (req, res) => {
     }
 
     const sessionId = reviewData[0].session_id;
+    const orderId = reviewData[0].order_id;
     const sessionTitle = reviewData[0].session_title;
-    const reviewMentorId = reviewData[0].mentor_id; // Mentor ID dari sesi review
+    const reviewMentorId = reviewData[0].mentor_id;
     const mentorName = reviewData[0].mentor_name;
 
-    // Jika user adalah mentor, ambil mentor_id berdasarkan user_id dari database
+    // Jika user adalah mentor, cek apakah dia memiliki sesi ini
     let loggedInMentorId = null;
 
     if (role === "mentor") {
@@ -225,7 +228,6 @@ exports.getReviewsByReviewId = async (req, res) => {
         loggedInMentorId = mentorData[0].mentor_id;
       }
 
-      // Validasi apakah mentor yang login memiliki sesi review ini
       if (loggedInMentorId !== reviewMentorId) {
         return res.status(403).json({
           message:
@@ -234,9 +236,9 @@ exports.getReviewsByReviewId = async (req, res) => {
       }
     }
 
-    // Jika user adalah admin, langsung ambil review tanpa filter tambahan
+    // Ambil detail review (Tambahkan r.order_id di sini)
     const sql = `
-        SELECT r.review_id, r.session_id, s.title AS session_title, 
+        SELECT r.review_id, r.session_id, r.order_id, s.title AS session_title, 
                r.user_id, u.username, 
                r.rating, r.comment, r.created_at
         FROM reviews r
@@ -249,6 +251,7 @@ exports.getReviewsByReviewId = async (req, res) => {
     res.json({
       review_id,
       session_id: sessionId,
+      order_id: orderId, // Pastikan order_id juga dikirim di level utama
       session_title: sessionTitle,
       mentor_name: mentorName,
       reviews,

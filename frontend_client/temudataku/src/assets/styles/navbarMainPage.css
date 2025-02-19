@@ -38,7 +38,7 @@
   align-items: center;
   cursor: pointer;
   transition: transform 0.3s ease;
-  margin-left: -25px;
+  margin-left: 0px;
 }
 
 .navbar-logo img {
@@ -343,6 +343,10 @@
 
 /* Responsive: Tampilkan burger menu di mobile */
 @media screen and (min-width: 480px) and (max-width: 768px) {
+  .navbar-logo {
+    margin-left: 0px;
+  }
+
   .navbar-links {
     display: none; /* Sembunyikan link utama */
   }

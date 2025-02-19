@@ -32,13 +32,7 @@ const MentoringList = () => {
     const fetchSessions = async () => {
         setLoading(true);
         setError(null);
-
-        // Jika token atau user tidak ada, redirect ke main page
-        if (!token) {
-            navigate("/");
-            return;
-        }
-
+        
         try {
             const response = await axiosInstanceUser.get(`/api/sessions/getAllSessions?service_type=${type}`, {
                 headers: {

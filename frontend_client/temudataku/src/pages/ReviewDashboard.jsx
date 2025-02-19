@@ -376,6 +376,7 @@ const ReviewDashboard = () => {
                         <div className="modal-detail-review">
                             <h2>Detail Review</h2>
                             <p><strong>Review ID:</strong> {reviewDetail.reviews[0].review_id}</p>
+                            <p><strong>Order ID:</strong> {reviewDetail.reviews[0].order_id}</p>
                             <p><strong>Session ID:</strong> {reviewDetail.reviews[0].session_id}</p>
                             <p><strong>Session Title:</strong> {reviewDetail.session_title}</p>
                             <p><strong>Mentor:</strong> {reviewDetail.mentor_name}</p>
